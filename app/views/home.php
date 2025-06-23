@@ -3,7 +3,7 @@
         </div>
     <div class="relative z-10 container mx-auto px-4 text-center">
         <h1 class="text-5xl sm:text-6xl font-extrabold leading-tight mb-4 drop-shadow-lg animate-fade-in-down">
-            <?php echo htmlspecialchars($title ?? 'Welcome to PCBuilder Pro!'); ?>
+            <?php echo htmlspecialchars($title ?? 'Welcome to CraftWise!'); ?>
         </h1>
         <p class="text-xl sm:text-2xl text-gray-200 mb-8 animate-fade-in-up">
             <?php echo htmlspecialchars($message ?? 'Your ultimate destination for building custom PCs.'); ?>
@@ -20,7 +20,7 @@
 </div>
 
 <div class="container mx-auto p-8 my-12">
-    <h2 class="text-4xl font-extrabold text-gray-900 mb-10 text-center">Why Choose PCBuilder Pro?</h2>
+    <h2 class="text-4xl font-extrabold text-gray-900 mb-10 text-center">Why Choose CraftWise?</h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <div class="bg-white p-8 border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center">

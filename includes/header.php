@@ -152,7 +152,7 @@ if (session_status() == PHP_SESSION_NONE) {
 <body class="min-h-screen flex flex-col">
     <header class="bg-[--color-dark-blue] text-white p-4 shadow-md">
         <nav class="container mx-auto flex justify-between items-center">
-            <a href="/pcbuild/public/home" class="text-2xl font-bold rounded-md px-3 py-1 hover:bg-gray-700 transition-colors">PCBuilder Pro</a>
+            <a href="/pcbuild/public/home" class="text-2xl font-bold rounded-md px-3 py-1 hover:bg-gray-700 transition-colors">CraftWise</a>
             <div class="flex items-center space-x-4">
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <a href="/pcbuild/public/products" class="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors">Products</a>

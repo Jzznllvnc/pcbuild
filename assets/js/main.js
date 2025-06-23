@@ -283,7 +283,7 @@ function initializeAiChat() {
                 // Initialize chat history and display initial message ONLY IF it's empty
                 // This prevents duplicate initial messages if sidebar is opened/closed
                 if (chatHistory.length === 0) {
-                    const initialMessage = "Hello! I'm your PC Build Assistant. Ask me anything about PC components, compatibility, or general build advice!";
+                    const initialMessage = "Hello! I'm Kraft-E, your PC Build Assistant. Ask me anything about PC components, compatibility, or general build advice!";
                     chatHistory.push({ role: "model", text: initialMessage });
                     // Append this initial message to the displayed chat
                     appendMessage('model', initialMessage); 

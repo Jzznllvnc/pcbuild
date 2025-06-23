@@ -15,7 +15,7 @@ class HomeController extends BaseController
 
         // Data to pass to the view
         $data = [
-            'title' => 'Welcome to PCBuilder Pro!',
+            'title' => 'Welcome to CraftWise!',
             'message' => 'Your ultimate destination for building custom PCs.'
         ];
 
