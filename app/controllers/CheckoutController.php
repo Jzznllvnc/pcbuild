@@ -55,9 +55,9 @@ class CheckoutController extends BaseController
 
         // Check if user is logged in
         if (!isset($_SESSION['user_id'])) {
-            $_SESSION['error'] = 'You must be logged in to process your order.'; //
-            header('Location: /pcbuild/public/login'); //
-            exit(); //
+            $_SESSION['error'] = 'You must be logged in to process your order.';
+            header('Location: /pcbuild/public/login');
+            exit();
         }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -69,6 +69,7 @@ class CheckoutController extends BaseController
         $paymentMethod = $_POST['payment_method'] ?? '';
         $cartItemsJson = $_POST['cart_items_json'] ?? '[]'; // JSON string of cart items
         $totalAmount = (float)($_POST['total_amount'] ?? 0);
+        $mobileNumber = $_POST['mobile_number'] ?? ''; // NEW: Get mobile number
 
         $cartItems = json_decode($cartItemsJson, true);
 
@@ -76,6 +77,21 @@ class CheckoutController extends BaseController
             $_SESSION['error'] = 'Please select a valid payment method.';
             header('Location: /pcbuild/public/checkout');
             exit();
+        }
+
+        // NEW: Validate mobile number if payment method requires it
+        if (($paymentMethod === 'GCash' || $paymentMethod === 'PayPal')) {
+            if (empty($mobileNumber)) {
+                $_SESSION['error'] = 'Mobile number is required for the selected payment method.';
+                header('Location: /pcbuild/public/checkout');
+                exit();
+            }
+            // Basic regex for 11 digits, assuming Philippines mobile numbers starting with 09
+            if (!preg_match('/^[0-9]{11}$/', $mobileNumber)) {
+                $_SESSION['error'] = 'Please enter a valid 11-digit mobile number.';
+                header('Location: /pcbuild/public/checkout');
+                exit();
+            }
         }
 
         if (empty($cartItems) || !is_array($cartItems)) {
@@ -93,11 +109,14 @@ class CheckoutController extends BaseController
         $paymentSuccess = true; // Assume success for simulation
 
         if ($paymentSuccess) {
+            // You might want to pass the mobile number to the createOrder method
+            // if you need to store it with the order. For simplicity,
+            // I'm not adding it to the orders table in this current context.
+            // If you need to store it, add a column to the 'orders' table for it.
             $orderId = $this->orderModel->createOrder($userId, $totalAmount, $paymentMethod, $cartItems);
 
             if ($orderId) {
                 $_SESSION['last_order_id'] = $orderId; // Store order ID for success page
-                // We'll add JS to clear cart after successful processing
                 header('Location: /pcbuild/public/checkout/success');
                 exit();
             } else {

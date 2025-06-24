@@ -24,9 +24,6 @@ if (session_status() == PHP_SESSION_NONE) {
             --footer-bg-dark: #1A1E26; /* A very dark grey, similar to the screenshot */
             --footer-text-light: #E0E6EB; /* Light grey for general text */
             --footer-link-hover: #A0A9B0; /* Slightly lighter on hover */
-            /* Extend Tailwind's palette conceptually */
-            /* Tailwind would typically define these in tailwind.config.js */
-            /* For demonstration, we use direct hex codes or map to closest Tailwind defaults */
         }
 
         /* General body styling and font */
@@ -34,7 +31,6 @@ if (session_status() == PHP_SESSION_NONE) {
             font-family: 'Inter', sans-serif;
             background-color: var(--color-light-bg); /* Use the new light background color */
             color: #334155; /* Darker text */
-            /* Reverted body styling to original min-h-screen flex flex-col */
             min-height: 100vh; /* Ensure body takes full viewport height */
             display: flex; /* Make body a flex container */
             flex-direction: column; /* Stack children (header, main, footer) vertically */
@@ -59,100 +55,119 @@ if (session_status() == PHP_SESSION_NONE) {
 
         /* Floating Action Button for AI Chat */
         #ai-chat-fab {
-            position: fixed; /* Ensures it's fixed relative to the viewport */
-            bottom: 1.5rem; /* 24px from bottom */
-            right: 1.5rem; /* 24px from right */
-            background-color: var(--color-primary-orange); /* Use primary orange */
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background-color: var(--color-primary-orange);
             color: white;
-            border-radius: 9999px; /* rounded-full */
-            padding: 1rem; /* p-4 */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-lg */
-            transition: background-color 0.3s ease; /* transition-colors */
+            border-radius: 9999px;
+            padding: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: background-color 0.3s ease;
             cursor: pointer;
-            z-index: 1000; /* Ensure it's above other content */
+            z-index: 1000;
         }
         #ai-chat-fab:hover {
-            background-color: #e76c3e; /* Slightly darker orange on hover */
+            background-color: #e76c3e;
         }
 
         /* AI Chat Sidebar */
         #ai-chat-sidebar {
             position: fixed;
-            top: 0; /* Align to the very top of the viewport */
-            right: 0; /* Align to the very right of the viewport */
-            width: 100vw; /* Take full viewport width on small screens */
-            height: 100vh; /* Take full viewport height on small screens */
+            top: 0;
+            right: 0;
+            width: 100vw;
+            height: 100vh;
             background-color: white;
-            box-shadow: 0 0 15px rgba(0,0,0,0.3); /* Stronger shadow */
-            z-index: 1010; /* Higher than FAB */
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            z-index: 1010;
             display: flex;
-            flex-direction: column; /* Arrange children vertically */
-            transform: translateX(100%); /* Initially off-screen to the right */
-            transition: transform 0.3s ease-in-out; /* Smooth slide animation */
-            overflow: hidden; /* Crucial to hide content overflowing during transition */
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            overflow: hidden;
 
-            /* Specific styles for medium screens and up (desktop) */
-            @media (min-width: 768px) { /* Explicitly use @media instead of @screen md */
-                width: 448px; /* Fixed width for sidebar (28rem) */
-                max-width: 448px; /* Ensure it doesn't exceed this width */
-                height: calc(100vh - 64px); /* Full viewport height minus header height */
-                top: 64px; /* Position precisely below the main header */
-                border-top-left-radius: 0.5rem; /* rounded-l-lg on top-left only */
-                border-bottom-left-radius: 0.5rem; /* rounded-l-lg on bottom-left only */
+            @media (min-width: 768px) {
+                width: 448px;
+                max-width: 448px;
+                height: calc(100vh - 64px);
+                top: 64px;
+                border-top-left-radius: 0.5rem;
+                border-bottom-left-radius: 0.5rem;
             }
         }
         #ai-chat-sidebar.open {
-            transform: translateX(0); /* Slide into view */
+            transform: translateX(0);
         }
 
         /* Prevent body scrolling when sidebar is open */
         body.ai-chat-open {
-             overflow: hidden !important; /* Use !important to ensure override */
+             overflow: hidden !important;
         }
 
         /* Styling for the sidebar's header */
         .sidebar-header {
-            flex-shrink: 0; /* Prevent header from shrinking */
-            padding: 1rem; /* p-4 */
-            background-color: var(--color-dark-blue); /* bg-blue-600 */
+            flex-shrink: 0;
+            padding: 1rem;
+            background-color: var(--color-dark-blue);
             color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* subtle shadow below header */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         /* Styling for the content placeholder (where ai_chat/index.php content is loaded) */
         #ai-chat-content-placeholder {
-            flex-grow: 1; /* Allow content area to take all available space */
-            display: flex; /* Make it a flex container itself */
-            flex-direction: column; /* Arrange its children (messages and input) vertically */
-            overflow: hidden; /* Hide overflow from its children */
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
         /* Styling for the chat messages area within the loaded content */
         #chat-messages {
-            flex-grow: 1; /* Messages area takes up available space */
-            overflow-y: auto; /* Enable vertical scrolling */
-            padding: 1rem; /* p-4 */
-            background-color: var(--color-light-bg); /* bg-gray-50 */
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background-color: var(--color-light-bg);
         }
 
         /* Styling for the chat input area within the loaded content */
         .chat-input-area {
-            flex-shrink: 0; /* Prevent input area from shrinking */
+            flex-shrink: 0;
             display: flex;
             align-items: center;
-            padding: 1rem; /* p-4 */
-            border-top: 1px solid #e2e8f0; /* border-t border-gray-200 */
+            padding: 1rem;
+            border-top: 1px solid #e2e8f0;
             background-color: white;
+        }
+
+        /* Updated Header Style for Blur Effect */
+        .main-header {
+            background-color: rgba(16, 19, 24, 0.69); /* Explicit RGBA for semi-transparency */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px); /* For Safari */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Existing shadow-md equivalent */
+        }
+        /* New styles for logout confirmation modal */
+        #logout-confirmation-modal {
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        #logout-confirmation-modal > div {
+            transition: all 0.3s ease-in-out;
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
-    <header class="bg-[--color-dark-blue] text-white p-4 shadow-md">
+    <header class="main-header text-white p-4 fixed top-0 w-full z-50">
         <nav class="container mx-auto flex justify-between items-center">
-            <a href="/pcbuild/public/home" class="text-2xl font-bold rounded-md px-3 py-1 hover:bg-gray-700 transition-colors">CraftWise</a>
+            <a href="/pcbuild/public/home" class="text-2xl font-bold rounded-md px-3 py-1 hover:bg-gray-700 transition-colors flex items-center">
+                <img src="/pcbuild/assets/images/CraftWise.png" alt="CraftWise Logo" class="h-12 w-12 mr-2 object-contain">
+                CraftWise
+            </a>
             <div class="flex items-center space-x-4">
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <a href="/pcbuild/public/products" class="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors">Products</a>
@@ -178,7 +193,7 @@ if (session_status() == PHP_SESSION_NONE) {
                         <span class="text-gray-300 text-sm">Welcome, <span class="font-semibold"><?php echo htmlspecialchars($_SESSION['username']); ?></span>!</span>
                     <?php endif; ?>
 
-                    <a href="/pcbuild/public/logout" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors">Logout</a>
+                    <a href="javascript:void(0);" id="logout-button" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors">Logout</a>
                 <?php else: ?>
                     <a href="/pcbuild/public/products" class="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors">Products</a>
                     <a href="/pcbuild/public/cart" class="relative rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors flex items-center">

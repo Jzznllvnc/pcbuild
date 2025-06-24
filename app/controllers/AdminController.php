@@ -48,7 +48,9 @@ class AdminController extends BaseController
      */
     public function listProducts()
     {
-        $products = $this->productModel->getAllProducts(); // Or getFilteredProducts for admin search
+        // Use getProducts with large limits and offset 0 to fetch all products for admin view
+        // Alternatively, if you prefer a dedicated method, add getAllProducts() to the Product model.
+        $products = $this->productModel->getProducts(1000, 0); // Fetch up to 1000 products, assuming that's "all" for practical purposes
 
         $data = [
             'title' => 'Manage Products',

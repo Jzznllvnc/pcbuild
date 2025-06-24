@@ -1,4 +1,4 @@
-<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg my-8 max-w-2xl text-center">
+<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg mt-40 mb-8 max-w-3xl text-center">
     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-6 rounded-lg relative mb-6">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />

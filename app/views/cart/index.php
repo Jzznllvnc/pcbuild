@@ -1,4 +1,4 @@
-<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg my-8 max-w-4xl">
+<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg mt-40 mb-8 max-w-4xl">
     <h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center"><?php echo htmlspecialchars($title); ?></h1>
 
     <div id="cart-items-container" class="border border-gray-200 rounded-lg p-4 mb-6">

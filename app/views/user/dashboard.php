@@ -1,10 +1,8 @@
-<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg my-8 max-w-4xl">
+<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg mt-40 mb-8 max-w-4xl">
     <h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center">My Orders</h1>
 
-    <div class="text-center mb-8">
-        <p class="text-xl text-gray-700">Welcome, <span class="font-semibold text-[--color-dark-blue]"><?php echo htmlspecialchars($username); ?></span>!</p>
-    </div>
-
+    <?php // Removed the greeting div ?>
+    
     <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Your Order History</h2>
 
     <?php if (empty($orders)): ?>

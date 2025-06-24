@@ -35,6 +35,107 @@ function addToCart(productId, productName, productPrice, productImage, quantity 
     alertMessage('success', `${productName} added to cart!`); // Custom alert
 }
 
+// Global variables for the modal and current product
+let currentProduct = null;
+const quantityModal = document.getElementById('quantity-modal');
+const modalProductName = document.getElementById('modal-product-name');
+const modalProductPrice = document.getElementById('modal-product-price');
+const modalProductImage = document.getElementById('modal-product-image');
+const modalProductStock = document.getElementById('modal-product-stock');
+const quantityInput = document.getElementById('quantity-input');
+const quantityError = document.getElementById('quantity-error');
+const addToCartModalBtn = document.getElementById('add-to-cart-modal-btn');
+const cancelQuantityBtn = document.getElementById('cancel-quantity');
+
+
+// Function to open the quantity selection modal
+function openQuantityModal(product) {
+    currentProduct = product; // Store the product globally for access when adding to cart
+
+    modalProductImage.src = product.image_url || 'https://placehold.co/128x128/e2e8f0/475569?text=No+Image';
+    modalProductName.textContent = product.name;
+    modalProductPrice.textContent = `$${parseFloat(product.price).toFixed(2)}`;
+    modalProductStock.textContent = `Available Stock: ${product.stock}`;
+    quantityInput.value = 1; // Default quantity to 1
+    quantityInput.max = product.stock; // Set max quantity based on stock
+    quantityError.classList.add('hidden'); // Hide any previous errors
+
+    if (product.stock <= 0) {
+        quantityInput.value = 0;
+        quantityInput.disabled = true;
+        addToCartModalBtn.disabled = true;
+        addToCartModalBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        modalProductStock.classList.remove('text-green-600');
+        modalProductStock.classList.add('text-red-600');
+    } else {
+        quantityInput.disabled = false;
+        addToCartModalBtn.disabled = false;
+        addToCartModalBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        modalProductStock.classList.remove('text-red-600');
+        modalProductStock.classList.add('text-green-600');
+    }
+
+    // Show modal with animation
+    quantityModal.classList.remove('hidden');
+    setTimeout(() => {
+        quantityModal.classList.add('opacity-100');
+        quantityModal.querySelector('div').classList.remove('scale-95', 'opacity-0');
+        quantityModal.querySelector('div').classList.add('scale-100', 'opacity-100');
+        quantityInput.focus(); // Focus on quantity input
+    }, 10);
+}
+
+// Function to close the quantity selection modal
+function closeQuantityModal() {
+    quantityModal.classList.remove('opacity-100');
+    quantityModal.querySelector('div').classList.remove('scale-100', 'opacity-100');
+    quantityModal.querySelector('div').classList.add('scale-95', 'opacity-0');
+    quantityModal.addEventListener('transitionend', () => {
+        quantityModal.classList.add('hidden');
+    }, { once: true });
+    currentProduct = null; // Clear current product data
+}
+
+// Event listener for adding to cart from the modal
+if (addToCartModalBtn) {
+    addToCartModalBtn.addEventListener('click', () => {
+        const quantity = parseInt(quantityInput.value);
+
+        if (isNaN(quantity) || quantity <= 0) {
+            quantityError.textContent = 'Please enter a valid quantity greater than 0.';
+            quantityError.classList.remove('hidden');
+            return;
+        }
+
+        if (quantity > currentProduct.stock) {
+            quantityError.textContent = `You can only add up to ${currentProduct.stock} units.`;
+            quantityError.classList.remove('hidden');
+            return;
+        }
+
+        // If validation passes, add to cart and close modal
+        addToCart(currentProduct.id, currentProduct.name, currentProduct.price, currentProduct.image_url, quantity);
+        closeQuantityModal();
+    });
+}
+
+// Event listener for canceling quantity selection
+if (cancelQuantityBtn) {
+    cancelQuantityBtn.addEventListener('click', () => {
+        closeQuantityModal();
+    });
+}
+
+// Close modal if clicked outside of the content box
+if (quantityModal) {
+    quantityModal.addEventListener('click', (e) => {
+        if (e.target === quantityModal) {
+            closeQuantityModal();
+        }
+    });
+}
+
+
 // Function to update item quantity in cart
 function updateCartItemQuantity(productId, newQuantity) {
     let cart = getCart();
@@ -68,6 +169,7 @@ function removeFromCart(productId) {
     }
 }
 
+
 // Function to clear the entire cart
 function clearCart() {
     localStorage.setItem('pcbuild_cart', JSON.stringify([])); // Explicitly set empty array
@@ -93,8 +195,8 @@ function updateCartCount() {
 // Custom alert message function (replaces alert())
 function alertMessage(type, message) {
     const alertBox = document.createElement('div');
-    // Changed 'top-4' to 'top-16' to move it further down from the top
-    alertBox.className = `fixed top-16 right-4 p-4 rounded-md shadow-lg text-white z-50 transition-all duration-300 transform -translate-y-full opacity-0`;
+    // Changed positioning to top-center, using flexbox for centering
+    alertBox.className = `fixed top-4 left-1/2 -translate-x-1/2 p-4 rounded-md shadow-lg text-white z-50 transition-all duration-300 transform -translate-y-full opacity-0`;
 
     if (type === 'success') {
         alertBox.classList.add('bg-green-500'); // Keep green for success alerts
@@ -107,13 +209,13 @@ function alertMessage(type, message) {
     alertBox.textContent = message;
     document.body.appendChild(alertBox);
 
-    // Animate in (changed translate direction)
+    // Animate in (slide down from top)
     setTimeout(() => {
         alertBox.classList.remove('-translate-y-full', 'opacity-0');
         alertBox.classList.add('translate-y-0', 'opacity-100');
     }, 100);
 
-    // Animate out and remove (changed translate direction)
+    // Animate out and remove (slide up to top)
     setTimeout(() => {
         alertBox.classList.remove('translate-y-0', 'opacity-100');
         alertBox.classList.add('-translate-y-full', 'opacity-0');
@@ -195,6 +297,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeAiChat();
     // Initialize password toggle functionality
     initializePasswordToggle();
+    // Initialize logout confirmation modal
+    initializeLogoutConfirmation();
 });
 
 // The following functions are for the cart page specifically
@@ -368,13 +472,13 @@ function appendMessage(role, text) {
     messageDiv.className = `flex items-start ${role === 'user' ? 'justify-end' : ''} p-2`; 
 
     const avatar = document.createElement('div');
-    // Updated avatar colors
-    avatar.className = `flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${role === 'user' ? 'bg-[--color-primary-orange]' : 'bg-[--color-dark-blue]'}`;
+    // Updated avatar colors and added margin for spacing
+    avatar.className = `flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${role === 'user' ? 'bg-[--color-primary-orange] ml-3' : 'bg-[--color-dark-blue] mr-3'}`;
     avatar.textContent = role === 'user' ? 'You' : 'AI';
 
     const textBubble = document.createElement('div');
-    // Updated text bubble colors
-    textBubble.className = `p-3 rounded-lg max-w-[80%] shadow-sm ${role === 'user' ? 'bg-[--color-light-bg] text-gray-800 ml-auto' : 'bg-gray-200 text-gray-800 mr-auto'} markdown-content`;
+    // Updated text bubble colors for user message
+    textBubble.className = `p-3 rounded-lg max-w-[80%] shadow-sm ${role === 'user' ? 'bg-[--color-primary-orange] text-white ml-auto' : 'bg-gray-200 text-gray-800 mr-auto'} markdown-content`;
     
     if (role === 'model') {
         textBubble.innerHTML = marked.parse(text);
@@ -434,5 +538,65 @@ async function sendMessage() {
         sendButton.textContent = 'Send';
         sendButton.classList.remove('opacity-50', 'cursor-not-allowed');
         chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
+    }
+}
+
+// --- Logout Confirmation Modal Logic ---
+function initializeLogoutConfirmation() {
+    const logoutButton = document.getElementById('logout-button');
+    const logoutModal = document.getElementById('logout-confirmation-modal');
+    const confirmLogoutBtn = document.getElementById('confirm-logout-btn');
+    const cancelLogoutBtn = document.getElementById('cancel-logout-btn');
+
+    if (logoutButton) {
+        logoutButton.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default link behavior
+            showLogoutConfirmation();
+        });
+    }
+
+    if (confirmLogoutBtn) {
+        confirmLogoutBtn.addEventListener('click', () => {
+            window.location.href = '/pcbuild/public/logout'; // Redirect to actual logout URL
+        });
+    }
+
+    if (cancelLogoutBtn) {
+        cancelLogoutBtn.addEventListener('click', () => {
+            hideLogoutConfirmation();
+        });
+    }
+
+    // Close modal if clicked outside (on the overlay)
+    if (logoutModal) {
+        logoutModal.addEventListener('click', (e) => {
+            if (e.target === logoutModal) {
+                hideLogoutConfirmation();
+            }
+        });
+    }
+}
+
+function showLogoutConfirmation() {
+    const logoutModal = document.getElementById('logout-confirmation-modal');
+    if (logoutModal) {
+        logoutModal.classList.remove('hidden');
+        setTimeout(() => {
+            logoutModal.classList.add('opacity-100');
+            logoutModal.querySelector('div').classList.remove('scale-95', 'opacity-0');
+            logoutModal.querySelector('div').classList.add('scale-100', 'opacity-100');
+        }, 10); // Small delay to allow 'hidden' to be removed before transition
+    }
+}
+
+function hideLogoutConfirmation() {
+    const logoutModal = document.getElementById('logout-confirmation-modal');
+    if (logoutModal) {
+        logoutModal.classList.remove('opacity-100');
+        logoutModal.querySelector('div').classList.remove('scale-100', 'opacity-100');
+        logoutModal.querySelector('div').classList.add('scale-95', 'opacity-0');
+        logoutModal.addEventListener('transitionend', () => {
+            logoutModal.classList.add('hidden');
+        }, { once: true }); // Remove 'hidden' class only after transition
     }
 }

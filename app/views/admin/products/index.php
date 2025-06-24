@@ -1,4 +1,4 @@
-<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg my-8">
+<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg mt-40 mb-16">
     <h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center"><?php echo htmlspecialchars($title); ?></h1>
 
     <?php if (isset($success) && $success): ?>
@@ -74,20 +74,24 @@
                                 <p class="text-gray-900 whitespace-no-wrap">$<?php echo number_format($product['price'], 2); ?></p>
                             </td>
                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap"><?php htmlspecialchars($product['stock']); ?></p>
+                                <p class="text-gray-900 whitespace-no-wrap"><?php echo htmlspecialchars($product['stock']); ?></p>
                             </td>
                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                 <div class="flex space-x-2">
                                     <a href="/pcbuild/public/admin/products/edit/<?php echo htmlspecialchars($product['id']); ?>"
                                        class="text-[--color-primary-orange] hover:text-[#e76c3e]" title="Edit">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-7.793 7.793a.5.5 0 01-.128.128H4.5a.5.5 0 01-.5-.5V10.5a.5.5 0 01.128-.128l7.793-7.793zM10.121 5.929L14.071 9.879l-7.293 7.293a1 1 0 01-.707.293H4a1 1 0 01-1-1v-4a1 1 0 01.293-.707l7.293-7.293z" />
+                                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                         </svg>
                                     </a>
                                     <form action="/pcbuild/public/admin/products/delete/<?php echo htmlspecialchars($product['id']); ?>" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?');">
                                         <button type="submit" class="text-red-600 hover:text-red-900" title="Delete">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 000-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1z" clip-rule="evenodd" />
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                <line x1="14" y1="11" x2="14" y2="17"></line>
                                             </svg>
                                         </button>
                                     </form>

@@ -2,14 +2,15 @@
     <footer class="bg-[--footer-bg-dark] text-[--footer-text-light] py-10 shadow-inner">
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row justify-around items-center md:items-start text-center md:text-left space-y-8 md:space-y-0">
-                <!-- Copyright and Brand Info -->
                 <div class="flex-shrink-0 md:w-1/4">
-                    <h3 class="text-2xl font-bold text-white mb-2">CraftWise</h3>
+                    <h3 class="text-2xl font-bold text-white mb-2 flex items-center justify-center md:justify-start">
+                        <img src="/pcbuild/assets/images/CraftWise.png" alt="CraftWise Logo" class="h-8 w-8 mr-2 object-contain">
+                        CraftWise
+                    </h3>
                     <p class="text-sm">Your ultimate destination for building custom PCs.</p>
                     <p class="text-sm mt-4">&copy; 2025 jzznllvnc. All rights reserved.</p>
                 </div>
 
-                <!-- Quick Links -->
                 <div class="flex-grow max-w-md md:max-w-none md:w-1/4">
                     <h4 class="text-lg font-semibold text-white mb-3">Quick Links</h4>
                     <ul class="space-y-2">
@@ -21,7 +22,6 @@
                     </ul>
                 </div>
 
-                <!-- Subscribe Section -->
                 <div class="flex-shrink-0 md:w-1/4">
                     <h4 class="text-lg font-semibold text-white mb-3">Stay Updated</h4>
                     <p class="text-sm mb-4">Subscribe to our newsletter for the latest products and deals.</p>
@@ -35,10 +35,9 @@
                     </form>
                 </div>
 
-                <!-- Social Media Icons -->
                 <div class="flex-shrink-0 md:w-1/4 md:text-right">
                     <h4 class="text-lg font-semibold text-white mb-3">Follow Us</h4>
-                    <div class="flex justify-center md:justify-end space-x-4 pr-4"> <!-- Added pr-4 for right padding -->
+                    <div class="flex justify-center md:justify-end space-x-4 pr-4">
                         <a href="https://www.facebook.com/jazznelle.vince" class="text-[--footer-text-light] hover:text-[--footer-link-hover] transition-colors" aria-label="Facebook">
                             <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33V22C17.361 21.153 22 16.904 22 12z" clip-rule="evenodd" />
@@ -77,6 +76,21 @@
         </div>
         <div id="ai-chat-content-placeholder">
             <div class="text-center text-gray-500 py-8">Loading AI Chat...</div>
+        </div>
+    </div>
+
+    <div id="logout-confirmation-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white p-8 rounded-lg shadow-2xl max-w-sm w-full mx-4 transform scale-95 opacity-0 transition-all duration-300">
+            <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">Confirm Logout</h3>
+            <p class="text-gray-700 mb-6 text-center">Are you sure you want to log out of your account?</p>
+            <div class="flex justify-center space-x-4">
+                <button id="confirm-logout-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-md transition-colors shadow-md">
+                    Yes, Log Out
+                </button>
+                <button id="cancel-logout-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-md transition-colors shadow-md">
+                    Cancel
+                </button>
+            </div>
         </div>
     </div>
 

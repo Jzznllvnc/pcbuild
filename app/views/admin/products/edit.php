@@ -1,4 +1,4 @@
-<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg my-8 max-w-2xl">
+<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg mt-40 mb-24 max-w-3xl">
     <h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center"><?php echo htmlspecialchars($title); ?></h1>
 
     <?php if (isset($error) && $error): ?>

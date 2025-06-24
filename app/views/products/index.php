@@ -1,5 +1,5 @@
-<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg my-8">
-    <h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center"><?php echo htmlspecialchars($title); ?></h1>
+<div class="container mx-auto p-8 pt-20 bg-white shadow-lg rounded-lg mt-40 mb-24">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-12 text-center"><?php echo htmlspecialchars($title); ?></h1>
 
     <!-- Search and Filter Form -->
     <form action="/pcbuild/public/products" method="GET" class="mb-8 flex flex-col sm:flex-row gap-4 items-center">
@@ -10,7 +10,7 @@
                 class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[--color-primary-orange]">
             <option value="">All Categories</option>
             <?php
-            $categories = ['CPU', 'GPU', 'Motherboard', 'RAM', 'Storage', 'PSU', 'Case', 'CPU Cooler'];
+            $categories = ['CPU', 'GPU', 'Motherboard', 'RAM', 'Storage', 'PSU', 'Case', 'CPU Cooler', 'Keyboard', 'Monitor'];
             foreach ($categories as $cat) {
                 $selected = ($currentCategory === $cat) ? 'selected' : '';
                 echo "<option value=\"{$cat}\" {$selected}>{$cat}</option>";
@@ -34,14 +34,22 @@
                          class="w-48 h-48 object-contain mb-4 rounded-md">
                     <h3 class="text-xl font-semibold text-gray-900 mb-2"><?php echo htmlspecialchars($product['name']); ?></h3>
                     <p class="text-gray-600 text-sm mb-3"><?php echo htmlspecialchars($product['category']); ?></p>
-                    <p class="text-2xl font-bold text-[--color-primary-orange] mb-4">$<?php echo htmlspecialchars(number_format($product['price'], 2)); ?></p>
+                    <p class="text-2xl font-bold text-[--color-primary-orange] mb-2">$<?php echo htmlspecialchars(number_format($product['price'], 2)); ?></p>
+                    <p class="text-gray-700 text-sm mb-4">
+                        Stock: <span class="font-bold <?php echo ($product['stock'] > 0) ? 'text-green-600' : 'text-red-600'; ?>">
+                            <?php echo htmlspecialchars($product['stock']); ?>
+                        </span>
+                    </p>
                     <div class="flex space-x-2 mt-auto w-full justify-center">
                         <a href="/pcbuild/public/products/<?php echo htmlspecialchars($product['id']); ?>"
                            class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-md transition-colors">
                             View Details
                         </a>
-                        <button onclick="addToCart(<?php echo htmlspecialchars(json_encode($product['id'])); ?>, <?php echo htmlspecialchars(json_encode($product['name'])); ?>, <?php echo htmlspecialchars(json_encode($product['price'])); ?>, <?php echo htmlspecialchars(json_encode($product['image_url'])); ?>)"
-                                class="flex-1 bg-[--color-dark-blue] hover:bg-[#1a2d3a] text-white font-bold py-2 px-4 rounded-md transition-colors">
+                        <!-- New: Data attributes to pass product info to JS for modal -->
+                        <button onclick="openQuantityModal(<?php echo htmlspecialchars(json_encode($product)); ?>)"
+                                class="flex-1 bg-[--color-dark-blue] hover:bg-[#1a2d3a] text-white font-bold py-2 px-4 rounded-md transition-colors
+                                <?php echo ($product['stock'] <= 0) ? 'opacity-50 cursor-not-allowed' : ''; ?>"
+                                <?php echo ($product['stock'] <= 0) ? 'disabled' : ''; ?>>
                             Add to Cart
                         </button>
                     </div>
@@ -79,3 +87,29 @@
     <?php endif; ?>
 </div>
 
+<!-- Quantity Selection Modal -->
+<div id="quantity-modal" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4 hidden z-50 transition-opacity duration-300 opacity-0">
+    <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm transform scale-95 opacity-0 transition-all duration-300">
+        <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">Add to Cart</h3>
+        <div class="flex flex-col items-center mb-6">
+            <img id="modal-product-image" src="" alt="Product Image" class="w-32 h-32 object-contain mb-3 rounded-md">
+            <p id="modal-product-name" class="text-xl font-semibold text-gray-800 text-center"></p>
+            <p id="modal-product-price" class="text-lg text-[--color-primary-orange] mb-2"></p>
+            <p id="modal-product-stock" class="text-sm text-gray-600"></p>
+        </div>
+        <div class="mb-6">
+            <label for="quantity-input" class="block text-gray-700 text-sm font-bold mb-2">Quantity:</label>
+            <input type="number" id="quantity-input" min="1" value="1"
+                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-[--color-primary-orange]">
+            <p id="quantity-error" class="text-red-500 text-xs italic mt-2 hidden">Please enter a valid quantity.</p>
+        </div>
+        <div class="flex justify-end space-x-3">
+            <button id="cancel-quantity" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md transition-colors">
+                Cancel
+            </button>
+            <button id="add-to-cart-modal-btn" class="bg-[--color-dark-blue] hover:bg-[#1a2d3a] text-white font-bold py-2 px-4 rounded-md transition-colors">
+                Add to Cart
+            </button>
+        </div>
+    </div>
+</div>

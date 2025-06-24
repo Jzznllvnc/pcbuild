@@ -1,4 +1,4 @@
-<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg my-8 max-w-3xl">
+<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg mt-40 mb-8 max-w-3xl">
     <h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center"><?php echo htmlspecialchars($title); ?></h1>
 
     <?php if (isset($_SESSION['error']) && $_SESSION['error']): ?>
@@ -23,20 +23,29 @@
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Payment Method</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <label class="flex items-center cursor-pointer p-4 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 has-[:checked]:border-[--color-primary-orange] has-[:checked]:ring-2 has-[:checked]:ring-[--color-primary-orange]">
-                <input type="radio" name="payment_method" value="GCash" class="form-radio text-[--color-primary-orange] h-5 w-5 flex-shrink-0" required>
+                <input type="radio" name="payment_method" value="GCash" class="form-radio text-[--color-primary-orange] h-5 w-5 flex-shrink-0" required onchange="toggleMobileNumberInput()">
                 <span class="ml-4 text-lg font-medium text-gray-700 flex items-center">
                     <img src="/pcbuild/assets/images/gcash.svg" alt="GCash Logo" class="h-8 w-auto mr-3 object-contain">
                     GCash
                 </span>
             </label>
             <label class="flex items-center cursor-pointer p-4 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 has-[:checked]:border-[--color-primary-orange] has-[:checked]:ring-2 has-[:checked]:ring-[--color-primary-orange]">
-                <input type="radio" name="payment_method" value="PayPal" class="form-radio text-[--color-primary-orange] h-5 w-5 flex-shrink-0" required>
+                <input type="radio" name="payment_method" value="PayPal" class="form-radio text-[--color-primary-orange] h-5 w-5 flex-shrink-0" required onchange="toggleMobileNumberInput()">
                 <span class="ml-4 text-lg font-medium text-gray-700 flex items-center">
                     <img src="/pcbuild/assets/images/paypal.svg" alt="PayPal Logo" class="h-8 w-auto mr-3 object-contain">
                     PayPal
                 </span>
             </label>
         </div>
+
+        <div id="mobile-number-group" class="hidden">
+            <label for="mobile_number" class="block text-sm font-medium text-gray-700 mb-2">Mobile Number (11 digits)<span class="text-red-500">*</span></label>
+            <input type="tel" id="mobile_number" name="mobile_number" placeholder="e.g., 09123456789"
+                   pattern="[0-9]{11}" maxlength="11"
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[--color-primary-orange] focus:border-[--color-primary-orange] sm:text-sm">
+            <p id="mobile-number-error" class="text-red-500 text-xs italic mt-2 hidden">Please enter a valid 11-digit mobile number.</p>
+        </div>
+
 
         <input type="hidden" name="cart_items_json" id="cart-items-json">
         <input type="hidden" name="total_amount" id="total-amount-hidden">
@@ -57,6 +66,9 @@
         const cartItemsJsonInput = document.getElementById('cart-items-json');
         const totalAmountHiddenInput = document.getElementById('total-amount-hidden');
         const placeOrderButton = document.getElementById('place-order-button');
+        const mobileNumberGroup = document.getElementById('mobile-number-group');
+        const mobileNumberInput = document.getElementById('mobile_number');
+        const mobileNumberError = document.getElementById('mobile-number-error');
 
         let total = 0;
         let summaryHtml = '';
@@ -90,13 +102,50 @@
         cartItemsJsonInput.value = JSON.stringify(cart);
         totalAmountHiddenInput.value = total.toFixed(2);
 
-        // Client-side validation for payment method selection
+        // Function to toggle mobile number input visibility and requirement
+        window.toggleMobileNumberInput = function() {
+            const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked');
+            if (selectedPaymentMethod && (selectedPaymentMethod.value === 'GCash' || selectedPaymentMethod.value === 'PayPal')) {
+                mobileNumberGroup.classList.remove('hidden');
+                mobileNumberInput.setAttribute('required', 'required');
+                mobileNumberInput.focus();
+            } else {
+                mobileNumberGroup.classList.add('hidden');
+                mobileNumberInput.removeAttribute('required');
+                mobileNumberInput.value = ''; // Clear value when hidden
+                mobileNumberError.classList.add('hidden'); // Hide error if present
+            }
+        };
+
+        // Client-side validation for payment method selection AND mobile number
         document.getElementById('checkout-form').addEventListener('submit', (e) => {
             const paymentMethodSelected = document.querySelector('input[name="payment_method"]:checked');
             if (!paymentMethodSelected) {
                 e.preventDefault();
                 alertMessage('error', 'Please select a payment method.');
+                return;
             }
+
+            if (mobileNumberGroup.classList.contains('hidden') === false) { // If mobile number input is visible
+                const mobileNumber = mobileNumberInput.value.trim();
+                const mobileNumberPattern = /^[0-9]{11}$/;
+
+                if (!mobileNumberPattern.test(mobileNumber)) {
+                    e.preventDefault();
+                    mobileNumberError.classList.remove('hidden');
+                    alertMessage('error', 'Please enter a valid 11-digit mobile number.');
+                    mobileNumberInput.focus();
+                    return;
+                } else {
+                    mobileNumberError.classList.add('hidden');
+                }
+            }
+            
+            // Clear cart from local storage after successful form submission (client-side anticipation)
+            // The actual cart clearing after server-side order creation is handled on the success page.
+            // This just ensures the client-side state is ready for the next shopping session.
+            // No, this shouldn't be here. It should only clear on the success page.
+            // Removed: clearCart(); // Moved to checkout/success.php
         });
     });
 </script>
