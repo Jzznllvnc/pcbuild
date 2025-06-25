@@ -1,6 +1,7 @@
 <?php
 
 require_once BASE_PATH . 'app/controllers/BaseController.php';
+require_once BASE_PATH . 'app/models/Order.php'; // Ensure Order model is included
 
 class CheckoutController extends BaseController
 {
@@ -13,9 +14,7 @@ class CheckoutController extends BaseController
     }
 
     /**
-     * Displays the checkout page.
-     * Expects cart items data from JavaScript via URL parameters or hidden fields if we had them.
-     * For now, we'll assume cart items are handled on frontend.
+     * Displays the checkout page (now the shipping form).
      */
     public function index()
     {
@@ -31,20 +30,17 @@ class CheckoutController extends BaseController
             exit();
         }
 
-        // In a real application, you might pass cart data from JavaScript
-        // through a hidden form field or session, or re-fetch product prices
-        // to prevent tampering. For now, we'll rely on the frontend for display
-        // and process the items received from the post request in processOrder().
         $data = [
             'title' => 'Complete Your Order'
         ];
 
+        // This will render the multi-step form within checkout/index.php
         $this->view('checkout/index', $data);
     }
 
     /**
-     * Processes the simulated order/payment.
-     * Expects POST data with payment method and cart items JSON.
+     * Processes the order submission from the final payment step.
+     * Receives all shipping and payment data via POST.
      */
     public function processOrder()
     {
@@ -62,58 +58,129 @@ class CheckoutController extends BaseController
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $_SESSION['error'] = 'Invalid request method.';
-            header('Location: /pcbuild/public/cart');
+            header('Location: /pcbuild/public/cart'); // Redirect to cart or appropriate page
             exit();
         }
 
-        $paymentMethod = $_POST['payment_method'] ?? '';
-        $cartItemsJson = $_POST['cart_items_json'] ?? '[]'; // JSON string of cart items
+        // --- 1. Extract all submitted data ---
+        $firstName = trim($_POST['first_name'] ?? '');
+        $lastName = trim($_POST['last_name'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $countryCode = trim($_POST['country_code'] ?? '');
+        $shippingMobileNumber = trim($_POST['mobile_number'] ?? ''); // This is the mobile number from the SHIPPING form
+        $address = trim($_POST['address'] ?? '');
+        $city = trim($_POST['city'] ?? '');
+        $state = trim($_POST['state'] ?? '');
+        $zipCode = trim($_POST['zip_code'] ?? '');
+        $notes = trim($_POST['notes'] ?? '');
+        $shippingMethod = trim($_POST['shipping_method'] ?? '');
+        $shippingCost = (float)($_POST['shipping_cost'] ?? 0);
+
+        $paymentMethod = trim($_POST['payment_method'] ?? '');
+        $paymentMobileNumber = trim($_POST['payment_mobile_number'] ?? ''); // This is the mobile number from the PAYMENT form
+
+        $cartItemsJson = $_POST['cart_items_json'] ?? '[]';
         $totalAmount = (float)($_POST['total_amount'] ?? 0);
-        $mobileNumber = $_POST['mobile_number'] ?? ''; // NEW: Get mobile number
 
         $cartItems = json_decode($cartItemsJson, true);
 
-        if (empty($paymentMethod) || !in_array($paymentMethod, ['GCash', 'PayPal'])) {
-            $_SESSION['error'] = 'Please select a valid payment method.';
-            header('Location: /pcbuild/public/checkout');
-            exit();
+        // --- 2. Server-side Validation ---
+        $errors = [];
+
+        // Basic required field validation (for shipping details)
+        if (empty($firstName)) $errors[] = 'First name is required.';
+        if (empty($lastName)) $errors[] = 'Last name is required.';
+        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Valid email is required.';
+        if (empty($address)) $errors[] = 'Address is required.';
+        if (empty($city)) $errors[] = 'City is required.';
+        if (empty($state)) $errors[] = 'State is required.';
+        if (empty($zipCode)) $errors[] = 'Zip Code is required.';
+        if (empty($shippingMethod)) $errors[] = 'Shipping method is required.';
+
+        // Validation for SHIPPING Mobile Number (based on country code)
+        // This is a simplified example; a real application would have a comprehensive list of regex patterns per country code.
+        // The frontend already sends the *digits only* for shipping mobile number.
+        if ($countryCode === '+63') {
+            // For PH, expected 10 digits (e.g., 9123456789)
+            if (!preg_match('/^9\d{9}$/', $shippingMobileNumber)) {
+                 $errors[] = 'Please enter a valid 10-digit Philippine mobile number for shipping (e.g., 9123456789).';
+            }
+        } else if ($countryCode === '+1') {
+            // For US, expected 10 digits
+            if (!preg_match('/^\d{10}$/', $shippingMobileNumber)) {
+                $errors[] = 'Please enter a valid 10-digit US mobile number for shipping.';
+            }
+        }
+        // ... Add more country code validations as needed for shipping mobile number ...
+        // If country code is not recognized, or if you need a general fallback:
+        else {
+             if (strlen($shippingMobileNumber) < 7 || strlen($shippingMobileNumber) > 15) {
+                 $errors[] = 'Please enter a valid phone number for shipping.';
+             }
         }
 
-        // NEW: Validate mobile number if payment method requires it
-        if (($paymentMethod === 'GCash' || $paymentMethod === 'PayPal')) {
-            if (empty($mobileNumber)) {
-                $_SESSION['error'] = 'Mobile number is required for the selected payment method.';
-                header('Location: /pcbuild/public/checkout');
-                exit();
+
+        // Validation for PAYMENT Mobile Number (conditional for GCash/PayPal)
+        if ($paymentMethod === 'GCash' || $paymentMethod === 'PayPal') {
+            if (empty($paymentMobileNumber)) {
+                $errors[] = 'Mobile number is required for the selected payment method.';
             }
-            // Basic regex for 11 digits, assuming Philippines mobile numbers starting with 09
-            if (!preg_match('/^[0-9]{11}$/', $mobileNumber)) {
-                $_SESSION['error'] = 'Please enter a valid 11-digit mobile number.';
-                header('Location: /pcbuild/public/checkout');
-                exit();
+            // Strict 11-digit validation for GCash/PayPal (e.g., 09123456789)
+            if (!preg_match('/^09\d{9}$/', $paymentMobileNumber)) {
+                $errors[] = 'Please enter a valid 11-digit mobile number for GCash/PayPal (e.g., 09123456789).';
             }
+        }
+
+        if (empty($paymentMethod) || !in_array($paymentMethod, ['GCash', 'PayPal'])) {
+            $errors[] = 'Please select a valid payment method.';
         }
 
         if (empty($cartItems) || !is_array($cartItems)) {
-            $_SESSION['error'] = 'Your cart is empty or invalid.';
-            header('Location: /pcbuild/public/cart');
+            $errors[] = 'Your cart is empty or invalid.';
+        }
+
+        // If there are any validation errors, redirect back with message
+        if (!empty($errors)) {
+            $_SESSION['error'] = implode('<br>', $errors); // Join all errors for display
+            header('Location: /pcbuild/public/checkout'); // Redirect back to checkout index
             exit();
         }
 
-        // Get user ID if logged in, otherwise null for guest checkout
+        // Get user ID if logged in
         $userId = $_SESSION['user_id'] ?? null;
 
         // --- Simulate Payment Process ---
         // In a real scenario, you would integrate with GCash/PayPal APIs here.
-        // This could involve redirecting the user, handling callbacks, etc.
         $paymentSuccess = true; // Assume success for simulation
 
         if ($paymentSuccess) {
-            // You might want to pass the mobile number to the createOrder method
-            // if you need to store it with the order. For simplicity,
-            // I'm not adding it to the orders table in this current context.
-            // If you need to store it, add a column to the 'orders' table for it.
-            $orderId = $this->orderModel->createOrder($userId, $totalAmount, $paymentMethod, $cartItems);
+            // Prepare all order details to pass to the model
+            $orderDetails = [
+                'user_id' => $userId,
+                'total_amount' => $totalAmount,
+                'payment_method' => $paymentMethod,
+                'cart_items' => $cartItems, // Array of cart items
+                'shipping_info' => [
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
+                    'email' => $email,
+                    'country_code' => $countryCode,
+                    'mobile_number' => $shippingMobileNumber, // Shipping specific mobile
+                    'address' => $address,
+                    'city' => $city,
+                    'state' => $state,
+                    'zip_code' => $zipCode,
+                    'notes' => $notes,
+                    'shipping_method' => $shippingMethod,
+                    'shipping_cost' => $shippingCost,
+                    'payment_mobile_number' => $paymentMobileNumber // Payment specific mobile
+                ]
+            ];
+
+            // You will need to modify your Order model's createOrder method
+            // to accept and store these new shipping_info details.
+            // For now, I'm just passing them as an array.
+            $orderId = $this->orderModel->createOrder($orderDetails); // Modified to accept structured data
 
             if ($orderId) {
                 $_SESSION['last_order_id'] = $orderId; // Store order ID for success page
@@ -147,6 +214,7 @@ class CheckoutController extends BaseController
 
         $order = null;
         if ($orderId) {
+            // Assuming getOrderById can fetch comprehensive order details including shipping and items
             $order = $this->orderModel->getOrderById($orderId);
         }
 

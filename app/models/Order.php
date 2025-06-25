@@ -11,24 +11,68 @@ class Order
 
     /**
      * Saves a new order and its items to the database.
-     * @param int|null $userId The ID of the user, or null for guest orders.
-     * @param float $totalAmount The total amount of the order.
-     * @param string $paymentMethod The selected payment method.
-     * @param array $cartItems An array of associative arrays, each representing a cart item.
+     * Now accepts a structured $orderDetails array.
+     *
+     * @param array $orderDetails An associative array containing:
+     * - 'user_id': int|null The ID of the user, or null for guest orders.
+     * - 'total_amount': float The total amount of the order.
+     * - 'payment_method': string The selected payment method.
+     * - 'cart_items': array An array of associative arrays, each representing a cart item.
+     * - 'shipping_info': array An array of shipping details including:
+     * - 'first_name', 'last_name', 'email', 'country_code', 'mobile_number',
+     * - 'address', 'city', 'state', 'zip_code', 'notes',
+     * - 'shipping_method', 'shipping_cost', 'payment_mobile_number'
+     *
      * @return int|false The ID of the newly created order, or false on failure.
      */
-    public function createOrder($userId, $totalAmount, $paymentMethod, array $cartItems)
+    public function createOrder(array $orderDetails)
     {
         try {
             // Start a transaction to ensure atomicity
             $this->pdo->beginTransaction();
 
+            // Destructure order details for easier access
+            $userId = $orderDetails['user_id'] ?? null;
+            $totalAmount = $orderDetails['total_amount'];
+            $paymentMethod = $orderDetails['payment_method'];
+            $cartItems = $orderDetails['cart_items'];
+            $shippingInfo = $orderDetails['shipping_info'];
+
             // 1. Insert into orders table
-            $stmt = $this->pdo->prepare("INSERT INTO orders (user_id, total_amount, payment_method) VALUES (:user_id, :total_amount, :payment_method)");
+            // IMPORTANT: You MUST add these columns to your 'orders' table in your database
+            // (e.g., first_name, last_name, email, country_code, shipping_mobile_number, address,
+            // city, state, zip_code, notes, shipping_method, shipping_cost, payment_mobile_number)
+            $stmt = $this->pdo->prepare("
+                INSERT INTO orders (
+                    user_id, total_amount, payment_method,
+                    first_name, last_name, email, country_code, shipping_mobile_number,
+                    address, city, state, zip_code, notes,
+                    shipping_method, shipping_cost, payment_mobile_number
+                ) VALUES (
+                    :user_id, :total_amount, :payment_method,
+                    :first_name, :last_name, :email, :country_code, :shipping_mobile_number,
+                    :address, :city, :state, :zip_code, :notes,
+                    :shipping_method, :shipping_cost, :payment_mobile_number
+                )
+            ");
+
             $stmt->execute([
                 ':user_id' => $userId,
                 ':total_amount' => $totalAmount,
-                ':payment_method' => $paymentMethod
+                ':payment_method' => $paymentMethod,
+                ':first_name' => $shippingInfo['first_name'],
+                ':last_name' => $shippingInfo['last_name'],
+                ':email' => $shippingInfo['email'],
+                ':country_code' => $shippingInfo['country_code'],
+                ':shipping_mobile_number' => $shippingInfo['mobile_number'], // Store shipping-specific mobile number
+                ':address' => $shippingInfo['address'],
+                ':city' => $shippingInfo['city'],
+                ':state' => $shippingInfo['state'],
+                ':zip_code' => $shippingInfo['zip_code'],
+                ':notes' => $shippingInfo['notes'],
+                ':shipping_method' => $shippingInfo['shipping_method'],
+                ':shipping_cost' => $shippingInfo['shipping_cost'],
+                ':payment_mobile_number' => $shippingInfo['payment_mobile_number'] // Store payment-specific mobile number
             ]);
             $orderId = $this->pdo->lastInsertId();
 
@@ -65,15 +109,20 @@ class Order
     }
 
     /**
-     * Fetches an order by its ID, including its items.
+     * Fetches an order by its ID, including its items and shipping details.
      * @param int $orderId The ID of the order to fetch.
      * @return array|false The order details with nested items, or false if not found.
      */
     public function getOrderById($orderId)
     {
         try {
-            // Fetch order details
-            $stmtOrder = $this->pdo->prepare("SELECT o.*, u.username FROM orders o LEFT JOIN users u ON o.user_id = u.id WHERE o.id = :order_id LIMIT 1");
+            // Fetch order details, including new shipping columns
+            $stmtOrder = $this->pdo->prepare("
+                SELECT o.*, u.username 
+                FROM orders o 
+                LEFT JOIN users u ON o.user_id = u.id 
+                WHERE o.id = :order_id LIMIT 1
+            "); // Assuming 'shipping_info' columns are in 'orders' table
             $stmtOrder->execute([':order_id' => $orderId]);
             $order = $stmtOrder->fetch();
 
@@ -102,8 +151,12 @@ class Order
     public function getOrdersByUserId($userId)
     {
         try {
-            // Fetch all orders for the user
-            $stmtOrders = $this->pdo->prepare("SELECT * FROM orders WHERE user_id = :user_id ORDER BY order_date DESC");
+            // Fetch all orders for the user, including new shipping columns
+            $stmtOrders = $this->pdo->prepare("
+                SELECT * FROM orders 
+                WHERE user_id = :user_id 
+                ORDER BY order_date DESC
+            ");
             $stmtOrders->execute([':user_id' => $userId]);
             $orders = $stmtOrders->fetchAll();
 

@@ -42,10 +42,83 @@ const modalProductName = document.getElementById('modal-product-name');
 const modalProductPrice = document.getElementById('modal-product-price');
 const modalProductImage = document.getElementById('modal-product-image');
 const modalProductStock = document.getElementById('modal-product-stock');
-const quantityInput = document.getElementById('quantity-input');
-const quantityError = document.getElementById('quantity-error');
+
+// New: Quantity display element for modal
+const modalQuantityDisplay = document.getElementById('modal-quantity-display');
+// New: Hidden input to store actual quantity value for the modal
+const modalQuantityInputHidden = document.getElementById('quantity-input');
+const modalQuantityError = document.getElementById('quantity-error');
+
 const addToCartModalBtn = document.getElementById('add-to-cart-modal-btn');
 const cancelQuantityBtn = document.getElementById('cancel-quantity');
+
+/**
+ * Sets up quantity increment/decrement controls for a given quantity display and hidden input.
+ * @param {HTMLElement} container The parent element containing the buttons and display.
+ * @param {string} displayId The ID of the span/div displaying the quantity.
+ * @param {string} hiddenInputId The ID of the hidden input storing the quantity value.
+ * @param {string} minusBtnId The ID of the minus button.
+ * @param {string} plusBtnId The ID of the plus button.
+ * @param {string} errorId The ID of the error message element.
+ * @param {number} maxStock The maximum allowed quantity (product stock).
+ */
+function setupQuantityControls(container, displayId, hiddenInputId, minusBtnId, plusBtnId, errorId, maxStock) {
+    const quantityDisplay = container.querySelector(`#${displayId}`);
+    const quantityHiddenInput = container.querySelector(`#${hiddenInputId}`);
+    const minusBtn = container.querySelector(`#${minusBtnId}`);
+    const plusBtn = container.querySelector(`#${plusBtnId}`);
+    const errorElement = container.querySelector(`#${errorId}`);
+
+    if (!quantityDisplay || !quantityHiddenInput || !minusBtn || !plusBtn || !errorElement) {
+        console.error("Missing quantity control elements for:", container.id);
+        return;
+    }
+
+    let currentQuantity = parseInt(quantityHiddenInput.value) || 1;
+    quantityDisplay.textContent = currentQuantity;
+    errorElement.classList.add('hidden'); // Hide errors initially
+
+    const updateQuantity = (newQuantity) => {
+        // Ensure quantity is at least 1
+        newQuantity = Math.max(1, newQuantity);
+        // Ensure quantity does not exceed stock
+        newQuantity = Math.min(newQuantity, maxStock);
+
+        currentQuantity = newQuantity;
+        quantityDisplay.textContent = currentQuantity;
+        quantityHiddenInput.value = currentQuantity; // Update hidden input
+
+        // Hide error message if quantity is valid
+        if (errorElement) {
+             errorElement.classList.add('hidden');
+        }
+
+        // Disable buttons if limits are reached
+        minusBtn.disabled = currentQuantity <= 1;
+        plusBtn.disabled = currentQuantity >= maxStock;
+
+        minusBtn.classList.toggle('opacity-50', currentQuantity <= 1);
+        minusBtn.classList.toggle('cursor-not-allowed', currentQuantity <= 1);
+        plusBtn.classList.toggle('opacity-50', currentQuantity >= maxStock);
+        plusBtn.classList.toggle('cursor-not-allowed', currentQuantity >= maxStock);
+    };
+
+    // Initial state based on maxStock
+    updateQuantity(currentQuantity); // Call once to set initial state and button disable status
+
+    minusBtn.onclick = () => updateQuantity(currentQuantity - 1);
+    plusBtn.onclick = () => updateQuantity(currentQuantity + 1);
+
+    // If stock is 0, disable buttons
+    if (maxStock <= 0) {
+        minusBtn.disabled = true;
+        plusBtn.disabled = true;
+        minusBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        plusBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        quantityDisplay.textContent = 0; // Display 0 if out of stock
+        quantityHiddenInput.value = 0; // Store 0 in hidden input
+    }
+}
 
 
 // Function to open the quantity selection modal
@@ -56,23 +129,22 @@ function openQuantityModal(product) {
     modalProductName.textContent = product.name;
     modalProductPrice.textContent = `$${parseFloat(product.price).toFixed(2)}`;
     modalProductStock.textContent = `Available Stock: ${product.stock}`;
-    quantityInput.value = 1; // Default quantity to 1
-    quantityInput.max = product.stock; // Set max quantity based on stock
-    quantityError.classList.add('hidden'); // Hide any previous errors
 
+    // Initialize quantity to 1 for the modal, then set up controls
+    modalQuantityInputHidden.value = 1;
+    setupQuantityControls(quantityModal.querySelector('.bg-white'), 'modal-quantity-display', 'quantity-input', 'modal-quantity-minus', 'modal-quantity-plus', 'quantity-error', product.stock);
+
+    // Update stock text color
     if (product.stock <= 0) {
-        quantityInput.value = 0;
-        quantityInput.disabled = true;
-        addToCartModalBtn.disabled = true;
-        addToCartModalBtn.classList.add('opacity-50', 'cursor-not-allowed');
         modalProductStock.classList.remove('text-green-600');
         modalProductStock.classList.add('text-red-600');
+        addToCartModalBtn.disabled = true;
+        addToCartModalBtn.classList.add('opacity-50', 'cursor-not-allowed');
     } else {
-        quantityInput.disabled = false;
-        addToCartModalBtn.disabled = false;
-        addToCartModalBtn.classList.remove('opacity-50', 'cursor-not-allowed');
         modalProductStock.classList.remove('text-red-600');
         modalProductStock.classList.add('text-green-600');
+        addToCartModalBtn.disabled = false;
+        addToCartModalBtn.classList.remove('opacity-50', 'cursor-not-allowed');
     }
 
     // Show modal with animation
@@ -81,7 +153,6 @@ function openQuantityModal(product) {
         quantityModal.classList.add('opacity-100');
         quantityModal.querySelector('div').classList.remove('scale-95', 'opacity-0');
         quantityModal.querySelector('div').classList.add('scale-100', 'opacity-100');
-        quantityInput.focus(); // Focus on quantity input
     }, 10);
 }
 
@@ -94,22 +165,23 @@ function closeQuantityModal() {
         quantityModal.classList.add('hidden');
     }, { once: true });
     currentProduct = null; // Clear current product data
+    modalQuantityError.classList.add('hidden'); // Hide any errors on close
 }
 
-// Event listener for adding to cart from the modal
+// Event listener for adding to cart from the modal (products/index.php)
 if (addToCartModalBtn) {
     addToCartModalBtn.addEventListener('click', () => {
-        const quantity = parseInt(quantityInput.value);
+        const quantity = parseInt(modalQuantityInputHidden.value);
 
         if (isNaN(quantity) || quantity <= 0) {
-            quantityError.textContent = 'Please enter a valid quantity greater than 0.';
-            quantityError.classList.remove('hidden');
+            modalQuantityError.textContent = 'Please enter a valid quantity greater than 0.';
+            modalQuantityError.classList.remove('hidden');
             return;
         }
 
         if (quantity > currentProduct.stock) {
-            quantityError.textContent = `You can only add up to ${currentProduct.stock} units.`;
-            quantityError.classList.remove('hidden');
+            modalQuantityError.textContent = `You can only add up to ${currentProduct.stock} units.`;
+            modalQuantityError.classList.remove('hidden');
             return;
         }
 
@@ -135,6 +207,61 @@ if (quantityModal) {
     });
 }
 
+// New: Event listener for adding to cart on the product show page (products/show.php)
+document.addEventListener('DOMContentLoaded', () => {
+    const addToCartPageBtn = document.getElementById('add-to-cart-page-btn');
+    if (addToCartPageBtn) {
+        const productId = addToCartPageBtn.dataset.productId;
+        const productName = addToCartPageBtn.dataset.productName;
+        const productPrice = addToCartPageBtn.dataset.productPrice;
+        const productImage = addToCartPageBtn.dataset.productImage;
+        const productStock = parseInt(addToCartPageBtn.dataset.productStock);
+
+        // Setup quantity controls for the show page
+        const showPageQuantityContainer = document.querySelector('.flex.items-center.justify-start.space-x-3.mb-6');
+        if (showPageQuantityContainer) {
+            setupQuantityControls(showPageQuantityContainer, 'page-quantity-display', 'page-quantity-value', 'page-quantity-minus', 'page-quantity-plus', 'page-quantity-error', productStock);
+        }
+
+        // Handle disabled state based on stock
+        const stockDisplay = document.getElementById('product-stock-display');
+        if (productStock <= 0) {
+            addToCartPageBtn.disabled = true;
+            addToCartPageBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            if (stockDisplay) {
+                stockDisplay.classList.remove('text-green-600');
+                stockDisplay.classList.add('text-red-600');
+            }
+        } else {
+             addToCartPageBtn.disabled = false;
+             addToCartPageBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+             if (stockDisplay) {
+                 stockDisplay.classList.remove('text-red-600');
+                 stockDisplay.classList.add('text-green-600');
+             }
+        }
+
+        addToCartPageBtn.addEventListener('click', () => {
+            const quantity = parseInt(document.getElementById('page-quantity-value').value);
+            const errorElement = document.getElementById('page-quantity-error');
+
+            if (isNaN(quantity) || quantity <= 0) {
+                errorElement.textContent = 'Please enter a valid quantity greater than 0.';
+                errorElement.classList.remove('hidden');
+                return;
+            }
+
+            if (quantity > productStock) {
+                errorElement.textContent = `You can only add up to ${productStock} units.`;
+                errorElement.classList.remove('hidden');
+                return;
+            }
+
+            addToCart(productId, productName, productPrice, productImage, quantity);
+        });
+    }
+});
+
 
 // Function to update item quantity in cart
 function updateCartItemQuantity(productId, newQuantity) {
@@ -142,8 +269,12 @@ function updateCartItemQuantity(productId, newQuantity) {
     const itemIndex = cart.findIndex(item => String(item.id) === String(productId));
 
     if (itemIndex > -1) {
-        if (newQuantity > 0) {
-            cart[itemIndex].quantity = newQuantity;
+        // Ensure newQuantity is at least 1 before updating, unless it's 0 (to remove item)
+        // This prevents the quantity from going below 1 via the minus button.
+        const quantityToSet = Math.max(0, newQuantity); // Allow 0 to enable removal logic below
+
+        if (quantityToSet > 0) {
+            cart[itemIndex].quantity = quantityToSet;
         } else {
             // If newQuantity is 0 or less, remove the item
             cart.splice(itemIndex, 1);
@@ -299,6 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializePasswordToggle();
     // Initialize logout confirmation modal
     initializeLogoutConfirmation();
+    // renderCartItems will be called by cart/index.php if on that page.
 });
 
 // The following functions are for the cart page specifically
@@ -317,6 +449,11 @@ function renderCartItems() {
         cart.forEach(item => {
             const itemTotal = item.price * item.quantity;
             subtotal += itemTotal;
+
+            // Determine if the minus button should be disabled
+            const isMinusDisabled = item.quantity <= 1 ? 'disabled' : '';
+            const minusButtonClasses = item.quantity <= 1 ? 'opacity-50 cursor-not-allowed' : '';
+
             cartHtml += `
                 <div class="flex items-center border-b border-gray-200 py-4">
                     <img src="${item.image || 'https://placehold.co/80x80/e2e8f0/475569?text=No+Image'}" alt="${item.name}" class="w-20 h-20 object-contain rounded-md mr-4">
@@ -325,12 +462,22 @@ function renderCartItems() {
                         <p class="text-gray-600 text-sm">$${item.price.toFixed(2)}</p>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <input type="number"
-                               min="1"
-                               value="${item.quantity}"
-                               data-product-id="${item.id}"
-                               class="w-16 text-center border border-gray-300 rounded-md py-1 quantity-input">
-                        <span class="text-lg font-semibold text-gray-800">$${itemTotal.toFixed(2)}</span>
+                        <!-- Minus button: now includes disabled attribute and classes -->
+                        <button class="quantity-btn p-1 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors ${minusButtonClasses}"
+                                onclick="updateCartItemQuantity(${item.id}, ${item.quantity - 1})"
+                                ${isMinusDisabled}>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6" />
+                            </svg>
+                        </button>
+                        <span class="text-lg font-semibold text-gray-900 w-12 text-center">${item.quantity}</span>
+                        <!-- Plus button: no change needed here -->
+                        <button class="quantity-btn p-1 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors" onclick="updateCartItemQuantity(${item.id}, ${item.quantity + 1})">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m0 0H6" />
+                            </svg>
+                        </button>
+                        <span class="text-lg font-semibold text-gray-800 ml-2">$${itemTotal.toFixed(2)}</span>
                         <button onclick="removeFromCart(${item.id})" class="ml-4 text-red-600 hover:text-red-800">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -346,21 +493,14 @@ function renderCartItems() {
     cartItemsContainer.innerHTML = cartHtml;
     document.getElementById('cart-subtotal').textContent = subtotal.toFixed(2);
 
-    // Attach event listeners to quantity inputs
-    document.querySelectorAll('.quantity-input').forEach(input => {
-        input.addEventListener('change', (event) => {
-            const productId = parseInt(event.target.dataset.productId);
-            const newQuantity = parseInt(event.target.value);
-            updateCartItemQuantity(productId, newQuantity);
-        });
-    });
+    // No need to attach change listeners to quantity inputs as buttons handle updates directly.
 }
 
 
 // --- AI Chat Pop-up Logic (Centralized and Initialized) ---
 let chatHistory = []; // Moved global here
 // Declared globally, initialized inside initializeAiChat
-let chatMessages, userInput, sendButton, chatInputForm; 
+let chatMessages, userInput, sendButton, chatInputForm;
 
 function initializeAiChat() {
     const aiChatFab = document.getElementById('ai-chat-fab');
@@ -377,7 +517,7 @@ function initializeAiChat() {
 
             if (response.ok) {
                 chatContentPlaceholder.innerHTML = htmlContent;
-                
+
                 // Now that content is loaded, get references to its elements
                 chatMessages = document.getElementById('chat-messages');
                 userInput = document.getElementById('user-input');
@@ -390,9 +530,9 @@ function initializeAiChat() {
                     const initialMessage = "Hello! I'm Kraft-E, your PC Build Assistant. Ask me anything about PC components, compatibility, or general build advice!";
                     chatHistory.push({ role: "model", text: initialMessage });
                     // Append this initial message to the displayed chat
-                    appendMessage('model', initialMessage); 
+                    appendMessage('model', initialMessage);
                 }
-                
+
                 // Attach event listeners for chat functionality
                 if (chatInputForm) { // Attach listener to the form to handle submission
                     chatInputForm.addEventListener('submit', (e) => {
@@ -408,7 +548,7 @@ function initializeAiChat() {
                         }
                     });
                 }
-                
+
                 // Ensure chat messages scroll to bottom after content load
                 if (chatMessages) {
                     chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -469,7 +609,7 @@ function appendMessage(role, text) {
 
     const messageDiv = document.createElement('div');
     // Ensure padding for message bubbles directly, not just their container
-    messageDiv.className = `flex items-start ${role === 'user' ? 'justify-end' : ''} p-2`; 
+    messageDiv.className = `flex items-start ${role === 'user' ? 'justify-end' : ''} p-2`;
 
     const avatar = document.createElement('div');
     // Updated avatar colors and added margin for spacing
@@ -479,7 +619,7 @@ function appendMessage(role, text) {
     const textBubble = document.createElement('div');
     // Updated text bubble colors for user message
     textBubble.className = `p-3 rounded-lg max-w-[80%] shadow-sm ${role === 'user' ? 'bg-[--color-primary-orange] text-white ml-auto' : 'bg-gray-200 text-gray-800 mr-auto'} markdown-content`;
-    
+
     if (role === 'model') {
         textBubble.innerHTML = marked.parse(text);
     } else {
@@ -512,7 +652,7 @@ async function sendMessage() {
     sendButton.classList.add('opacity-50', 'cursor-not-allowed');
 
     try {
-        const response = await fetch('/pcbuild/public/ai-chat/api', { 
+        const response = await fetch('/pcbuild/public/ai-chat/api', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -87,7 +87,7 @@
     <?php endif; ?>
 </div>
 
-<!-- Quantity Selection Modal -->
+<!-- Quantity Selection Modal for products/index.php -->
 <div id="quantity-modal" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4 hidden z-50 transition-opacity duration-300 opacity-0">
     <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm transform scale-95 opacity-0 transition-all duration-300">
         <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">Add to Cart</h3>
@@ -97,11 +97,20 @@
             <p id="modal-product-price" class="text-lg text-[--color-primary-orange] mb-2"></p>
             <p id="modal-product-stock" class="text-sm text-gray-600"></p>
         </div>
-        <div class="mb-6">
-            <label for="quantity-input" class="block text-gray-700 text-sm font-bold mb-2">Quantity:</label>
-            <input type="number" id="quantity-input" min="1" value="1"
-                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-[--color-primary-orange]">
-            <p id="quantity-error" class="text-red-500 text-xs italic mt-2 hidden">Please enter a valid quantity.</p>
+        <div class="mb-6 flex items-center justify-center space-x-3">
+            <button id="modal-quantity-minus" class="quantity-btn p-2 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6" />
+                </svg>
+            </button>
+            <span id="modal-quantity-display" class="text-2xl font-bold text-gray-900 w-16 text-center">1</span>
+            <button id="modal-quantity-plus" class="quantity-btn p-2 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m0 0H6" />
+                </svg>
+            </button>
+            <input type="hidden" id="quantity-input" value="1"> <!-- Hidden input to store actual value for JS -->
+            <p id="quantity-error" class="text-red-500 text-xs italic mt-2 hidden absolute bottom-12"></p>
         </div>
         <div class="flex justify-end space-x-3">
             <button id="cancel-quantity" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md transition-colors">
