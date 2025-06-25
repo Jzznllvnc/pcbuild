@@ -1,5 +1,5 @@
-<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg mt-40 mb-8 max-w-4xl">
-<h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center">My Orders</h1>
+<div class="container mx-auto p-8 pt-20 bg-white shadow-lg rounded-lg mt-40 mb-8 max-w-4xl">
+<h1 class="text-4xl font-extrabold text-gray-900 mb-10 text-center">My Orders</h1>
     
     <?php if (empty($orders)): ?>
         <div class="text-center py-12 bg-gray-50 rounded-lg border border-gray-200 shadow-md">

@@ -1,7 +1,7 @@
-<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg mt-40 mb-24 max-w-5xl">
+<div class="container mx-auto p-8 pt-20 bg-white shadow-lg rounded-lg mt-40 mb-24 max-w-5xl">
     <h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center"><?php echo htmlspecialchars($title); ?></h1>
 
-    <p class="text-center text-gray-700 mb-10 text-lg">Select your desired PC components below and click "Get Build Rating" to see how well they perform together!</p>
+    <p class="text-center text-gray-700 mb-20 text-lg">Select your desired PC components below and click "Get Build Rating" to see how well they perform together!</p>
 
     <form id="build-form" class="space-y-8">
         <?php
