@@ -1,7 +1,7 @@
 <div class="container mx-auto p-8 pb-10 pt-20 bg-white shadow-lg rounded-lg mt-40 mb-40 max-w-4xl">
     <h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center"><?php echo htmlspecialchars($title); ?></h1>
 
-    <p class="text-center text-xl text-gray-700 mb-10">Welcome to the Admin Dashboard, <span class="font-semibold text-[--color-primary-orange]"><?php echo htmlspecialchars($username); ?></span>!</p>
+    <p class="text-center text-xl text-gray-700 mb-10">Welcome back! Admin <span class="font-semibold text-[--color-primary-orange]"><?php echo htmlspecialchars($username); ?></span></p>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <a href="/pcbuild/public/admin/products" class="p-6 bg-[--color-light-bg] border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 hover:shadow-lg transition-all duration-200 flex flex-col items-center justify-center text-center">
