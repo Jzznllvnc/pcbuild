@@ -8,7 +8,7 @@
     </div>
 
     <?php if (isset($order) && $order): ?>
-        <p class="text-gray-700 text-lg mb-4">Your order #<span class="font-bold text-[--color-dark-blue]"><?php echo htmlspecialchars($order['id']); ?></span> has been placed successfully.</p>
+        <p class="text-gray-700 text-lg mb-4">Your order has been placed successfully.</p>
         <p class="text-gray-600 mb-2">Total Amount: <span class="font-bold text-gray-800">$<?php echo number_format($order['total_amount'], 2); ?></span></p>
         <p class="text-gray-600 mb-2">Payment Method: <span class="font-bold text-gray-800"><?php echo htmlspecialchars($order['payment_method']); ?></span></p>
         <p class="text-gray-600 mb-6">Order Date: <span class="font-bold text-gray-800"><?php echo date('F j, Y, g:i a', strtotime($order['order_date'])); ?></span></p>

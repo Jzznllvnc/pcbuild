@@ -41,15 +41,14 @@ class Product
 
         // Build parameters first
         if (!empty($category)) {
-            $params[':category'] = $category;
             $whereClauses[] = "category = :category";
+            $params[':category'] = $category;
         }
 
         if (!empty($search)) {
-            // Use distinct parameters for multiple LIKE conditions
+            $whereClauses[] = "(name LIKE :search_name OR description LIKE :search_description)";
             $params[':search_name'] = '%' . $search . '%';
             $params[':search_description'] = '%' . $search . '%';
-            $whereClauses[] = "(name LIKE :search_name OR description LIKE :search_description)";
         }
 
         // Only append WHERE clause if conditions exist
@@ -57,23 +56,24 @@ class Product
             $query .= " WHERE " . implode(" AND ", $whereClauses);
         }
 
-        $query .= " LIMIT :limit OFFSET :offset";
+        $query .= " ORDER BY id ASC LIMIT :limit OFFSET :offset"; // Added ORDER BY id for consistent results
 
         $stmt = $this->pdo->prepare($query);
 
-        // Merge all parameters (including limit and offset) for execution
-        $executeParams = $params;
-        $executeParams[':limit'] = $limit;
-        $executeParams[':offset'] = $offset;
+        // Bind parameters
+        foreach ($params as $key => $val) {
+            $stmt->bindValue($key, $val);
+        }
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 
-        $stmt->execute($executeParams);
+        $stmt->execute();
         
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
      * Get products filtered by a specific category.
-     * This is a new method added to support the BuildController.
      *
      * @param string $category The category to filter products by.
      * @return array A list of product data as associative arrays.
@@ -101,15 +101,14 @@ class Product
 
         // Build parameters first
         if (!empty($category)) {
-            $params[':category'] = $category;
             $whereClauses[] = "category = :category";
+            $params[':category'] = $category;
         }
 
         if (!empty($search)) {
-            // Use distinct parameters for multiple LIKE conditions
+            $whereClauses[] = "(name LIKE :search_name OR description LIKE :search_description)";
             $params[':search_name'] = '%' . $search . '%';
             $params[':search_description'] = '%' . $search . '%';
-            $whereClauses[] = "(name LIKE :search_name OR description LIKE :search_description)";
         }
 
         // Only append WHERE clause if conditions exist
@@ -118,9 +117,106 @@ class Product
         }
 
         $stmt = $this->pdo->prepare($query);
-        // Execute with parameters. If $params is empty, it's equivalent to execute().
+        // Execute with parameters.
         $stmt->execute($params); 
         
         return (int)$stmt->fetchColumn();
+    }
+
+
+    /**
+     * Creates a new product in the database.
+     *
+     * @param string $name
+     * @param string $description
+     * @param float $price
+     * @param string $image_url
+     * @param string $category
+     * @param int $stock
+     * @return int|false The ID of the newly created product, or false on failure.
+     */
+    public function createProduct($name, $description, $price, $image_url, $category, $stock)
+    {
+        try {
+            $query = "INSERT INTO " . $this->table_name . " (name, description, price, image_url, category, stock) VALUES (:name, :description, :price, :image_url, :category, :stock)";
+            $stmt = $this->pdo->prepare($query);
+
+            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':description', $description);
+            $stmt->bindParam(':price', $price);
+            $stmt->bindParam(':image_url', $image_url);
+            $stmt->bindParam(':category', $category);
+            $stmt->bindParam(':stock', $stock);
+
+            $stmt->execute();
+            return $this->pdo->lastInsertId();
+        } catch (PDOException $e) {
+            error_log("Product Model Error: createProduct failed: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Updates an existing product in the database.
+     *
+     * @param int $id The product ID.
+     * @param string $name
+     * @param string $description
+     * @param float $price
+     * @param string $image_url
+     * @param string $category
+     * @param int $stock
+     * @return bool True on success, false if no rows affected or on error.
+     */
+    public function updateProduct($id, $name, $description, $price, $image_url, $category, $stock)
+    {
+        try {
+            $query = "UPDATE " . $this->table_name . " SET name = :name, description = :description, price = :price, image_url = :image_url, category = :category, stock = :stock WHERE id = :id";
+            $stmt = $this->pdo->prepare($query);
+
+            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':description', $description);
+            $stmt->bindParam(':price', $price);
+            $stmt->bindParam(':image_url', $image_url);
+            $stmt->bindParam(':category', $category);
+            $stmt->bindParam(':stock', $stock);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+            $stmt->execute();
+            return $stmt->rowCount() > 0; // Returns true if at least one row was updated
+        } catch (PDOException $e) {
+            error_log("Product Model Error: updateProduct failed: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Deletes a product from the database.
+     * Added logic to check for references in `order_items` before deletion.
+     *
+     * @param int $id The product ID.
+     * @return bool|string True on successful deletion, false on general failure, 'referenced' if linked to orders.
+     */
+    public function deleteProduct($id)
+    {
+        try {
+            // Check if product is referenced in order_items
+            $stmtCheck = $this->pdo->prepare("SELECT COUNT(*) FROM order_items WHERE product_id = :id");
+            $stmtCheck->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmtCheck->execute();
+            if ($stmtCheck->fetchColumn() > 0) {
+                return 'referenced'; // Product is part of existing orders, cannot delete
+            }
+
+            $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            
+            $stmt->execute();
+            return $stmt->rowCount() > 0; // True if deleted, false if not found
+        } catch (PDOException $e) {
+            error_log("Product Model Error: deleteProduct failed: " . $e->getMessage());
+            return false;
+        }
     }
 }

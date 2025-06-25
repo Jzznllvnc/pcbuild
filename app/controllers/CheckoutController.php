@@ -155,11 +155,10 @@ class CheckoutController extends BaseController
 
         if ($paymentSuccess) {
             // Prepare all order details to pass to the model
-            $orderDetails = [
+            $orderDataForCreation = [ // Renamed for clarity to avoid conflict with $orderDetails in the model.
                 'user_id' => $userId,
                 'total_amount' => $totalAmount,
                 'payment_method' => $paymentMethod,
-                'cart_items' => $cartItems, // Array of cart items
                 'shipping_info' => [
                     'first_name' => $firstName,
                     'last_name' => $lastName,
@@ -177,12 +176,21 @@ class CheckoutController extends BaseController
                 ]
             ];
 
-            // You will need to modify your Order model's createOrder method
-            // to accept and store these new shipping_info details.
-            // For now, I'm just passing them as an array.
-            $orderId = $this->orderModel->createOrder($orderDetails); // Modified to accept structured data
+            $orderId = $this->orderModel->createOrder($orderDataForCreation); // Pass the entire array
 
             if ($orderId) {
+                // Now add cart items to the order
+                $successAddItems = $this->orderModel->addOrderItems($orderId, $cartItems);
+
+                if (!$successAddItems) {
+                    // If order items fail to save, you might want to log this and potentially
+                    // mark the order as problematic or even delete the main order entry.
+                    error_log("CheckoutController: Failed to add order items for Order ID: {$orderId}");
+                    $_SESSION['error'] = 'Your order was placed, but there was an issue saving cart items. Please contact support.';
+                    header('Location: /pcbuild/public/checkout');
+                    exit();
+                }
+
                 $_SESSION['last_order_id'] = $orderId; // Store order ID for success page
                 header('Location: /pcbuild/public/checkout/success');
                 exit();
@@ -215,7 +223,7 @@ class CheckoutController extends BaseController
         $order = null;
         if ($orderId) {
             // Assuming getOrderById can fetch comprehensive order details including shipping and items
-            $order = $this->orderModel->getOrderById($orderId);
+            $order = $this->orderModel->getOrderById($orderId); // Added this method to Order model
         }
 
         $data = [

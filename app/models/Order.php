@@ -10,180 +10,138 @@ class Order
     }
 
     /**
-     * Saves a new order and its items to the database.
-     * Now accepts a structured $orderDetails array.
+     * Creates a new order in the database.
      *
-     * @param array $orderDetails An associative array containing:
-     * - 'user_id': int|null The ID of the user, or null for guest orders.
-     * - 'total_amount': float The total amount of the order.
-     * - 'payment_method': string The selected payment method.
-     * - 'cart_items': array An array of associative arrays, each representing a cart item.
-     * - 'shipping_info': array An array of shipping details including:
-     * - 'first_name', 'last_name', 'email', 'country_code', 'mobile_number',
-     * - 'address', 'city', 'state', 'zip_code', 'notes',
-     * - 'shipping_method', 'shipping_cost', 'payment_mobile_number'
-     *
+     * @param array $orderDetails Associative array containing all order details.
+     * Expected keys: user_id, total_amount, payment_method, shipping_method, shipping_cost,
+     * first_name, last_name, email, country_code, shipping_mobile_number, address, city, state, zip_code, notes, payment_mobile_number.
      * @return int|false The ID of the newly created order, or false on failure.
      */
-    public function createOrder(array $orderDetails)
+    public function createOrder($orderDetails) // Modified to accept a single array
     {
         try {
-            // Start a transaction to ensure atomicity
-            $this->pdo->beginTransaction();
-
-            // Destructure order details for easier access
-            $userId = $orderDetails['user_id'] ?? null;
-            $totalAmount = $orderDetails['total_amount'];
-            $paymentMethod = $orderDetails['payment_method'];
-            $cartItems = $orderDetails['cart_items'];
-            $shippingInfo = $orderDetails['shipping_info'];
-
-            // 1. Insert into orders table
-            // IMPORTANT: You MUST add these columns to your 'orders' table in your database
-            // (e.g., first_name, last_name, email, country_code, shipping_mobile_number, address,
-            // city, state, zip_code, notes, shipping_method, shipping_cost, payment_mobile_number)
-            $stmt = $this->pdo->prepare("
-                INSERT INTO orders (
-                    user_id, total_amount, payment_method,
-                    first_name, last_name, email, country_code, shipping_mobile_number,
-                    address, city, state, zip_code, notes,
-                    shipping_method, shipping_cost, payment_mobile_number
-                ) VALUES (
-                    :user_id, :total_amount, :payment_method,
-                    :first_name, :last_name, :email, :country_code, :shipping_mobile_number,
-                    :address, :city, :state, :zip_code, :notes,
-                    :shipping_method, :shipping_cost, :payment_mobile_number
-                )
-            ");
+            $stmt = $this->pdo->prepare("INSERT INTO orders (user_id, total_amount, payment_method, shipping_method, shipping_cost, first_name, last_name, email, country_code, shipping_mobile_number, address, city, state, zip_code, notes, payment_mobile_number) VALUES (:user_id, :total_amount, :payment_method, :shipping_method, :shipping_cost, :first_name, :last_name, :email, :country_code, :shipping_mobile_number, :address, :city, :state, :zip_code, :notes, :payment_mobile_number)");
 
             $stmt->execute([
-                ':user_id' => $userId,
-                ':total_amount' => $totalAmount,
-                ':payment_method' => $paymentMethod,
-                ':first_name' => $shippingInfo['first_name'],
-                ':last_name' => $shippingInfo['last_name'],
-                ':email' => $shippingInfo['email'],
-                ':country_code' => $shippingInfo['country_code'],
-                ':shipping_mobile_number' => $shippingInfo['mobile_number'], // Store shipping-specific mobile number
-                ':address' => $shippingInfo['address'],
-                ':city' => $shippingInfo['city'],
-                ':state' => $shippingInfo['state'],
-                ':zip_code' => $shippingInfo['zip_code'],
-                ':notes' => $shippingInfo['notes'],
-                ':shipping_method' => $shippingInfo['shipping_method'],
-                ':shipping_cost' => $shippingInfo['shipping_cost'],
-                ':payment_mobile_number' => $shippingInfo['payment_mobile_number'] // Store payment-specific mobile number
+                ':user_id' => $orderDetails['user_id'],
+                ':total_amount' => $orderDetails['total_amount'],
+                ':payment_method' => $orderDetails['payment_method'],
+                ':shipping_method' => $orderDetails['shipping_info']['shipping_method'], // Access nested array
+                ':shipping_cost' => $orderDetails['shipping_info']['shipping_cost'],   // Access nested array
+                ':first_name' => $orderDetails['shipping_info']['first_name'],
+                ':last_name' => $orderDetails['shipping_info']['last_name'],
+                ':email' => $orderDetails['shipping_info']['email'],
+                ':country_code' => $orderDetails['shipping_info']['country_code'],
+                ':shipping_mobile_number' => $orderDetails['shipping_info']['mobile_number'],
+                ':address' => $orderDetails['shipping_info']['address'],
+                ':city' => $orderDetails['shipping_info']['city'],
+                ':state' => $orderDetails['shipping_info']['state'],
+                ':zip_code' => $orderDetails['shipping_info']['zip_code'],
+                ':notes' => $orderDetails['shipping_info']['notes'],
+                ':payment_mobile_number' => $orderDetails['shipping_info']['payment_mobile_number']
             ]);
-            $orderId = $this->pdo->lastInsertId();
-
-            if (!$orderId) {
-                throw new Exception("Failed to create order in 'orders' table.");
-            }
-
-            // 2. Insert into order_items table for each cart item
-            $stmtItems = $this->pdo->prepare("INSERT INTO order_items (order_id, product_id, product_name, quantity, price_at_purchase) VALUES (:order_id, :product_id, :product_name, :quantity, :price_at_purchase)");
-
-            foreach ($cartItems as $item) {
-                $stmtItems->execute([
-                    ':order_id' => $orderId,
-                    ':product_id' => $item['id'],
-                    ':product_name' => $item['name'],
-                    ':quantity' => $item['quantity'],
-                    ':price_at_purchase' => $item['price']
-                ]);
-            }
-
-            // Commit the transaction
-            $this->pdo->commit();
-
-            return $orderId;
-
-        } catch (Exception $e) {
-            // Rollback on error
-            if ($this->pdo->inTransaction()) {
-                $this->pdo->rollBack();
-            }
+            return $this->pdo->lastInsertId();
+        } catch (PDOException $e) {
             error_log("Order Model Error: createOrder failed: " . $e->getMessage());
             return false;
         }
     }
 
     /**
-     * Fetches an order by its ID, including its items and shipping details.
-     * NOW INCLUDES product_image_url for each item.
-     * @param int $orderId The ID of the order to fetch.
-     * @return array|false The order details with nested items, or false if not found.
+     * Adds items to a specific order.
+     *
+     * @param int $orderId
+     * @param array $items An array of arrays, each with product_id, product_name, quantity, price_at_purchase.
+     * @return bool True on success, false on failure.
      */
-    public function getOrderById($orderId)
+    public function addOrderItems($orderId, $items)
     {
         try {
-            // Fetch order details, including new shipping columns
-            $stmtOrder = $this->pdo->prepare("
-                SELECT o.*, u.username 
-                FROM orders o 
-                LEFT JOIN users u ON o.user_id = u.id 
-                WHERE o.id = :order_id LIMIT 1
-            "); // Assuming 'shipping_info' columns are in 'orders' table
-            $stmtOrder->execute([':order_id' => $orderId]);
-            $order = $stmtOrder->fetch(PDO::FETCH_ASSOC); // Fetch as associative array
+            $this->pdo->beginTransaction();
+            $stmt = $this->pdo->prepare("INSERT INTO order_items (order_id, product_id, product_name, quantity, price_at_purchase) VALUES (:order_id, :product_id, :product_name, :quantity, :price_at_purchase)");
 
-            if (!$order) {
-                return false;
+            foreach ($items as $item) {
+                $stmt->execute([
+                    ':order_id' => $orderId,
+                    ':product_id' => $item['id'], // Use 'id' from the cart item structure
+                    ':product_name' => $item['name'], // Use 'name' from the cart item structure
+                    ':quantity' => $item['quantity'],
+                    ':price_at_purchase' => $item['price'] // Use 'price' from the cart item structure
+                ]);
             }
-
-            // Fetch order items, now joining with products to get image_url
-            $stmtItems = $this->pdo->prepare("
-                SELECT oi.*, p.image_url 
-                FROM order_items oi
-                JOIN products p ON oi.product_id = p.id
-                WHERE oi.order_id = :order_id
-            ");
-            $stmtItems->execute([':order_id' => $orderId]);
-            $order['items'] = $stmtItems->fetchAll(PDO::FETCH_ASSOC); // Fetch as associative array
-
-            return $order;
-
+            return $this->pdo->commit();
         } catch (PDOException $e) {
-            error_log("Order Model Error: getOrderById failed: " . $e->getMessage());
+            $this->pdo->rollBack();
+            error_log("Order Model Error: addOrderItems failed: " . $e->getMessage());
             return false;
         }
     }
 
     /**
-     * Fetches all orders for a specific user ID, including their items.
-     * NOW INCLUDES product_image_url for each item.
+     * Retrieves all orders for a given user ID, including their items.
+     *
      * @param int $userId The ID of the user.
-     * @return array An array of orders, each with its items.
+     * @return array An array of orders, with each order containing its items.
      */
     public function getOrdersByUserId($userId)
     {
+        $orders = [];
         try {
-            // Fetch all orders for the user
-            $stmtOrders = $this->pdo->prepare("
-                SELECT * FROM orders 
-                WHERE user_id = :user_id 
-                ORDER BY order_date DESC
-            ");
+            // Fetch orders for the user
+            $stmtOrders = $this->pdo->prepare("SELECT * FROM orders WHERE user_id = :user_id ORDER BY order_date DESC");
             $stmtOrders->execute([':user_id' => $userId]);
-            $orders = $stmtOrders->fetchAll(PDO::FETCH_ASSOC); // Fetch as associative array
+            $rawOrders = $stmtOrders->fetchAll(PDO::FETCH_ASSOC);
 
-            // For each order, fetch its items, joining with products to get image_url
-            foreach ($orders as &$order) { // Use & to modify array by reference
-                $stmtItems = $this->pdo->prepare("
-                    SELECT oi.*, p.image_url 
-                    FROM order_items oi
-                    JOIN products p ON oi.product_id = p.id
-                    WHERE oi.order_id = :order_id
-                ");
-                $stmtItems->execute([':order_id' => $order['id']]);
-                $order['items'] = $stmtItems->fetchAll(PDO::FETCH_ASSOC); // Fetch as associative array
+            foreach ($rawOrders as $order) {
+                // For each order, fetch its items
+                $order['items'] = $this->getOrderItemsByOrderId($order['id']);
+                $orders[] = $order;
             }
-
-            return $orders;
-
         } catch (PDOException $e) {
             error_log("Order Model Error: getOrdersByUserId failed: " . $e->getMessage());
-            return [];
+        }
+        return $orders;
+    }
+
+    /**
+     * Retrieves all items for a given order ID.
+     *
+     * @param int $orderId The ID of the order.
+     * @return array An array of order items.
+     */
+    public function getOrderItemsByOrderId($orderId)
+    {
+        $items = [];
+        try {
+            $stmtItems = $this->pdo->prepare("SELECT oi.*, p.image_url FROM order_items oi JOIN products p ON oi.product_id = p.id WHERE oi.order_id = :order_id");
+            $stmtItems->execute([':order_id' => $orderId]);
+            $items = $stmtItems->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Order Model Error: getOrderItemsByOrderId failed: " . $e->getMessage());
+        }
+        return $items;
+    }
+
+    /**
+     * Retrieves a single order by its ID, including its items.
+     *
+     * @param int $orderId The ID of the order to retrieve.
+     * @return array|false The order data as an associative array, including its items, or false if not found.
+     */
+    public function getOrderById($orderId)
+    {
+        try {
+            $stmtOrder = $this->pdo->prepare("SELECT * FROM orders WHERE id = :order_id LIMIT 1");
+            $stmtOrder->execute([':order_id' => $orderId]);
+            $order = $stmtOrder->fetch(PDO::FETCH_ASSOC);
+
+            if ($order) {
+                $order['items'] = $this->getOrderItemsByOrderId($orderId);
+            }
+            return $order;
+        } catch (PDOException $e) {
+            error_log("Order Model Error: getOrderById failed: " . $e->getMessage());
+            return false;
         }
     }
 }

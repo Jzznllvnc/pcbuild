@@ -1,32 +1,30 @@
 <?php
 
 require_once BASE_PATH . 'app/controllers/BaseController.php';
+require_once BASE_PATH . 'app/models/Product.php';
+require_once BASE_PATH . 'app/models/User.php';
+require_once BASE_PATH . 'app/models/Order.php';
 
 class AdminController extends BaseController
 {
     protected $productModel;
     protected $userModel;
+    protected $orderModel;
 
     public function __construct(PDO $pdo)
     {
         parent::__construct($pdo);
         $this->productModel = new Product($pdo);
-        $this->userModel = new User($pdo); // Initialize User model
-        $this->authorizeAdmin(); // Authorize admin on every admin page access
-    }
+        $this->userModel = new User($pdo);
+        $this->orderModel = new Order($pdo);
 
-    /**
-     * Authorizes admin access. Redirects to login if not admin.
-     */
-    protected function authorizeAdmin()
-    {
+        // Ensure only admins can access these pages
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
-
-        if (!isset($_SESSION['user_id']) || !isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
-            $_SESSION['error'] = 'Access denied. You must be an administrator.';
-            header('Location: /pcbuild/public/login');
+        if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
+            $_SESSION['error'] = 'Access denied. You must be an administrator to access this section.';
+            header('Location: /pcbuild/public/login'); // Redirect non-admins to login
             exit();
         }
     }
@@ -37,8 +35,7 @@ class AdminController extends BaseController
     public function dashboard()
     {
         $data = [
-            'title' => 'Admin Dashboard',
-            'username' => $_SESSION['username'] ?? 'Admin' // Should be set by authorizeAdmin
+            'title' => 'Admin Dashboard'
         ];
         $this->view('admin/dashboard', $data);
     }
@@ -46,10 +43,9 @@ class AdminController extends BaseController
     /**
      * Lists all products for admin management.
      */
-    public function listProducts()
+    public function products() // Method renamed from listProducts to products
     {
         // Use getProducts with large limits and offset 0 to fetch all products for admin view
-        // Alternatively, if you prefer a dedicated method, add getAllProducts() to the Product model.
         $products = $this->productModel->getProducts(1000, 0); // Fetch up to 1000 products, assuming that's "all" for practical purposes
 
         $data = [
@@ -67,7 +63,7 @@ class AdminController extends BaseController
     /**
      * Displays the form to create a new product.
      */
-    public function createProductForm()
+    public function createProductForm() // Renamed for clarity (GET request)
     {
         $data = [
             'title' => 'Add New Product',
@@ -80,7 +76,7 @@ class AdminController extends BaseController
     /**
      * Handles the submission of the new product form.
      */
-    public function createProduct()
+    public function createProduct() // This handles the POST request
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $_SESSION['error'] = 'Invalid request.';
@@ -110,7 +106,15 @@ class AdminController extends BaseController
         }
 
 
-        $productId = $this->productModel->createProduct($data);
+        $productId = $this->productModel->createProduct(
+            $data['name'],
+            $data['description'],
+            $data['price'],
+            $data['image_url'],
+            $data['category'],
+            $data['stock']
+        );
+
 
         if ($productId) {
             $_SESSION['success'] = 'Product "' . htmlspecialchars($data['name']) . '" added successfully!';
@@ -127,7 +131,7 @@ class AdminController extends BaseController
      * Displays the form to edit an existing product.
      * @param int $id Product ID.
      */
-    public function editProductForm($id)
+    public function editProductForm($id) // Renamed for clarity (GET request)
     {
         $product = $this->productModel->getProductById($id);
         if (!$product) {
@@ -149,7 +153,7 @@ class AdminController extends BaseController
      * Handles the submission of the edit product form.
      * @param int $id Product ID.
      */
-    public function updateProduct($id)
+    public function updateProduct($id) // This handles the POST request
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $_SESSION['error'] = 'Invalid request.';
@@ -178,7 +182,15 @@ class AdminController extends BaseController
              exit();
         }
 
-        $updated = $this->productModel->updateProduct($id, $data);
+        $updated = $this->productModel->updateProduct(
+            $id,
+            $data['name'],
+            $data['description'],
+            $data['price'],
+            $data['image_url'],
+            $data['category'],
+            $data['stock']
+        );
 
         if ($updated) {
             $_SESSION['success'] = 'Product "' . htmlspecialchars($data['name']) . '" updated successfully!';
@@ -214,5 +226,137 @@ class AdminController extends BaseController
         }
         header('Location: /pcbuild/public/admin/products');
         exit();
+    }
+
+
+    // User Management Methods
+
+    /**
+     * Displays the list of users.
+     * @param string|null $search_term Optional search term from URL path.
+     */
+    public function manageUsers($search_term = null) // Added $search_term parameter
+    {
+        $searchTerm = $_GET['search'] ?? $search_term ?? ''; // Prioritize GET, then path param
+        $searchTerm = trim($searchTerm);
+
+        $users = $this->userModel->getAllUsers($searchTerm);
+
+        $data = [
+            'title' => 'Manage Users',
+            'users' => $users,
+            'searchTerm' => $searchTerm,
+            'error' => $_SESSION['error'] ?? null,
+            'success' => $_SESSION['success'] ?? null,
+        ];
+        unset($_SESSION['error']);
+        unset($_SESSION['success']);
+
+        $this->view('admin/users/index', $data);
+    }
+
+    /**
+     * Toggles the ban status of a user.
+     * @param int $userId The ID of the user to ban/unban.
+     */
+    public function toggleUserBan($userId)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $_SESSION['error'] = 'Invalid request method for user ban toggle.';
+            header('Location: /pcbuild/public/admin/users');
+            exit();
+        }
+
+        $user = $this->userModel->findById($userId);
+
+        if (!$user) {
+            $_SESSION['error'] = 'User not found.';
+            header('Location: /pcbuild/public/admin/users');
+            exit();
+        }
+
+        // Prevent banning/deleting oneself if user_id is the current admin's ID
+        if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $userId) {
+            $_SESSION['error'] = 'You cannot ban or delete your own admin account.';
+            header('Location: /pcbuild/public/admin/users');
+            exit();
+        }
+
+        if ($user['is_banned']) {
+            if ($this->userModel->unbanUser($userId)) {
+                $_SESSION['success'] = 'User ' . htmlspecialchars($user['username']) . ' has been unbanned.';
+            } else {
+                $_SESSION['error'] = 'Failed to unban user ' . htmlspecialchars($user['username']) . '.';
+            }
+        } else {
+            if ($this->userModel->banUser($userId)) {
+                $_SESSION['success'] = 'User ' . htmlspecialchars($user['username']) . ' has been banned.';
+            } else {
+                $_SESSION['error'] = 'Failed to ban user ' . htmlspecialchars($user['username']) . '.';
+            }
+        }
+
+        header('Location: /pcbuild/public/admin/users');
+        exit();
+    }
+
+    /**
+     * Deletes a user account.
+     * @param int $userId The ID of the user to delete.
+     */
+    public function deleteUserAccount($userId)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $_SESSION['error'] = 'Invalid request method for user deletion.';
+            header('Location: /pcbuild/public/admin/users');
+            exit();
+        }
+
+        $user = $this->userModel->findById($userId);
+
+        if (!$user) {
+            $_SESSION['error'] = 'User not found.';
+            header('Location: /pcbuild/public/admin/users');
+            exit();
+        }
+
+        // Prevent banning/deleting oneself if user_id is the current admin's ID
+        if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $userId) {
+            $_SESSION['error'] = 'You cannot ban or delete your own admin account.';
+            header('Location: /pcbuild/public/admin/users');
+            exit();
+        }
+
+        if ($this->userModel->deleteUser($userId)) {
+            $_SESSION['success'] = 'User ' . htmlspecialchars($user['username']) . ' and all associated data have been deleted.';
+        } else {
+            $_SESSION['error'] = 'Failed to delete user ' . htmlspecialchars($user['username']) . '.';
+        }
+
+        header('Location: /pcbuild/public/admin/users');
+        exit();
+    }
+
+    /**
+     * Displays a user's order history.
+     * @param int $userId The ID of the user whose orders to display.
+     */
+    public function viewUserOrders($userId)
+    {
+        $user = $this->userModel->findById($userId);
+        if (!$user) {
+            $_SESSION['error'] = 'User not found.';
+            header('Location: /pcbuild/public/admin/users');
+            exit();
+        }
+
+        $orders = $this->orderModel->getOrdersByUserId($userId);
+
+        $data = [
+            'title' => 'Order History for ' . htmlspecialchars($user['username']),
+            'user' => $user,
+            'orders' => $orders
+        ];
+        $this->view('admin/users/orders', $data);
     }
 }

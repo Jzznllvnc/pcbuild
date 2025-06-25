@@ -148,7 +148,7 @@ function openQuantityModal(product) {
     }
 
     // Show modal with animation
-    quantityModal.classList.remove('hidden');
+    quantityModal.classList.remove('hidden', 'pointer-events-none');
     setTimeout(() => {
         quantityModal.classList.add('opacity-100');
         quantityModal.querySelector('div').classList.remove('scale-95', 'opacity-0');
@@ -162,7 +162,7 @@ function closeQuantityModal() {
     quantityModal.querySelector('div').classList.remove('scale-100', 'opacity-100');
     quantityModal.querySelector('div').classList.add('scale-95', 'opacity-0');
     quantityModal.addEventListener('transitionend', () => {
-        quantityModal.classList.add('hidden');
+        quantityModal.classList.add('hidden', 'pointer-events-none');
     }, { once: true });
     currentProduct = null; // Clear current product data
     modalQuantityError.classList.add('hidden'); // Hide any errors on close
@@ -430,8 +430,11 @@ document.addEventListener('DOMContentLoaded', () => {
     initializePasswordToggle();
     // Initialize logout confirmation modal
     initializeLogoutConfirmation();
+    // NEW: Initialize custom confirmation modals
+    initializeConfirmationModals(); // Call new initializer
     // renderCartItems will be called by cart/index.php if on that page.
 });
+
 
 // The following functions are for the cart page specifically
 // They will only run if the element #cart-items-container exists
@@ -462,19 +465,17 @@ function renderCartItems() {
                         <p class="text-gray-600 text-sm">$${item.price.toFixed(2)}</p>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <!-- Minus button: now includes disabled attribute and classes -->
                         <button class="quantity-btn p-1 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors ${minusButtonClasses}"
                                 onclick="updateCartItemQuantity(${item.id}, ${item.quantity - 1})"
                                 ${isMinusDisabled}>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
                             </svg>
                         </button>
                         <span class="text-lg font-semibold text-gray-900 w-12 text-center">${item.quantity}</span>
-                        <!-- Plus button: no change needed here -->
                         <button class="quantity-btn p-1 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors" onclick="updateCartItemQuantity(${item.id}, ${item.quantity + 1})">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m0 0H6" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m0 0H6" />
                             </svg>
                         </button>
                         <span class="text-lg font-semibold text-gray-800 ml-2">$${itemTotal.toFixed(2)}</span>
@@ -487,7 +488,7 @@ function renderCartItems() {
                 </div>
             `;
         });
-        document.getElementById('checkout-section').classList.remove('hidden'); // Show checkout if items exist
+        document.getElementById('checkout-section').classList.remove('hidden'); // Hide checkout if cart is empty
     }
 
     cartItemsContainer.innerHTML = cartHtml;
@@ -559,8 +560,8 @@ function initializeAiChat() {
                 console.error('Failed to fetch AI chat content:', htmlContent);
             }
         } catch (error) {
-            chatContentPlaceholder.innerHTML = `<p class="text-center text-red-600 py-8">Error loading AI Chat content.`;
-            console.error('Error loading AI chat content:', error);
+            alertMessage('error', 'Could not connect to the AI assistant.');
+            console.error('Fetch error:', error);
         }
     }
 
@@ -644,7 +645,7 @@ async function sendMessage() {
     if (prompt === '') return;
 
     appendMessage('user', prompt);
-    chatHistory.push({ role: "user", text: prompt });
+    chatHistory.push({ role: "model", text: prompt });
     userInput.value = '';
 
     sendButton.disabled = true;
@@ -667,11 +668,11 @@ async function sendMessage() {
             appendMessage('model', aiResponse);
             chatHistory.push({ role: "model", text: aiResponse });
         } else {
-            appendMessage('model', `Error: ${data.error || 'Something went wrong.'}`);
+            alertMessage('error', `AI Service error: ${data.error || 'Something went wrong.'}`);
             console.error('AI API Error:', data.error);
         }
     } catch (error) {
-        appendMessage('model', 'Error: Could not connect to the AI assistant.');
+        alertMessage('error', 'Could not connect to the AI assistant.');
         console.error('Fetch error:', error);
     } finally {
         sendButton.disabled = false;
@@ -682,50 +683,17 @@ async function sendMessage() {
 }
 
 // --- Logout Confirmation Modal Logic ---
-function initializeLogoutConfirmation() {
-    const logoutButton = document.getElementById('logout-button');
-    const logoutModal = document.getElementById('logout-confirmation-modal');
-    const confirmLogoutBtn = document.getElementById('confirm-logout-btn');
-    const cancelLogoutBtn = document.getElementById('cancel-logout-btn');
-
-    if (logoutButton) {
-        logoutButton.addEventListener('click', (e) => {
-            e.preventDefault(); // Prevent default link behavior
-            showLogoutConfirmation();
-        });
-    }
-
-    if (confirmLogoutBtn) {
-        confirmLogoutBtn.addEventListener('click', () => {
-            window.location.href = '/pcbuild/public/logout'; // Redirect to actual logout URL
-        });
-    }
-
-    if (cancelLogoutBtn) {
-        cancelLogoutBtn.addEventListener('click', () => {
-            hideLogoutConfirmation();
-        });
-    }
-
-    // Close modal if clicked outside (on the overlay)
-    if (logoutModal) {
-        logoutModal.addEventListener('click', (e) => {
-            if (e.target === logoutModal) {
-                hideLogoutConfirmation();
-            }
-        });
-    }
-}
-
 function showLogoutConfirmation() {
     const logoutModal = document.getElementById('logout-confirmation-modal');
     if (logoutModal) {
-        logoutModal.classList.remove('hidden');
+        logoutModal.classList.remove('hidden', 'pointer-events-none');
         setTimeout(() => {
             logoutModal.classList.add('opacity-100');
             logoutModal.querySelector('div').classList.remove('scale-95', 'opacity-0');
             logoutModal.querySelector('div').classList.add('scale-100', 'opacity-100');
-        }, 10); // Small delay to allow 'hidden' to be removed before transition
+        }, 10);
+    } else {
+        console.error('Logout modal element not found!');
     }
 }
 
@@ -736,7 +704,273 @@ function hideLogoutConfirmation() {
         logoutModal.querySelector('div').classList.remove('scale-100', 'opacity-100');
         logoutModal.querySelector('div').classList.add('scale-95', 'opacity-0');
         logoutModal.addEventListener('transitionend', () => {
-            logoutModal.classList.add('hidden');
-        }, { once: true }); // Remove 'hidden' class only after transition
+            logoutModal.classList.add('hidden', 'pointer-events-none');
+        }, { once: true });
     }
+}
+
+function initializeLogoutConfirmation() {
+    const logoutButton = document.getElementById('logout-button');
+    console.log("Logout button element found:", logoutButton); // Debugging line
+
+    if (logoutButton) {
+        logoutButton.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default link behavior
+            console.log("Logout button clicked, showing confirmation modal."); // Debugging line
+            showLogoutConfirmation();
+        });
+    } else {
+        console.error("Logout button with ID 'logout-button' not found on DOMContentLoaded."); // Debugging line
+    }
+
+    const confirmLogoutBtn = document.getElementById('confirm-logout-btn');
+    const cancelLogoutBtn = document.getElementById('cancel-logout-btn');
+
+    if (confirmLogoutBtn) {
+        confirmLogoutBtn.addEventListener('click', () => {
+            console.log("Logout confirmed, submitting logout form."); // Debugging line
+            const logoutForm = document.getElementById('logout-form'); // Get the hidden logout form
+            if (logoutForm) {
+                // Use requestSubmit() for more robust programmatic submission
+                if (typeof logoutForm.requestSubmit === 'function') {
+                    logoutForm.requestSubmit();
+                    console.log("Logout form submitted with requestSubmit().");
+                } else {
+                    logoutForm.submit();
+                    console.log("Logout form submitted with .submit().");
+                }
+            } else {
+                console.error("Logout form not found with ID 'logout-form'.");
+                // Fallback to direct redirect if form is not found (less reliable for POST)
+                window.location.href = '/pcbuild/public/logout';
+            }
+        });
+    }
+
+    if (cancelLogoutBtn) {
+        cancelLogoutBtn.addEventListener('click', () => {
+            console.log("Logout cancelled."); // Debugging line
+            hideLogoutConfirmation();
+        });
+    }
+
+    const logoutModal = document.getElementById('logout-confirmation-modal');
+    if (logoutModal) {
+        logoutModal.addEventListener('click', (e) => {
+            if (e.target === logoutModal) {
+                console.log("Clicked outside logout modal, hiding."); // Debugging line
+                hideLogoutConfirmation();
+            }
+        });
+    }
+}
+
+// --- Custom Confirmation Modal Logic ---
+let currentConfirmationCallback = null; // Stores the function to call on confirmation
+
+// These functions are defined here so they are hoisted/available before initializeConfirmationModals might reference them.
+/**
+ * Shows a custom confirmation modal.
+ * @param {string} title The title for the modal.
+ * @param {string} message The message to display in the modal.
+ * @param {function(boolean): void} callback Function to call when user confirms/cancels.
+ * Receives `true` for confirm, `false` for cancel.
+ */
+function showConfirmationModal(title, message, callback) {
+    const confirmationModal = document.getElementById('confirmation-modal');
+    const modalTitle = document.getElementById('confirmation-modal-title');
+    const modalMessage = document.getElementById('confirmation-modal-message');
+
+    if (!confirmationModal || !modalTitle || !modalMessage) {
+        console.error("Custom confirmation modal elements not found!");
+        return; // Prevent errors if elements are missing
+    }
+
+    modalTitle.textContent = title;
+    modalMessage.textContent = message;
+    currentConfirmationCallback = callback; // Store the callback
+
+    // Show modal with animation and make it interactive
+    confirmationModal.classList.remove('hidden', 'pointer-events-none');
+    setTimeout(() => {
+        confirmationModal.classList.add('opacity-100');
+        confirmationModal.querySelector('div').classList.remove('scale-95', 'opacity-0');
+        confirmationModal.querySelector('div').classList.add('scale-100', 'opacity-100');
+    }, 10);
+    console.log("Custom confirmation modal shown."); // Debugging line
+}
+
+function hideConfirmationModal() {
+    const confirmationModal = document.getElementById('confirmation-modal');
+    if (confirmationModal) {
+        confirmationModal.classList.remove('opacity-100');
+        confirmationModal.querySelector('div').classList.remove('scale-100', 'opacity-100');
+        confirmationModal.querySelector('div').classList.add('scale-95', 'opacity-0');
+        confirmationModal.addEventListener('transitionend', () => {
+            confirmationModal.classList.add('hidden', 'pointer-events-none');
+        }, { once: true });
+    }
+    console.log("Custom confirmation modal hidden."); // Debugging line
+}
+
+// Helper function to perform fetch requests for actions.
+async function performActionViaFetch(url, method, body = {}) {
+    const options = {
+        method: method,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded', // Standard form submission type
+        },
+    };
+
+    // For POST/PUT, convert body object to URL-encoded string
+    if (method === 'POST' || method === 'PUT') {
+        const formData = new URLSearchParams();
+        for (const key in body) {
+            formData.append(key, body[key]);
+        }
+        options.body = formData.toString();
+    }
+
+    console.log("Initiating fetch request:", url, options); // Debugging: Fetch request details
+
+    try {
+        const response = await fetch(url, options);
+        console.log("Fetch request completed. Status:", response.status); // Debugging: Fetch response status
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`Fetch request failed with status ${response.status}:`, errorText);
+            throw new Error(`HTTP error! status: ${response.status}, response: ${errorText}`);
+        }
+
+        // Try to parse JSON, but handle cases where response might be empty or not JSON (e.g., redirect)
+        try {
+            const jsonResponse = await response.json();
+            return jsonResponse;
+        } catch (e) {
+            console.warn("Fetch response was not JSON or empty. Likely a redirect or simple success.", e);
+            return {}; // Return empty object if not JSON
+        }
+    } catch (error) {
+        console.error('Caught error during fetch operation:', error); // More generic fetch error handling
+        alertMessage('error', 'An error occurred during the action. Please check console for details.');
+        throw error; // Re-throw to propagate for further handling if needed
+    }
+}
+
+
+function initializeConfirmationModals() {
+    const confirmationModal = document.getElementById('confirmation-modal');
+    const confirmActionBtn = document.getElementById('confirm-action-btn');
+    const cancelActionBtn = document.getElementById('cancel-action-btn');
+
+    if (confirmActionBtn) {
+        confirmActionBtn.addEventListener('click', () => {
+            console.log("Custom modal confirmed button clicked."); // Debugging line
+            hideConfirmationModal(); // Hides modal
+            // IMPORTANT: Get the callback before potentially clearing it in hideConfirmationModal if it was there
+            const callbackToExecute = currentConfirmationCallback;
+            currentConfirmationCallback = null; // Clear it immediately before executing, or after. Safer here.
+
+            if (callbackToExecute) {
+                callbackToExecute(true); // Execute callback with true for confirm
+            }
+        });
+    }
+
+    if (cancelActionBtn) {
+        cancelActionBtn.addEventListener('click', () => {
+            console.log("Custom modal cancelled button clicked."); // Debugging line
+            hideConfirmationModal();
+            const callbackToExecute = currentConfirmationCallback;
+            currentConfirmationCallback = null;
+
+            if (callbackToExecute) {
+                callbackToExecute(false);
+            }
+        });
+    }
+
+    if (confirmationModal) {
+        confirmationModal.addEventListener('click', (e) => {
+            if (e.target === confirmationModal) {
+                console.log("Clicked outside custom modal, treating as cancel."); // Debugging line
+                hideConfirmationModal();
+                const callbackToExecute = currentConfirmationCallback;
+                currentConfirmationCallback = null;
+
+                if (callbackToExecute) {
+                    callbackToExecute(false);
+                }
+            }
+        });
+    }
+
+    // --- Event Delegation for Ban/Delete Buttons ---
+    document.addEventListener('click', (e) => {
+        const target = e.target;
+
+        // Check if the clicked element (or its parent) is a Ban/Unban button
+        if (target.matches('.js-toggle-ban-btn')) {
+            e.preventDefault(); // Prevent default button behavior (if any)
+            const userId = target.dataset.userId;
+            const username = target.dataset.username;
+            const isBanned = target.dataset.isBanned === '1'; // Convert to boolean
+            const actionUrl = `/pcbuild/public/admin/users/toggle-ban/${userId}`;
+
+            console.log("Ban/Unban button clicked. User ID:", userId, "Username:", username, "Is Banned:", isBanned); // Debugging: Button click detected
+
+            showConfirmationModal(
+                isBanned ? 'Unban User' : 'Ban User',
+                `Are you sure you want to ${isBanned ? 'unban' : 'ban'} user ${username}?`,
+                (confirmed) => {
+                    if (confirmed) {
+                        console.log('Callback: Confirmed BAN/UNBAN for user ID:', userId); // Debugging: Callback received true
+                        performActionViaFetch(actionUrl, 'POST', {}) // Perform action via fetch
+                            .then(response => {
+                                console.log("Fetch response for Ban/Unban:", response); // Debugging: Check fetch response
+                                window.location.reload(); // Reload page to reflect changes
+                            })
+                            .catch(error => {
+                                console.error('Fetch error for Ban/Unban:', error); // Debugging: Log fetch error
+                                alertMessage('error', 'An error occurred during the ban/unban action.');
+                            });
+                    } else {
+                        console.log('Callback: BAN/UNBAN cancelled for user ID:', userId); // Debugging: Callback received false
+                    }
+                }
+            );
+        }
+
+        // Check if the clicked element (or its parent) is a Delete button
+        if (target.matches('.js-delete-user-btn')) {
+            e.preventDefault(); // Prevent default button behavior (if any)
+            const userId = target.dataset.userId;
+            const username = target.dataset.username;
+            const actionUrl = `/pcbuild/public/admin/users/delete/${userId}`;
+
+            console.log("Delete button clicked. User ID:", userId, "Username:", username); // Debugging: Button click detected
+
+            showConfirmationModal(
+                'Delete User',
+                `Are you sure you want to delete user ${username}? This action cannot be undone.`,
+                (confirmed) => {
+                    if (confirmed) {
+                        console.log('Callback: Confirmed DELETE for user ID:', userId); // Debugging: Callback received true
+                        performActionViaFetch(actionUrl, 'POST', {}) // Perform action via fetch
+                            .then(response => {
+                                console.log("Fetch response for Delete:", response); // Debugging: Check fetch response
+                                window.location.reload(); // Reload page to reflect changes
+                            })
+                            .catch(error => {
+                                console.error('Fetch error for Delete:', error); // Debugging: Log fetch error
+                                alertMessage('error', 'An error occurred during the delete action.');
+                            });
+                    } else {
+                        console.log('Callback: DELETE cancelled for user ID:', userId); // Debugging: Callback received false
+                    }
+                }
+            );
+        }
+    });
 }

@@ -10,6 +10,30 @@ class User
     }
 
     /**
+     * Finds a user by their ID.
+     * @param int $id The user ID.
+     * @return array|false An associative array of user data, or false if not found.
+     */
+    public function findById($id)
+    {
+        error_log("User Model: Attempting to find user with ID: {$id}");
+        try {
+            $stmt = $this->pdo->prepare("SELECT id, username, email, created_at, last_login, is_admin, is_banned FROM users WHERE id = :id LIMIT 1");
+            $stmt->execute([':id' => $id]);
+            $user = $stmt->fetch();
+            if ($user) {
+                error_log("User Model: Found user: " . $user['username'] . " (ID: " . $user['id'] . ")");
+            } else {
+                error_log("User Model: No user found for ID: {$id}");
+            }
+            return $user;
+        } catch (PDOException $e) {
+            error_log("User Model Error: findById failed: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Finds a user by their username or email.
      * @param string $identifier The username or email to search for.
      * @return array|false An associative array of user data, or false if not found.
@@ -18,15 +42,15 @@ class User
     {
         error_log("User Model: Attempting to find user with identifier: '{$identifier}'");
         try {
-            // Include is_admin in the selection
-            $stmt = $this->pdo->prepare("SELECT *, is_admin FROM users WHERE username = :username_param OR email = :email_param LIMIT 1");
+            // Include is_admin, is_banned, and last_login in the selection
+            $stmt = $this->pdo->prepare("SELECT id, username, email, password, created_at, last_login, is_admin, is_banned FROM users WHERE username = :username_param OR email = :email_param LIMIT 1");
             $stmt->execute([
                 ':username_param' => $identifier,
                 ':email_param' => $identifier
             ]);
             $user = $stmt->fetch();
             if ($user) {
-                error_log("User Model: Found user: " . $user['username'] . " (ID: " . $user['id'] . ", Admin: " . $user['is_admin'] . ")");
+                error_log("User Model: Found user: " . $user['username'] . " (ID: " . $user['id'] . ", Admin: " . ($user['is_admin'] ? 'Yes' : 'No') . ", Banned: " . ($user['is_banned'] ? 'Yes' : 'No') . ")");
             } else {
                 error_log("User Model: No user found for identifier: '{$identifier}'");
             }
@@ -48,8 +72,8 @@ class User
     {
         error_log("User Model: Attempting to create user: username='{$username}', email='{$email}'");
         try {
-            // Add is_admin column to insert, default to 0
-            $stmt = $this->pdo->prepare("INSERT INTO users (username, email, password, is_admin) VALUES (:username, :email, :password, 0)");
+            // Add is_admin and is_banned columns to insert, default to 0 for both
+            $stmt = $this->pdo->prepare("INSERT INTO users (username, email, password, is_admin, is_banned) VALUES (:username, :email, :password, 0, 0)");
             $stmt->execute([
                 ':username' => $username,
                 ':email' => $email,
@@ -67,6 +91,108 @@ class User
             if ($e->getCode() == '23000') {
                 error_log("User Model Error: Duplicate entry for username or email.");
             }
+            return false;
+        }
+    }
+
+    /**
+     * Fetches all users from the database.
+     * @param string $searchTerm Optional term to search by username or email.
+     * @return array An array of associative arrays, each representing a user.
+     */
+    public function getAllUsers($searchTerm = '')
+    {
+        $sql = "SELECT id, username, email, created_at, last_login, is_admin, is_banned FROM users";
+        $params = [];
+
+        if (!empty($searchTerm)) {
+            // Use distinct named parameters when the same value is used multiple times
+            $sql .= " WHERE LOWER(username) LIKE :searchTermUsername OR LOWER(email) LIKE :searchTermEmail";
+            $params[':searchTermUsername'] = '%' . $searchTerm . '%';
+            $params[':searchTermEmail'] = '%' . $searchTerm . '%';
+        }
+
+        $sql .= " ORDER BY created_at DESC";
+
+        error_log("User Model: getAllUsers SQL: " . $sql);
+        error_log("User Model: getAllUsers Params: " . json_encode($params));
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("User Model: Found " . count($users) . " users for search term '{$searchTerm}'.");
+            return $users;
+        } catch (PDOException $e) {
+            error_log("User Model Error: getAllUsers failed: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Bans a user by their ID.
+     * @param int $userId The ID of the user to ban.
+     * @return bool True on success, false on failure.
+     */
+    public function banUser($userId)
+    {
+        error_log("User Model: Attempting to ban user with ID: {$userId}");
+        try {
+            $stmt = $this->pdo->prepare("UPDATE users SET is_banned = 1 WHERE id = :userId");
+            return $stmt->execute([':userId' => $userId]);
+        } catch (PDOException $e) {
+            error_log("User Model Error: banUser failed: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Unbans a user by their ID.
+     * @param int $userId The ID of the user to unban.
+     * @return bool True on success, false on failure.
+     */
+    public function unbanUser($userId)
+    {
+        error_log("User Model: Attempting to unban user with ID: {$userId}");
+        try {
+            $stmt = $this->pdo->prepare("UPDATE users SET is_banned = 0 WHERE id = :userId");
+            return $stmt->execute([':userId' => $userId]);
+        } catch (PDOException $e) {
+            error_log("User Model Error: unbanUser failed: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Deletes a user by their ID.
+     * @param int $userId The ID of the user to delete.
+     * @return bool True on success, false on failure.
+     */
+    public function deleteUser($userId)
+    {
+        error_log("User Model: Attempting to delete user with ID: {$userId}");
+        try {
+            $stmt = $this->pdo->prepare("DELETE FROM users WHERE id = :userId");
+            return $stmt->execute([':userId' => $userId]);
+        } catch (PDOException $e) {
+            error_log("User Model Error: deleteUser failed: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Updates the last login timestamp for a user.
+     * @param int $userId The ID of the user whose last login is to be updated.
+     * @return bool True on success, false on failure.
+     */
+    public function updateLastLogin($userId)
+    {
+        error_log("User Model: Updating last login for user ID: {$userId}");
+        try {
+            $stmt = $this->pdo->prepare("UPDATE users SET last_login = NOW() WHERE id = :userId");
+            return $stmt->execute([':userId' => $userId]);
+        } catch (PDOException $e) {
+            error_log("User Model Error: updateLastLogin failed: " . $e->getMessage());
             return false;
         }
     }

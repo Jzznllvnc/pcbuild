@@ -79,7 +79,21 @@
         </div>
     </div>
 
-    <div id="logout-confirmation-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] hidden opacity-0 transition-opacity duration-300">
+    <div id="confirmation-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] hidden opacity-0 transition-opacity duration-300 pointer-events-none">
+        <div class="bg-white p-8 rounded-lg shadow-2xl max-w-sm w-full mx-4 transform scale-95 opacity-0 transition-all duration-300">
+            <h3 id="confirmation-modal-title" class="text-2xl font-bold text-gray-900 mb-4 text-center">Confirm Action</h3>
+            <p id="confirmation-modal-message" class="text-gray-700 mb-6 text-center">Are you sure you want to proceed?</p>
+            <div class="flex justify-center space-x-4">
+                <button id="confirm-action-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-md transition-colors shadow-md">
+                    Confirm
+                </button>
+                <button id="cancel-action-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-md transition-colors shadow-md">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="logout-confirmation-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] hidden opacity-0 transition-opacity duration-300 pointer-events-none">
         <div class="bg-white p-8 rounded-lg shadow-2xl max-w-sm w-full mx-4 transform scale-95 opacity-0 transition-all duration-300">
             <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">Confirm Logout</h3>
             <p class="text-gray-700 mb-6 text-center">Are you sure you want to log out of your account?</p>

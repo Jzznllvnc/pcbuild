@@ -16,16 +16,25 @@ class BaseController
 
     /**
      * A helper method to render a view.
-     * This simply calls the static Router::view method.
+     * This now directly includes the header, view file, and footer.
      * @param string $viewPath Path to the view file (e.g., 'home', 'products/list')
      * @param array $data Data to pass to the view
      */
     protected function view($viewPath, $data = [])
     {
-        // Include the Router class if it hasn't been already
-        if (!class_exists('Router')) {
-            require_once BASE_PATH . 'app/Router.php';
+        // Extract data into local variables for the view
+        extract($data);
+
+        // Convert viewPath to file path, e.g., 'home' -> 'app/views/home.php'
+        $filePath = BASE_PATH . 'app/views/' . str_replace('.', '/', $viewPath) . '.php';
+
+        if (!file_exists($filePath)) {
+            die("View file not found: " . $filePath);
         }
-        Router::view($viewPath, $data);
+
+        // Include the header and actual view file, then the footer
+        require_once BASE_PATH . 'includes/header.php';
+        require_once $filePath;
+        require_once BASE_PATH . 'includes/footer.php';
     }
 }

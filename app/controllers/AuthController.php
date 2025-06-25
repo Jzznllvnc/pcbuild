@@ -2,6 +2,7 @@
 
 // Make sure to include the BaseController and the User model
 require_once BASE_PATH . 'app/controllers/BaseController.php';
+require_once BASE_PATH . 'app/models/User.php'; // Ensure User model is included
 
 class AuthController extends BaseController
 {
@@ -66,15 +67,32 @@ class AuthController extends BaseController
 
             $user = $this->userModel->findByUsernameOrEmail($identifier);
 
+            // Check if user exists and password is correct, AND if the user is not banned
             if ($user && password_verify($password, $user['password'])) {
+                if ($user['is_banned']) {
+                    $_SESSION['error'] = 'Your account has been banned. Please contact support.';
+                    error_log("Auth Controller: Login failed: Banned user '{$identifier}' attempted to log in.");
+                    header('Location: /pcbuild/public/login');
+                    exit();
+                }
+
                 // Login successful
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['is_admin'] = (bool)$user['is_admin']; // Store admin status
                 $_SESSION['success'] = 'Welcome back, ' . htmlspecialchars($user['username']) . '!';
 
+                // Update last login timestamp
+                $this->userModel->updateLastLogin($user['id']);
+
                 error_log("Auth Controller: Login successful for user: " . $user['username'] . " (Admin: " . ($user['is_admin'] ? 'Yes' : 'No') . ")");
-                header('Location: /pcbuild/public/home'); // Redirect to dashboard or home
+                
+                // Redirect based on admin status
+                if ($_SESSION['is_admin']) {
+                    header('Location: /pcbuild/public/admin/dashboard');
+                } else {
+                    header('Location: /pcbuild/public/home'); // Redirect to dashboard or home
+                }
                 exit();
             } else {
                 // Login failed

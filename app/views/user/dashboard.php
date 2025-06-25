@@ -8,11 +8,16 @@
         </div>
     <?php else: ?>
         <div class="space-y-8">
-            <?php foreach ($orders as $order): ?>
+            <?php 
+            // Calculate the starting order number for display (latest order will be #1)
+            $orderCountForDisplay = count($orders); 
+
+            foreach ($orders as $order): // $orders is already sorted by date DESC (latest first)
+            ?>
                 <div class="bg-white rounded-lg shadow-xl overflow-hidden">
                     <div class="p-6 bg-gray-50 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center">
                         <div>
-                            <h3 class="text-xl font-bold text-gray-900 mb-1">Order #<?php echo htmlspecialchars($order['id']); ?></h3>
+                            <h3 class="text-xl font-bold text-gray-900 mb-1">Order #<?php echo htmlspecialchars($orderCountForDisplay); ?></h3>
                             <p class="text-sm text-gray-600">Placed on: <?php echo date('F j, Y, g:i a', strtotime($order['order_date'])); ?></p>
                         </div>
                         <div class="text-right sm:ml-4 mt-3 sm:mt-0">
@@ -44,7 +49,10 @@
                         <div class="p-6 text-center text-gray-500 italic">No items found for this order.</div>
                     <?php endif; ?>
                 </div>
-            <?php endforeach; ?>
+            <?php 
+            $orderCountForDisplay--; // Decrement the counter for the next (older) order
+            endforeach; 
+            ?>
         </div>
     <?php endif; ?>
 </div>

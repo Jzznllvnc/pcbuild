@@ -153,16 +153,18 @@
                     <input type="hidden" name="cart_items_json" id="h_cart_items_json">
                     <input type="hidden" name="total_amount" id="h_total_amount">
 
-                    <button type="submit"
-                            id="place-order-button"
-                            class="w-full flex justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-[--color-dark-blue] hover:bg-[#1a2d3a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[--color-primary-orange] transition-colors">
-                        Place Order
-                    </button>
-                    <button type="button"
-                            id="back-to-shipping-button"
-                            class="w-full flex justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-lg font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-colors mt-4">
-                        Back to Shipping
-                    </button>
+                    <div class="flex flex-col sm:flex-row-reverse justify-between gap-4 pt-4">
+                        <button type="submit"
+                                id="place-order-button"
+                                class="w-full sm:w-auto flex-1 justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-[--color-dark-blue] hover:bg-[#1a2d3a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[--color-primary-orange] transition-colors">
+                            Place Order
+                        </button>
+                        <button type="button"
+                                id="back-to-shipping-button"
+                                class="w-full sm:w-auto flex-1 justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-lg font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-colors">
+                            Back to Shipping
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -207,9 +209,8 @@
     /* Ensure the parent container for steps has relative positioning */
     #main-content-column {
         position: relative;
-        /* min-height is now set directly in the HTML to ensure content always fits */
-        /* Removed height: auto; from here as it conflicts with min-height in complex scenarios */
         overflow: hidden; /* Keep overflow hidden to clip sliding sections */
+        min-height: 475px; /* Added this directly to keep a baseline height */
     }
     .checkout-step {
         position: absolute;
@@ -362,13 +363,10 @@
         };
 
         // Function to dynamically set the height of the main content column
-        // This function is now only for ensuring initial correct display, not dynamic height.
         function setMainContentColumnHeight() {
-             // RequestAnimationFrame to ensure layout is stable before reading scrollHeight (if still needed for initial setup)
             requestAnimationFrame(() => {
-                // Determine the currently active section
                 const activeSection = shippingSection.classList.contains('active') ? shippingSection : paymentSection;
-                // Temporarily make it visible if it's hidden, to get accurate scrollHeight
+                // Temporarily make it visible if it's hidden to get accurate scrollHeight
                 const originalVisibility = activeSection.style.visibility;
                 const originalPosition = activeSection.style.position;
                 const originalTransform = activeSection.style.transform;
@@ -380,8 +378,7 @@
                 activeSection.style.opacity = '1';
 
                 const targetHeight = activeSection.scrollHeight;
-                // Apply the height to the parent
-                mainContentColumn.style.height = `${targetHeight + 20}px`; // Add a small buffer for main column padding
+                mainContentColumn.style.minHeight = `${targetHeight + 20}px`; // Use minHeight
 
                 // Revert section's temporary styles if it was hidden
                 activeSection.style.visibility = originalVisibility;
@@ -465,27 +462,27 @@
             const actualProductRows = checkoutCartSummary.querySelectorAll('.product-summary-item').length;
 
             if (actualProductRows > maxVisibleItems) { 
-                // Measure the height of one item dynamically for accuracy
-                const firstItem = checkoutCartSummary.querySelector('.product-summary-item');
-                if (firstItem) {
-                    const itemHeight = firstItem.getBoundingClientRect().height;
-                    // Calculate targetMaxHeight more robustly to ensure the third item is fully visible
-                    // Add a small fixed buffer (e.g., 5px) to prevent cut-off due to sub-pixel rendering or exact box model interpretation
-                    const targetMaxHeight = (itemHeight * maxVisibleItems) + 25; // Added a 5px buffer
-                    checkoutCartSummary.style.maxHeight = `${targetMaxHeight}px`;
-                    checkoutCartSummary.style.overflowY = 'auto';
-                    checkoutCartSummary.style.paddingRight = '1rem'; // Add padding to make space for scrollbar
-                    checkoutCartSummary.style.paddingBottom = '0.5rem'; // Add slight padding at bottom for scrollable content visibility
-                }
+                // Using requestAnimationFrame to ensure repaint/layout is done
+                requestAnimationFrame(() => {
+                     const firstItem = checkoutCartSummary.querySelector('.product-summary-item');
+                    if (firstItem) {
+                        const itemHeight = firstItem.getBoundingClientRect().height;
+                        const targetMaxHeight = (itemHeight * maxVisibleItems) + 25; // Added buffer
+                        checkoutCartSummary.style.maxHeight = `${targetMaxHeight}px`;
+                        checkoutCartSummary.style.overflowY = 'auto';
+                        checkoutCartSummary.style.paddingRight = '1rem';
+                        checkoutCartSummary.style.paddingBottom = '0.5rem';
+                    }
+                });
             } else {
                 checkoutCartSummary.style.maxHeight = 'none';
                 checkoutCartSummary.style.overflowY = 'visible';
-                checkoutCartSummary.style.paddingRight = '0'; // Remove padding if no scrollbar
-                checkoutCartSummary.style.paddingBottom = '0.25rem'; // Revert padding for non-scrollable
+                checkoutCartSummary.style.paddingRight = '0';
+                checkoutCartSummary.style.paddingBottom = '0.25rem';
             }
         }
 
-        updateOrderSummary(); // Call once on load
+        updateOrderSummary(); // Initial call on DOMContentLoaded
 
         shippingMethodRadios.forEach(radio => {
             radio.addEventListener('change', updateOrderSummary);
@@ -575,6 +572,7 @@
             setTimeout(() => {
                 paymentSection.style.visibility = 'visible';
                 setMainContentColumnHeight(); // Adjust height (min-height) for parent content
+                updateOrderSummary();
                 
                 // Directly control button visibility here for robustness
                 backToShippingButton.style.display = 'block'; 
@@ -608,6 +606,7 @@
 
             setTimeout(() => {
                 setMainContentColumnHeight(); // Adjust height (min-height) for parent content
+                updateOrderSummary();
 
                 // Directly control button visibility here for robustness
                 backToShippingButton.style.display = 'none'; 
@@ -699,7 +698,6 @@
         paymentSection.style.visibility = 'hidden'; // Ensure hidden initially
 
         // Set initial height and button visibility
-        // `setMainContentColumnHeight()` is called at the end of `goToPayment` and `goToShipping` to adjust parent height.
         updateActionButtonsVisibility(); // Initial call to set correct button visibility
 
         togglePaymentMobileNumberInput(); // Initialize payment mobile number visibility
