@@ -1,41 +1,47 @@
 <div class="container mx-auto p-8 bg-white shadow-lg rounded-lg mt-40 mb-8 max-w-4xl">
-    <h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center">My Orders</h1>
-
-    <?php // Removed the greeting div ?>
+<h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center">My Orders</h1>
     
-    <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Your Order History</h2>
-
     <?php if (empty($orders)): ?>
-        <div class="text-center py-8 bg-gray-50 rounded-lg border border-gray-200">
-            <p class="text-gray-600 text-lg mb-2">You haven't placed any orders yet.</p>
-            <a href="/pcbuild/public/products" class="inline-block bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors">Start Shopping!</a>
+        <div class="text-center py-12 bg-gray-50 rounded-lg border border-gray-200 shadow-md">
+            <p class="text-gray-600 text-xl mb-4">You haven't placed any orders yet.</p>
+            <a href="/pcbuild/public/products" class="inline-block bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-3 px-6 rounded-md shadow-lg transition-colors transform hover:scale-105">Start Shopping!</a>
         </div>
     <?php else: ?>
-        <div class="space-y-6">
+        <div class="space-y-8">
             <?php foreach ($orders as $order): ?>
-                <div class="border border-gray-200 rounded-lg p-4 shadow-sm bg-gray-50">
-                    <div class="flex justify-between items-center mb-3 pb-2 border-b border-gray-100">
-                        <h3 class="text-lg font-bold text-gray-800">Order #<?php echo htmlspecialchars($order['id']); ?></h3>
-                        <span class="text-sm text-gray-500"><?php echo date('F j, Y', strtotime($order['order_date'])); ?></span>
-                    </div>
-                    <div class="mb-3">
-                        <p class="text-gray-700">Total: <span class="font-semibold">$<?php echo number_format($order['total_amount'], 2); ?></span></p>
-                        <p class="text-gray-700">Payment: <span class="font-semibold"><?php echo htmlspecialchars($order['payment_method']); ?></span></p>
-                        <p class="text-gray-700">Status: <span class="font-semibold text-green-600"><?php echo htmlspecialchars($order['status']); ?></span></p>
+                <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+                    <div class="p-6 bg-gray-50 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-1">Order #<?php echo htmlspecialchars($order['id']); ?></h3>
+                            <p class="text-sm text-gray-600">Placed on: <?php echo date('F j, Y, g:i a', strtotime($order['order_date'])); ?></p>
+                        </div>
+                        <div class="text-right sm:ml-4 mt-3 sm:mt-0">
+                            <p class="text-lg font-semibold text-gray-800">Total: <span class="text-[--color-primary-orange]">$<?php echo number_format($order['total_amount'], 2); ?></span></p>
+                            <p class="text-md text-gray-700">Payment: <?php echo htmlspecialchars($order['payment_method']); ?></p>
+                            <p class="text-md font-semibold <?php echo ($order['status'] === 'Pending') ? 'text-blue-600' : 'text-green-600'; ?>">Status: <?php echo htmlspecialchars($order['status']); ?></p>
+                        </div>
                     </div>
 
                     <?php if (!empty($order['items'])): ?>
-                        <h4 class="text-md font-semibold text-gray-700 mb-2">Items:</h4>
-                        <ul class="list-none space-y-1">
-                            <?php foreach ($order['items'] as $item): ?>
-                                <li class="flex justify-between text-sm text-gray-600">
-                                    <span><?php echo htmlspecialchars($item['product_name']); ?></span>
-                                    <span><?php echo htmlspecialchars($item['quantity']); ?> x $<?php echo number_format($item['price_at_purchase'], 2); ?></span>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
+                        <div class="p-6">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-4">Items in this Order:</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <?php foreach ($order['items'] as $item): ?>
+                                    <div class="flex items-center bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                                        <img src="<?php echo htmlspecialchars($item['image_url'] ?? 'https://placehold.co/60x60/e2e8f0/475569?text=No+Image'); ?>" 
+                                             alt="<?php echo htmlspecialchars($item['product_name']); ?>" 
+                                             class="w-16 h-16 object-contain rounded-md mr-4 flex-shrink-0">
+                                        <div>
+                                            <p class="text-md font-medium text-gray-900"><?php echo htmlspecialchars($item['product_name']); ?></p>
+                                            <p class="text-sm text-gray-600">Quantity: <?php echo htmlspecialchars($item['quantity']); ?></p>
+                                            <p class="text-sm font-semibold text-gray-700">Price: $<?php echo number_format($item['price_at_purchase'], 2); ?></p>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
                     <?php else: ?>
-                        <p class="text-sm text-gray-500 italic">No items found for this order.</p>
+                        <div class="p-6 text-center text-gray-500 italic">No items found for this order.</div>
                     <?php endif; ?>
                 </div>
             <?php endforeach; ?>

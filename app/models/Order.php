@@ -110,6 +110,7 @@ class Order
 
     /**
      * Fetches an order by its ID, including its items and shipping details.
+     * NOW INCLUDES product_image_url for each item.
      * @param int $orderId The ID of the order to fetch.
      * @return array|false The order details with nested items, or false if not found.
      */
@@ -124,16 +125,21 @@ class Order
                 WHERE o.id = :order_id LIMIT 1
             "); // Assuming 'shipping_info' columns are in 'orders' table
             $stmtOrder->execute([':order_id' => $orderId]);
-            $order = $stmtOrder->fetch();
+            $order = $stmtOrder->fetch(PDO::FETCH_ASSOC); // Fetch as associative array
 
             if (!$order) {
                 return false;
             }
 
-            // Fetch order items
-            $stmtItems = $this->pdo->prepare("SELECT * FROM order_items WHERE order_id = :order_id");
+            // Fetch order items, now joining with products to get image_url
+            $stmtItems = $this->pdo->prepare("
+                SELECT oi.*, p.image_url 
+                FROM order_items oi
+                JOIN products p ON oi.product_id = p.id
+                WHERE oi.order_id = :order_id
+            ");
             $stmtItems->execute([':order_id' => $orderId]);
-            $order['items'] = $stmtItems->fetchAll();
+            $order['items'] = $stmtItems->fetchAll(PDO::FETCH_ASSOC); // Fetch as associative array
 
             return $order;
 
@@ -145,26 +151,32 @@ class Order
 
     /**
      * Fetches all orders for a specific user ID, including their items.
+     * NOW INCLUDES product_image_url for each item.
      * @param int $userId The ID of the user.
      * @return array An array of orders, each with its items.
      */
     public function getOrdersByUserId($userId)
     {
         try {
-            // Fetch all orders for the user, including new shipping columns
+            // Fetch all orders for the user
             $stmtOrders = $this->pdo->prepare("
                 SELECT * FROM orders 
                 WHERE user_id = :user_id 
                 ORDER BY order_date DESC
             ");
             $stmtOrders->execute([':user_id' => $userId]);
-            $orders = $stmtOrders->fetchAll();
+            $orders = $stmtOrders->fetchAll(PDO::FETCH_ASSOC); // Fetch as associative array
 
-            // For each order, fetch its items
+            // For each order, fetch its items, joining with products to get image_url
             foreach ($orders as &$order) { // Use & to modify array by reference
-                $stmtItems = $this->pdo->prepare("SELECT * FROM order_items WHERE order_id = :order_id");
+                $stmtItems = $this->pdo->prepare("
+                    SELECT oi.*, p.image_url 
+                    FROM order_items oi
+                    JOIN products p ON oi.product_id = p.id
+                    WHERE oi.order_id = :order_id
+                ");
                 $stmtItems->execute([':order_id' => $order['id']]);
-                $order['items'] = $stmtItems->fetchAll();
+                $order['items'] = $stmtItems->fetchAll(PDO::FETCH_ASSOC); // Fetch as associative array
             }
 
             return $orders;

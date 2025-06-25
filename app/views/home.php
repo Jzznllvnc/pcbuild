@@ -272,8 +272,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        height: 4
-        px;
+        height: 4px;
         background: var(--color-primary-orange);
         z-index: 0;
     }

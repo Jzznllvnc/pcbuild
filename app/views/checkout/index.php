@@ -1,5 +1,4 @@
-<div class="container mx-auto p-4 md:p-8 pt-20 mb-8 mt-20 max-w-7xl">
-    <!-- Process Steps -->
+<div class="container mx-auto p-4 md:p-8 pt-20 mt-20 mb-8 max-w-7xl">
     <div class="flex justify-center items-center space-x-2 text-gray-500 mb-10">
         <span id="step-cart" class="text-lg font-semibold text-[--color-dark-blue]">Cart</span>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -21,9 +20,7 @@
     <?php endif; ?>
 
     <div class="flex flex-col lg:flex-row gap-8">
-        <!-- Main Content Column -->
-        <div class="lg:w-2/3 bg-white shadow-lg rounded-lg p-6 overflow-hidden relative">
-            <!-- Shipping Form Section -->
+        <div class="lg:w-2/3 bg-white shadow-lg rounded-lg p-6 relative min-h-[475px]" id="main-content-column">
             <div id="shipping-section" class="checkout-step transition-transform duration-500 ease-in-out transform translate-x-0">
                 <h2 class="text-2xl font-extrabold text-gray-900 mb-6">Shipping Address</h2>
                 <form id="shipping-form" class="space-y-6">
@@ -56,8 +53,7 @@
                                     <option value="+61" data-placeholder="e.g., 412 345 678">AU +61</option>
                                     <option value="+81" data-placeholder="e.g., 90-1234-5678">JP +81</option>
                                     <option value="+86" data-placeholder="e.g., 138-0013-8000">CN +86</option>
-                                    <!-- Add more countries as needed -->
-                                </select>
+                                    </select>
                                 <input type="tel" id="mobile_number" name="mobile_number" placeholder="e.g., 9123456789" required
                                        class="flex-grow px-4 py-2 border border-gray-300 rounded-r-md shadow-sm focus:outline-none focus:ring-[--color-primary-orange] focus:border-[--color-primary-orange] sm:text-sm">
                             </div>
@@ -95,8 +91,7 @@
                     </div>
 
                     <h2 class="text-2xl font-extrabold text-gray-900 mb-4 pt-4">Shipping Method</h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <label class="flex items-center cursor-pointer p-4 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 has-[:checked]:border-[--color-primary-orange] has-[:checked]:ring-2 has-[:checked]:ring-[--color-primary-orange]">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-8"> <label class="flex items-center cursor-pointer p-4 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 has-[:checked]:border-[--color-primary-orange] has-[:checked]:ring-2 has-[:checked]:ring-[--color-primary-orange]">
                             <input type="radio" name="shipping_method" value="Free Shipping" class="form-radio text-[--color-primary-orange] h-5 w-5 flex-shrink-0" checked>
                             <span class="ml-4 text-lg font-medium text-gray-700">Free Shipping</span>
                             <span class="ml-auto text-gray-500">$0</span>
@@ -108,16 +103,14 @@
                         </label>
                     </div>
 
-                    <!-- The Continue to Payment button is now here again -->
                     <button type="button"
-                            id="continue-to-payment-button"
-                            class="w-full flex justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-[--color-dark-blue] hover:bg-[#1a2d3a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[--color-primary-orange] transition-colors mt-6">
+                            id="continue-to-payment-button-shipping"
+                            class="w-full flex justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-[--color-dark-blue] hover:bg-[#1a2d3a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[--color-primary-orange] transition-colors mt-6 hidden">
                         Continue to Payment
                     </button>
                 </form>
             </div>
 
-            <!-- Payment Form Section -->
             <div id="payment-section" class="checkout-step absolute top-0 left-0 w-full h-full p-6 bg-white transition-transform duration-500 ease-in-out transform translate-x-full opacity-0">
                 <h2 class="text-2xl font-extrabold text-gray-900 mb-6">Payment Method</h2>
                 <form id="payment-form-final" action="/pcbuild/public/checkout/process" method="POST" class="space-y-6">
@@ -138,7 +131,6 @@
                         </label>
                     </div>
 
-                    <!-- Conditional Mobile Number Input for Payment Method -->
                     <div id="payment-mobile-number-group" class="hidden">
                         <label for="p_mobile_number_display" class="block text-sm font-medium text-gray-700 mb-2">Mobile Number<span class="text-red-500">*</span></label>
                         <input type="tel" id="p_mobile_number_display" name="payment_mobile_number" placeholder="e.g., 09123456789"
@@ -146,7 +138,6 @@
                         <p id="payment-mobile-number-error" class="text-red-500 text-xs italic mt-2 hidden"></p>
                     </div>
 
-                    <!-- Hidden inputs to carry all form data -->
                     <input type="hidden" name="first_name" id="h_first_name">
                     <input type="hidden" name="last_name" id="h_last_name">
                     <input type="hidden" name="email" id="h_email">
@@ -176,12 +167,10 @@
             </div>
         </div>
 
-        <!-- Order Summary Column -->
         <div class="lg:w-1/3 flex flex-col">
             <div class="bg-white shadow-lg rounded-lg p-6 h-fit mb-4">
                 <h2 class="text-2xl font-extrabold text-gray-900 mb-6">Your Cart</h2>
                 <div id="checkout-cart-summary" class="border-b border-gray-200 pb-4 mb-4">
-                    <!-- Cart items will be rendered here by JavaScript -->
                     <p class="text-center text-gray-500 py-4">Your cart is empty.</p>
                 </div>
 
@@ -205,10 +194,9 @@
                     <span>$<span id="cart-total-amount">0.00</span></span>
                 </div>
             </div>
-            <!-- Move Continue to Payment button here -->
             <button type="button"
-                    id="continue-to-payment-button-outside"
-                    class="w-full flex justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-[--color-dark-blue] hover:bg-[#1a2d3a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[--color-primary-orange] transition-colors mt-0">
+                    id="continue-to-payment-button-outside-summary"
+                    class="w-full flex justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-[--color-dark-blue] hover:bg-[#1a2d3a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[--color-primary-orange] transition-colors mt-4">
                 Continue to Payment
             </button>
         </div>
@@ -217,45 +205,48 @@
 
 <style>
     /* Ensure the parent container for steps has relative positioning */
-    .lg\:w-2\/3.bg-white.shadow-lg.rounded-lg.p-6.overflow-hidden {
+    #main-content-column {
         position: relative;
-        /* To make sure absolute positioning of payment-section works within bounds */
-        height: auto; /* Allow height to adjust to content */
-        min-height: 600px; /* Example: ensure enough space for both forms */
+        /* min-height is now set directly in the HTML to ensure content always fits */
+        /* Removed height: auto; from here as it conflicts with min-height in complex scenarios */
+        overflow: hidden; /* Keep overflow hidden to clip sliding sections */
     }
     .checkout-step {
-        /* This applies to both shipping and payment sections */
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
-        height: 100%;
-        padding: 1.5rem; /* Matches p-6 from parent, ensuring content alignment */
+        padding: 1.5rem;
         transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+        box-sizing: border-box;
+        height: auto; /* Allow content to define natural height */
+        min-height: fit-content;
     }
+
+    /* Active state for shipping section and payment section should be relative */
+    #shipping-section.active, #payment-section.active {
+        position: relative; /* Bring active section back into document flow for height calculation */
+        transform: translateX(0);
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    /* Non-active sections should be absolutely positioned, hidden, and have minimal height */
+    #shipping-section.slide-out,
+    #payment-section.translate-x-full {
+        position: absolute;
+        visibility: hidden;
+        opacity: 0;
+        height: 1px; /* Collapse content height when hidden */
+        overflow: hidden;
+    }
+
 
     /* Initial state for payment section (hidden to the right) */
     #payment-section {
         transform: translateX(100%);
         opacity: 0;
-        visibility: hidden; /* Hide completely when not active */
-        position: absolute; /* Ensures it stacks on top, but then slides */
-    }
-
-    /* Active state for shipping section */
-    #shipping-section.active {
-        transform: translateX(0);
-        opacity: 1;
-        visibility: visible;
-        position: relative; /* Set to relative when active to occupy space */
-    }
-
-    /* Active state for payment section */
-    #payment-section.active {
-        transform: translateX(0);
-        opacity: 1;
-        visibility: visible;
-        position: relative; /* Set to relative when active to occupy space */
+        visibility: hidden;
     }
 
     /* State when shipping section slides out */
@@ -265,11 +256,29 @@
         visibility: hidden;
     }
 
-    /* State when payment section slides in */
-    #payment-section.slide-in {
-        transform: translateX(0);
-        opacity: 1;
-        visibility: visible;
+    /* Specific styling for the Your Cart summary content */
+    #checkout-cart-summary {
+        /* This will be set by JS dynamically for 3 items and add scroll if > 3 */
+    }
+
+    /* Custom Scrollbar Styles for WebKit browsers (Chrome, Safari, Edge) */
+    #checkout-cart-summary::-webkit-scrollbar {
+        width: 8px; /* Width of the scrollbar */
+    }
+
+    #checkout-cart-summary::-webkit-scrollbar-track {
+        background: #f1f1f1; /* Color of the scrollbar track */
+        border-radius: 10px;
+    }
+
+    #checkout-cart-summary::-webkit-scrollbar-thumb {
+        background: var(--color-primary-orange); /* Color of the scrollbar thumb */
+        border-radius: 10px;
+        /* margin-left for the thumb itself is not standard. Instead, we can add padding to the container. */
+    }
+
+    #checkout-cart-summary::-webkit-scrollbar-thumb:hover {
+        background: #e76c3e; /* Color of the scrollbar thumb on hover */
     }
 </style>
 
@@ -281,12 +290,14 @@
         const cartShippingCostSpan = document.getElementById('cart-shipping-cost');
         const cartTotalAmountSpan = document.getElementById('cart-total-amount');
 
+        const mainContentColumn = document.getElementById('main-content-column');
         const shippingSection = document.getElementById('shipping-section');
         const paymentSection = document.getElementById('payment-section');
         const shippingForm = document.getElementById('shipping-form');
         const paymentFormFinal = document.getElementById('payment-form-final');
-        const continueToPaymentButtonInside = document.getElementById('continue-to-payment-button'); // Original button inside form
-        const continueToPaymentButtonOutside = document.getElementById('continue-to-payment-button-outside'); // New button outside card
+        const continueToPaymentButtonShipping = document.getElementById('continue-to-payment-button-shipping');
+        const continueToPaymentButtonOutsideSummary = document.getElementById('continue-to-payment-button-outside-summary');
+        const placeOrderButton = document.getElementById('place-order-button');
         const backToShippingButton = document.getElementById('back-to-shipping-button');
         const shippingMethodRadios = document.querySelectorAll('input[name="shipping_method"]');
 
@@ -350,24 +361,71 @@
             }
         };
 
+        // Function to dynamically set the height of the main content column
+        // This function is now only for ensuring initial correct display, not dynamic height.
+        function setMainContentColumnHeight() {
+             // RequestAnimationFrame to ensure layout is stable before reading scrollHeight (if still needed for initial setup)
+            requestAnimationFrame(() => {
+                // Determine the currently active section
+                const activeSection = shippingSection.classList.contains('active') ? shippingSection : paymentSection;
+                // Temporarily make it visible if it's hidden, to get accurate scrollHeight
+                const originalVisibility = activeSection.style.visibility;
+                const originalPosition = activeSection.style.position;
+                const originalTransform = activeSection.style.transform;
+                const originalOpacity = activeSection.style.opacity;
+
+                activeSection.style.visibility = 'visible';
+                activeSection.style.position = 'relative'; // Ensure it's in flow for scrollHeight
+                activeSection.style.transform = 'translateX(0)'; // Reset transform for measurement
+                activeSection.style.opacity = '1';
+
+                const targetHeight = activeSection.scrollHeight;
+                // Apply the height to the parent
+                mainContentColumn.style.height = `${targetHeight + 20}px`; // Add a small buffer for main column padding
+
+                // Revert section's temporary styles if it was hidden
+                activeSection.style.visibility = originalVisibility;
+                activeSection.style.position = originalPosition;
+                activeSection.style.transform = originalTransform;
+                activeSection.style.opacity = originalOpacity;
+            });
+        }
+
+
+        // Function to control visibility of action buttons based on active section
+        function updateActionButtonsVisibility() {
+            if (shippingSection.classList.contains('active')) {
+                // On shipping page: show continue button outside, hide others
+                continueToPaymentButtonOutsideSummary.style.display = 'block';
+                placeOrderButton.style.display = 'none';
+                backToShippingButton.style.display = 'none'; // Hide back button on shipping
+            } else if (paymentSection.classList.contains('active')) {
+                // On payment page: hide continue button, show place order and back button
+                continueToPaymentButtonOutsideSummary.style.display = 'none';
+                placeOrderButton.style.display = 'block';
+                backToShippingButton.style.display = 'block'; // Ensure back button is visible
+            }
+        }
+
+
         function updateOrderSummary() {
             subtotal = 0;
             let summaryHtml = '';
 
             if (cart.length === 0) {
                 summaryHtml = '<p class="text-center text-red-600 font-semibold py-4">Your cart is empty. Please add items to proceed to checkout.</p>';
-                continueToPaymentButtonInside.disabled = true;
-                continueToPaymentButtonInside.classList.add('opacity-50', 'cursor-not-allowed');
-                continueToPaymentButtonOutside.disabled = true; // Disable outside button too
-                continueToPaymentButtonOutside.classList.add('opacity-50', 'cursor-not-allowed');
-                document.getElementById('place-order-button').disabled = true;
-                document.getElementById('place-order-button').classList.add('opacity-50', 'cursor-not-allowed');
+                continueToPaymentButtonShipping.disabled = true;
+                continueToPaymentButtonShipping.classList.add('opacity-50', 'cursor-not-allowed');
+                continueToPaymentButtonOutsideSummary.disabled = true;
+                continueToPaymentButtonOutsideSummary.classList.add('opacity-50', 'cursor-not-allowed');
+                placeOrderButton.disabled = true;
+                placeOrderButton.classList.add('opacity-50', 'cursor-not-allowed');
             } else {
                 cart.forEach(item => {
                     const itemTotal = item.price * item.quantity;
                     subtotal += itemTotal;
                     summaryHtml += `
-                        <div class="flex items-center justify-between py-2">
+                        <div class="flex items-center justify-between py-2 product-summary-item">
                             <div class="flex items-center">
                                 <img src="${item.image || 'https://placehold.co/40x40/e2e8f0/475569?text=Img'}" alt="${item.name}" class="w-10 h-10 object-contain rounded-md mr-3">
                                 <div class="flex flex-col">
@@ -379,12 +437,12 @@
                         </div>
                     `;
                 });
-                continueToPaymentButtonInside.disabled = false;
-                continueToPaymentButtonInside.classList.remove('opacity-50', 'cursor-not-allowed');
-                continueToPaymentButtonOutside.disabled = false; // Enable outside button
-                continueToPaymentButtonOutside.classList.remove('opacity-50', 'cursor-not-allowed');
-                document.getElementById('place-order-button').disabled = false;
-                document.getElementById('place-order-button').classList.remove('opacity-50', 'cursor-not-allowed');
+                continueToPaymentButtonShipping.disabled = false;
+                continueToPaymentButtonShipping.classList.remove('opacity-50', 'cursor-not-allowed');
+                continueToPaymentButtonOutsideSummary.disabled = false;
+                continueToPaymentButtonOutsideSummary.classList.remove('opacity-50', 'cursor-not-allowed');
+                placeOrderButton.disabled = false;
+                placeOrderButton.classList.remove('opacity-50', 'cursor-not-allowed');
             }
 
             const selectedShippingMethod = document.querySelector('input[name="shipping_method"]:checked');
@@ -398,12 +456,36 @@
             total = subtotal + shippingCost + estimatedTaxes;
 
             checkoutCartSummary.innerHTML = summaryHtml;
-            cartSubtotalSpan.textContent = subtotal.toFixed(2);
+            cartSubtotalSpan.textContent = subtotal.toFixed(2); // Subtotal here reflects the total before taxes
             cartShippingCostSpan.textContent = shippingCost.toFixed(2);
-            cartTotalAmountSpan.textContent = total.toFixed(2);
+            cartTotalAmountSpan.textContent = total.toFixed(2); // This total includes shipping and fixed taxes
+
+            // Dynamically apply max-height and overflow-y-auto for cart summary
+            const maxVisibleItems = 3; 
+            const actualProductRows = checkoutCartSummary.querySelectorAll('.product-summary-item').length;
+
+            if (actualProductRows > maxVisibleItems) { 
+                // Measure the height of one item dynamically for accuracy
+                const firstItem = checkoutCartSummary.querySelector('.product-summary-item');
+                if (firstItem) {
+                    const itemHeight = firstItem.getBoundingClientRect().height;
+                    // Calculate targetMaxHeight more robustly to ensure the third item is fully visible
+                    // Add a small fixed buffer (e.g., 5px) to prevent cut-off due to sub-pixel rendering or exact box model interpretation
+                    const targetMaxHeight = (itemHeight * maxVisibleItems) + 25; // Added a 5px buffer
+                    checkoutCartSummary.style.maxHeight = `${targetMaxHeight}px`;
+                    checkoutCartSummary.style.overflowY = 'auto';
+                    checkoutCartSummary.style.paddingRight = '1rem'; // Add padding to make space for scrollbar
+                    checkoutCartSummary.style.paddingBottom = '0.5rem'; // Add slight padding at bottom for scrollable content visibility
+                }
+            } else {
+                checkoutCartSummary.style.maxHeight = 'none';
+                checkoutCartSummary.style.overflowY = 'visible';
+                checkoutCartSummary.style.paddingRight = '0'; // Remove padding if no scrollbar
+                checkoutCartSummary.style.paddingBottom = '0.25rem'; // Revert padding for non-scrollable
+            }
         }
 
-        updateOrderSummary();
+        updateOrderSummary(); // Call once on load
 
         shippingMethodRadios.forEach(radio => {
             radio.addEventListener('change', updateOrderSummary);
@@ -465,6 +547,7 @@
                 shippingMobileNumber.classList.remove('border-red-500', 'focus:border-red-500');
             }
 
+            // Populate hidden fields in the payment form with shipping data
             document.getElementById('h_first_name').value = document.getElementById('first_name').value;
             document.getElementById('h_last_name').value = document.getElementById('last_name').value;
             document.getElementById('h_email').value = document.getElementById('email').value;
@@ -480,6 +563,7 @@
             document.getElementById('h_cart_items_json').value = JSON.stringify(cart);
             document.getElementById('h_total_amount').value = total.toFixed(2);
 
+            // Animate transition
             shippingSection.classList.remove('active');
             shippingSection.classList.add('slide-out');
 
@@ -487,30 +571,28 @@
             paymentSection.classList.add('active');
             paymentSection.classList.remove('translate-x-full', 'opacity-0');
 
+            // Set visibility after a slight delay to allow transform to start
             setTimeout(() => {
                 paymentSection.style.visibility = 'visible';
+                setMainContentColumnHeight(); // Adjust height (min-height) for parent content
+                
+                // Directly control button visibility here for robustness
+                backToShippingButton.style.display = 'block'; 
+                placeOrderButton.style.display = 'block';
+                continueToPaymentButtonOutsideSummary.style.display = 'none';
             }, 10);
+
 
             stepShipping.classList.remove('text-[--color-primary-orange]');
             stepShipping.classList.add('text-[--color-dark-blue]');
             stepPayment.classList.add('text-[--color-primary-orange]');
             stepPayment.classList.remove('text-gray-500');
 
-            const parentContainer = shippingSection.parentNode;
-            const shippingHeight = shippingSection.scrollHeight;
-            const originalPaymentSectionStyle = paymentSection.style.cssText;
-            paymentSection.style.visibility = 'visible';
-            paymentSection.style.position = 'absolute';
-            paymentSection.style.transform = 'translateX(0)';
-            paymentSection.style.opacity = '1';
-            const paymentHeight = paymentSection.scrollHeight;
-            parentContainer.style.minHeight = `${Math.max(shippingHeight, paymentHeight)}px`;
-            paymentSection.style.cssText = originalPaymentSectionStyle;
-
             togglePaymentMobileNumberInput();
         }
 
         function goToShipping() {
+            // Animate transition
             paymentSection.classList.remove('active');
             paymentSection.classList.add('translate-x-full', 'opacity-0');
             setTimeout(() => {
@@ -519,15 +601,25 @@
 
             shippingSection.classList.add('active');
             shippingSection.classList.remove('slide-out');
-            shippingSection.style.visibility = 'visible';
+            shippingSection.style.visibility = 'visible'; // Ensure shipping is visible
+
+            // Trigger reflow/re-render to ensure height calculation is correct
+            shippingSection.offsetWidth; 
+
+            setTimeout(() => {
+                setMainContentColumnHeight(); // Adjust height (min-height) for parent content
+
+                // Directly control button visibility here for robustness
+                backToShippingButton.style.display = 'none'; 
+                placeOrderButton.style.display = 'none';
+                continueToPaymentButtonOutsideSummary.style.display = 'block';
+            }, 10);
+           
 
             stepPayment.classList.remove('text-[--color-primary-orange]');
             stepPayment.classList.add('text-gray-500');
             stepShipping.classList.add('text-[--color-primary-orange]');
             stepShipping.classList.remove('text-[--color-dark-blue]');
-
-            const parentContainer = shippingSection.parentNode;
-            parentContainer.style.minHeight = `${shippingSection.scrollHeight}px`;
         }
 
         function togglePaymentMobileNumberInput() {
@@ -559,18 +651,20 @@
                 paymentMobileNumberDisplayInput.value = '';
                 paymentMobileNumberError.classList.add('hidden');
             }
+            // Button visibility is now controlled directly by goToPayment/goToShipping, not here.
         }
 
         paymentMethodRadios.forEach(radio => {
             radio.addEventListener('change', togglePaymentMobileNumberInput);
         });
 
-        // Event listener for the new outside button
-        continueToPaymentButtonOutside.addEventListener('click', goToPayment);
-        // Hide the original button
-        continueToPaymentButtonInside.style.display = 'none';
+        // Event listeners for action buttons
+        continueToPaymentButtonShipping.addEventListener('click', goToPayment);
+        continueToPaymentButtonOutsideSummary.addEventListener('click', goToPayment);
 
-        backToShippingButton.addEventListener('click', goToShipping);
+        backToShippingButton.addEventListener('click', () => {
+            goToShipping();
+        });
 
         paymentFormFinal.addEventListener('submit', (e) => {
             const paymentMethodSelected = document.querySelector('input[name="payment_method"]:checked');
@@ -588,7 +682,7 @@
 
                 if (!phElevenDigitRegex.test(mobileNumber)) {
                     e.preventDefault();
-                    paymentMobileNumberError.textContent = "Please enter a valid 11-digit mobile number (e.g., 09123456789).";
+                    paymentMobileNumberError.textContent = "Please enter a valid 11-digit mobile number for GCash/PayPal (e.g., 09123456789).";
                     paymentMobileNumberError.classList.remove('hidden');
                     paymentMobileNumberDisplayInput.focus();
                     return;
@@ -596,15 +690,18 @@
                     paymentMobileNumberError.classList.add('hidden');
                 }
             }
+            // If all validation passes, the form will submit
         });
 
+        // Initial setup on page load
         shippingSection.classList.add('active');
         paymentSection.classList.add('translate-x-full', 'opacity-0');
-        paymentSection.style.visibility = 'hidden';
+        paymentSection.style.visibility = 'hidden'; // Ensure hidden initially
 
-        const parentContainer = shippingSection.parentNode;
-        parentContainer.style.minHeight = `${shippingSection.scrollHeight}px`;
+        // Set initial height and button visibility
+        // `setMainContentColumnHeight()` is called at the end of `goToPayment` and `goToShipping` to adjust parent height.
+        updateActionButtonsVisibility(); // Initial call to set correct button visibility
 
-        togglePaymentMobileNumberInput();
+        togglePaymentMobileNumberInput(); // Initialize payment mobile number visibility
     });
 </script>
