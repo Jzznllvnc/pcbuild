@@ -74,7 +74,7 @@
 
 <div class="bg-gradient-to-r from-[--color-dark-blue] to-[#1a2d3a] py-12">
     <div class="container mx-auto p-8 my-12 text-center">
-        <h2 class="text-4xl font-extrabold text-white mb-10">Why Choose CraftWise?</h2>
+        <h2 class="text-4xl font-extrabold text-white mb-10">Why <span class="custom-underline">Choose</span> CraftWise?</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="bg-white p-8 border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center">
@@ -259,5 +259,21 @@
     /* Pause animation on hover */
     .brand-carousel-section:hover .animate-slide-brands {
         animation-play-state: paused;
+    }
+
+    .custom-underline {
+        position: relative;
+        display: inline-block;
+        line-height: 1.2;
+    }
+    .custom-underline::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 4px;
+        background: var(--color-primary-orange);
+        z-index: 0;
     }
 </style>
