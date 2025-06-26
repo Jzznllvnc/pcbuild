@@ -1,8 +1,11 @@
-<div class="relative w-full h-full flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-60 pb-72" style="background-image: url('/pcbuild/assets/images/CraftWisebg.png'); background-size: cover; background-position: center;">
+<div class="relative w-full h-full flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-cover bg-center pt-60 pb-72" style="background-image: url('/pcbuild/assets/images/CraftWisebg.png'); background-size: cover; background-position: center;">
     <div class="relative z-10 p-8 sm:p-10 bg-white shadow-2xl rounded-xl w-full max-w-md mx-auto">
         <h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center leading-tight">
-            <?php echo htmlspecialchars($title); ?>
+            Reset Your Password
         </h1>
+        <p class="text-center text-gray-600 mb-8">
+            To reset your password, please enter your username or email and the code shown below.
+        </p>
 
         <?php if (isset($error) && $error): ?>
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-4 transition-all duration-300 ease-in-out transform scale-95 opacity-0 animate-fadeIn" role="alert">
@@ -20,7 +23,7 @@
             <style>.animate-fadeIn { animation: fadeIn 0.5s forwards; } @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }</style>
         <?php endif; ?>
 
-        <form action="/pcbuild/public/login" method="POST" class="space-y-6">
+        <form action="/pcbuild/public/forgot-password" method="POST" class="space-y-6">
             <div class="relative border border-gray-300 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-[--color-primary-orange] focus-within:border-[--color-primary-orange]">
                 <input type="text" name="identifier" id="identifier" required
                        class="peer w-full px-4 py-3 pt-6 text-lg bg-transparent outline-none focus:outline-none transition-all duration-200"
@@ -31,40 +34,76 @@
                     Username or Email
                 </label>
             </div>
+
+            <div class="text-center bg-gray-100 p-4 rounded-md border border-gray-200">
+                <p class="text-gray-800 text-xl font-bold tracking-widest mb-2">Type this code:</p>
+                <p class="text-[--color-dark-blue] text-3xl font-extrabold tracking-widest select-none cursor-pointer" id="captcha-code-display" onclick="location.reload();">
+                    <?php echo htmlspecialchars($captcha_code ?? '-----'); ?>
+                </p>
+                <p class="text-sm text-gray-500 mt-2">Click the code to refresh</p>
+            </div>
+
             <div class="relative border border-gray-300 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-[--color-primary-orange] focus-within:border-[--color-primary-orange]">
-                <input type="password" name="password" id="password" required
-                       class="peer w-full px-4 py-3 pt-6 text-lg bg-transparent outline-none focus:outline-none transition-all duration-200 pr-10"
+                <input type="text" name="captcha_input" id="captcha_input" required autocomplete="off"
+                       class="peer w-full px-4 py-3 pt-6 text-lg bg-transparent outline-none focus:outline-none transition-all duration-200"
                        placeholder=" ">
-                <label for="password" class="absolute left-4 top-1 text-sm text-gray-500 transition-all duration-200 pointer-events-none
+                <label for="captcha_input" class="absolute left-4 top-1 text-sm text-gray-500 transition-all duration-200 pointer-events-none
                                          peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-lg
                                          peer-focus:top-1 peer-focus:text-sm peer-focus:text-[--color-primary-orange]">
-                    Password
+                    Enter Code
                 </label>
-                <span class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer toggle-password-visibility" data-target="password">
-                    <svg class="h-6 w-6 text-gray-500 eye-show-password" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                    <svg class="h-6 w-6 text-gray-500 hidden eye-hide-password" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <circle cx="12" cy="12" r="7" stroke-width="2"></circle>
-                      <line x1="7" y1="17" x2="17" y2="7" stroke-width="2"></line>
-                    </svg>
-                </span>
             </div>
-            <div class="text-sm text-right">
-                <a href="/pcbuild/public/forgot-password" class="font-medium text-[--color-primary-orange] hover:text-[#e76c3e] hover:underline">Forgot password?</a>
-            </div>
+
             <div>
                 <button type="submit"
                         class="w-full flex justify-center py-3 px-6 border border-transparent rounded-lg shadow-lg text-lg font-bold text-white
                                bg-[--color-primary-orange] hover:bg-[#e76c3e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[--color-primary-orange]
                                transition-colors">
-                    Login
+                    Continue
                 </button>
             </div>
         </form>
 
         <div class="mt-8 text-center">
-            <p class="text-md text-gray-700">Don't have an account?
-                <a href="/pcbuild/public/register" class="font-bold text-[--color-dark-blue] hover:text-[#1a2d3a] hover:underline">Register here</a>
+            <p class="text-md text-gray-700">Remember your password?
+                <a href="/pcbuild/public/login" class="font-bold text-[--color-dark-blue] hover:text-[#1a2d3a] hover:underline">Login here</a>
             </p>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const captchaDisplay = document.getElementById('captcha-code-display');
+    const captchaText = captchaDisplay.textContent.trim(); // Get the plain text code
+    captchaDisplay.innerHTML = ''; // Clear original content to rebuild with spans
+
+    // Define a set of colors to randomly apply
+    const colors = ['#FE7743', '#273F4F', '#475569']; // Primary orange, Dark blue, Gray
+    
+    for (let i = 0; i < captchaText.length; i++) {
+        const charSpan = document.createElement('span');
+        charSpan.textContent = captchaText[i];
+        charSpan.style.display = 'inline-block'; // Necessary for transform to work on inline elements
+        
+        // Apply random rotation (-5deg to +5deg)
+        charSpan.style.transform = `rotate(${Math.random() * 10 - 5}deg)`; 
+        
+        // Apply random right margin (0px to 3px)
+        charSpan.style.marginRight = `${Math.random() * 3}px`; 
+        
+        // Apply random color from the predefined list
+        charSpan.style.color = colors[Math.floor(Math.random() * colors.length)];
+        
+        // Apply random font size (from 30px to 40px) to make it even more varied
+        charSpan.style.fontSize = `${30 + Math.random() * 10}px`; 
+        
+        captchaDisplay.appendChild(charSpan);
+    }
+
+    // Re-attach the click to refresh functionality to the new elements
+    captchaDisplay.onclick = function() {
+        location.reload();
+    };
+});
+</script>

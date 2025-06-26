@@ -18,7 +18,8 @@ class User
     {
         error_log("User Model: Attempting to find user with ID: {$id}");
         try {
-            $stmt = $this->pdo->prepare("SELECT id, username, email, created_at, last_login, is_admin, is_banned FROM users WHERE id = :id LIMIT 1");
+            // Include phone_number in SELECT statement
+            $stmt = $this->pdo->prepare("SELECT id, username, email, phone_number, created_at, last_login, is_admin, is_banned FROM users WHERE id = :id LIMIT 1");
             $stmt->execute([':id' => $id]);
             $user = $stmt->fetch();
             if ($user) {
@@ -42,8 +43,8 @@ class User
     {
         error_log("User Model: Attempting to find user with identifier: '{$identifier}'");
         try {
-            // Include is_admin, is_banned, and last_login in the selection
-            $stmt = $this->pdo->prepare("SELECT id, username, email, password, created_at, last_login, is_admin, is_banned FROM users WHERE username = :username_param OR email = :email_param LIMIT 1");
+            // Include phone_number in SELECT statement
+            $stmt = $this->pdo->prepare("SELECT id, username, email, phone_number, password, created_at, last_login, is_admin, is_banned FROM users WHERE username = :username_param OR email = :email_param LIMIT 1");
             $stmt->execute([
                 ':username_param' => $identifier,
                 ':email_param' => $identifier
@@ -62,6 +63,24 @@ class User
     }
 
     /**
+     * Finds a user by their email address.
+     * @param string $email The email address to search for.
+     * @return array|false An associative array of user data, or false if not found.
+     */
+    public function findByEmail($email)
+    {
+        try {
+            // Include phone_number in SELECT statement
+            $stmt = $this->pdo->prepare("SELECT id, username, email, phone_number, password, is_admin, is_banned FROM users WHERE email = :email LIMIT 1");
+            $stmt->execute([':email' => $email]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("User Model Error: findByEmail failed: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Creates a new user in the database.
      * @param string $username
      * @param string $email
@@ -72,7 +91,7 @@ class User
     {
         error_log("User Model: Attempting to create user: username='{$username}', email='{$email}'");
         try {
-            // Add is_admin and is_banned columns to insert, default to 0 for both
+            // No phone_number in INSERT as it's optional and added later
             $stmt = $this->pdo->prepare("INSERT INTO users (username, email, password, is_admin, is_banned) VALUES (:username, :email, :password, 0, 0)");
             $stmt->execute([
                 ':username' => $username,
@@ -102,7 +121,8 @@ class User
      */
     public function getAllUsers($searchTerm = '')
     {
-        $sql = "SELECT id, username, email, created_at, last_login, is_admin, is_banned FROM users";
+        // Include phone_number in SELECT statement
+        $sql = "SELECT id, username, email, phone_number, created_at, last_login, is_admin, is_banned FROM users";
         $params = [];
 
         if (!empty($searchTerm)) {
@@ -193,6 +213,68 @@ class User
             return $stmt->execute([':userId' => $userId]);
         } catch (PDOException $e) {
             error_log("User Model Error: updateLastLogin failed: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Updates a user's password.
+     * @param int $userId The ID of the user whose password to update.
+     * @param string $newPasswordHash The new hashed password.
+     * @return bool True on success, false on failure.
+     */
+    public function updatePassword($userId, $newPasswordHash)
+    {
+        try {
+            $stmt = $this->pdo->prepare("UPDATE users SET password = :password WHERE id = :userId");
+            return $stmt->execute([
+                ':password' => $newPasswordHash,
+                ':userId' => $userId
+            ]);
+        } catch (PDOException $e) {
+            error_log("User Model Error: updatePassword failed: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Updates a user's username.
+     * @param int $userId The ID of the user to update.
+     * @param string $username The new username.
+     * @return bool True on success, false on failure.
+     */
+    public function updateUsername($userId, $username)
+    {
+        error_log("User Model: Attempting to update username for user ID: {$userId}");
+        try {
+            $stmt = $this->pdo->prepare("UPDATE users SET username = :username WHERE id = :userId");
+            return $stmt->execute([
+                ':username' => $username,
+                ':userId' => $userId
+            ]);
+        } catch (PDOException $e) {
+            error_log("User Model Error: updateUsername failed: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Updates a user's phone number.
+     * @param int $userId The ID of the user to update.
+     * @param string|null $phoneNumber The new phone number, or null to clear it.
+     * @return bool True on success, false on failure.
+     */
+    public function updatePhoneNumber($userId, $phoneNumber)
+    {
+        error_log("User Model: Attempting to update phone number for user ID: {$userId}");
+        try {
+            $stmt = $this->pdo->prepare("UPDATE users SET phone_number = :phone_number WHERE id = :userId");
+            return $stmt->execute([
+                ':phone_number' => $phoneNumber, // Can be null
+                ':userId' => $userId
+            ]);
+        } catch (PDOException $e) {
+            error_log("User Model Error: updatePhoneNumber failed: " . $e->getMessage());
             return false;
         }
     }

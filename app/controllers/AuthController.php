@@ -2,11 +2,13 @@
 
 // Make sure to include the BaseController and the User model
 require_once BASE_PATH . 'app/controllers/BaseController.php';
-require_once BASE_PATH . 'app/models/User.php'; // Ensure User model is included
+require_once BASE_PATH . 'app/models/User.php';
+// Removed: require_once BASE_PATH . 'app/models/PasswordReset.php'; // No longer needed for this flow
 
 class AuthController extends BaseController
 {
     protected $userModel;
+    // Removed: protected $passwordResetModel; // No longer needed for this flow
 
     /**
      * Constructor for AuthController.
@@ -17,6 +19,7 @@ class AuthController extends BaseController
     {
         parent::__construct($pdo); // Call the parent constructor to set $this->pdo
         $this->userModel = new User($pdo); // Instantiate the User model
+        // Removed: $this->passwordResetModel = new PasswordReset($pdo); // No longer needed for this flow
     }
 
     /**
@@ -247,5 +250,189 @@ class AuthController extends BaseController
         error_log("Auth Controller: Session destroyed, redirecting to home.");
         header('Location: /pcbuild/public/home'); // Redirect to homepage or login page
         exit();
+    }
+
+    /**
+     * Displays the forgot password form with a generated captcha code.
+     */
+    public function showForgotPassword()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Generate a random code for the user to type
+        $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Exclude I, O, 0, 1 for clarity
+        $captcha_code = '';
+        for ($i = 0; $i < 6; $i++) {
+            $captcha_code .= $characters[rand(0, strlen($characters) - 1)];
+        }
+        $_SESSION['captcha_code'] = $captcha_code; // Store in session for verification
+
+        $data = [
+            'title' => 'Reset Your Password',
+            'captcha_code' => $captcha_code, // Pass to the view
+            'error' => $_SESSION['error'] ?? null,
+            'success' => $_SESSION['success'] ?? null,
+        ];
+        unset($_SESSION['error']);
+        unset($_SESSION['success']);
+
+        $this->view('auth/forgot_password', $data);
+    }
+
+    /**
+     * Handles the submission of the forgot password form (code verification).
+     * If the code is correct and user is found, redirects to the reset password page.
+     */
+    public function processForgotPasswordRequest()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $identifier = trim($_POST['identifier'] ?? '');
+            $captcha_input = trim($_POST['captcha_input'] ?? '');
+            $stored_captcha_code = $_SESSION['captcha_code'] ?? null;
+
+            // 1. Validate inputs and captcha
+            if (empty($identifier) || empty($captcha_input)) {
+                $_SESSION['error'] = 'All fields are required.';
+                header('Location: /pcbuild/public/forgot-password');
+                exit();
+            }
+
+            // Case-insensitive comparison for captcha
+            if (strtoupper($captcha_input) !== strtoupper($stored_captcha_code)) {
+                $_SESSION['error'] = 'Incorrect code. Please try again.';
+                // Regenerate captcha on error for security
+                unset($_SESSION['captcha_code']);
+                header('Location: /pcbuild/public/forgot-password');
+                exit();
+            }
+
+            // 2. Find the user by username or email
+            $user = $this->userModel->findByUsernameOrEmail($identifier);
+
+            if ($user) {
+                // Captcha correct and user found, store user ID in session for password reset
+                $_SESSION['password_reset_user_id'] = $user['id'];
+                unset($_SESSION['captcha_code']); // Clear captcha once used
+
+                $_SESSION['success'] = 'Code verified. Please set your new password.';
+                header('Location: /pcbuild/public/reset-password');
+                exit();
+            } else {
+                // User not found, but to prevent enumeration, act as if code was wrong or just generic error
+                $_SESSION['error'] = 'Invalid username/email or incorrect code. Please try again.';
+                unset($_SESSION['captcha_code']);
+                header('Location: /pcbuild/public/forgot-password');
+                exit();
+            }
+        } else {
+            header('Location: /pcbuild/public/forgot-password');
+            exit();
+        }
+    }
+
+    /**
+     * Displays the password reset form.
+     * Accessible only if user ID is in session (from successful code verification).
+     */
+    public function showResetPassword()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Check if a user ID is set in the session, meaning they've passed the code verification
+        if (!isset($_SESSION['password_reset_user_id'])) {
+            $_SESSION['error'] = 'Access denied. Please start the password reset process from the "Forgot Password" page.';
+            header('Location: /pcbuild/public/forgot-password');
+            exit();
+        }
+
+        $data = [
+            'title' => 'Set New Password',
+            'error' => $_SESSION['error'] ?? null,
+            'success' => $_SESSION['success'] ?? null,
+            // Flag to indicate if there was an initial error preventing form display (e.g., direct access)
+            'error_code_mismatch' => false // Initialize this, will be set true if direct access to reset-password
+        ];
+        
+        // If accessed directly without session variable, set an error
+        if (empty($_SESSION['password_reset_user_id'])) {
+            $data['error'] = 'Invalid access to password reset. Please go back to the forgot password page.';
+            $data['error_code_mismatch'] = true;
+        }
+
+        unset($_SESSION['error']);
+        unset($_SESSION['success']);
+
+        $this->view('auth/reset_password', $data);
+    }
+
+    /**
+     * Handles the submission of the password reset form.
+     * Updates the user's password and clears the session variable.
+     */
+    public function resetPassword()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Ensure user ID is present in session
+        if (!isset($_SESSION['password_reset_user_id'])) {
+            $_SESSION['error'] = 'Access denied. Please start the password reset process from the "Forgot Password" page.';
+            header('Location: /pcbuild/public/forgot-password');
+            exit();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userId = $_SESSION['password_reset_user_id'];
+            $newPassword = $_POST['password'] ?? '';
+            $confirmNewPassword = $_POST['confirm_password'] ?? '';
+
+            // 1. Validate input
+            if (empty($newPassword) || empty($confirmNewPassword)) {
+                $_SESSION['error'] = 'All fields are required.';
+                header('Location: /pcbuild/public/reset-password');
+                exit();
+            }
+
+            if ($newPassword !== $confirmNewPassword) {
+                $_SESSION['error'] = 'New passwords do not match.';
+                header('Location: /pcbuild/public/reset-password');
+                exit();
+            }
+
+            if (strlen($newPassword) < 6) {
+                $_SESSION['error'] = 'Password must be at least 6 characters long.';
+                header('Location: /pcbuild/public/reset-password');
+                exit();
+            }
+
+            // 2. Update password
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+            $updated = $this->userModel->updatePassword($userId, $hashedPassword); // This method is in User.php
+
+            if ($updated) {
+                // Password updated successfully, clear the session variable
+                unset($_SESSION['password_reset_user_id']);
+                $_SESSION['success'] = 'Your password has been reset successfully. You can now log in with your new password.';
+                header('Location: /pcbuild/public/login');
+                exit();
+            } else {
+                $_SESSION['error'] = 'Failed to reset password. Please try again.';
+                header('Location: /pcbuild/public/reset-password');
+                exit();
+            }
+        } else {
+            // If accessed directly via GET, redirect to the show method
+            header('Location: /pcbuild/public/reset-password');
+            exit();
+        }
     }
 }

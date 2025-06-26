@@ -186,11 +186,11 @@ if (session_status() == PHP_SESSION_NONE) {
                     <div class="w-4"></div>
 
                     <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']): ?>
-                        <a href="/pcbuild/public/admin" class="text-gray-300 text-sm hover:text-white hover:underline transition-colors">
-                            Welcome Admin, <span class="font-semibold"><?php echo htmlspecialchars($_SESSION['username']); ?></span>!
-                        </a>
+                        <a href="/pcbuild/public/admin/dashboard" class="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors">
+                            Administration </a>
                     <?php else: ?>
-                        <span class="text-gray-300 text-sm">Welcome, <span class="font-semibold"><?php echo htmlspecialchars($_SESSION['username']); ?></span>!</span>
+                        <a href="/pcbuild/public/profile" class="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors">
+                            Manage Profile </a>
                     <?php endif; ?>
 
                     <a href="javascript:void(0);" id="logout-button" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors">Logout</a>

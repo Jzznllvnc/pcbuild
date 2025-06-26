@@ -1,21 +1,24 @@
 <?php
 
 require_once BASE_PATH . 'app/controllers/BaseController.php';
-require_once BASE_PATH . 'app/models/Order.php'; // Ensure Order model is included
+require_once BASE_PATH . 'app/models/Product.php';
+require_once BASE_PATH . 'app/models/Order.php';
+require_once BASE_PATH . 'app/models/User.php';
 
 class CheckoutController extends BaseController
 {
+    protected $productModel;
     protected $orderModel;
+    protected $userModel;
 
     public function __construct(PDO $pdo)
     {
         parent::__construct($pdo);
+        $this->productModel = new Product($pdo);
         $this->orderModel = new Order($pdo);
+        $this->userModel = new User($pdo);
     }
 
-    /**
-     * Displays the checkout page (now the shipping form).
-     */
     public function index()
     {
         // Start session if not already started
@@ -30,18 +33,28 @@ class CheckoutController extends BaseController
             exit();
         }
 
+        $cartItems = $_SESSION['cart'] ?? [];
+        $totalPrice = array_sum(array_map(function($item) {
+            return $item['price'] * $item['quantity'];
+        }, $cartItems));
+
+        $user = null;
+        if (isset($_SESSION['user_id'])) {
+            $userId = $_SESSION['user_id'];
+            $user = $this->userModel->findById($userId);
+        }
+
         $data = [
-            'title' => 'Complete Your Order'
+            'title' => 'Complete Your Order',
+            'cartItems' => $cartItems, // Ensure cartItems are passed if needed for summary
+            'totalPrice' => $totalPrice, // Ensure totalPrice is passed if needed for summary
+            'user' => $user // Pass user data to the view
         ];
 
         // This will render the multi-step form within checkout/index.php
         $this->view('checkout/index', $data);
     }
 
-    /**
-     * Processes the order submission from the final payment step.
-     * Receives all shipping and payment data via POST.
-     */
     public function processOrder()
     {
         // Start session if not already started
@@ -51,14 +64,14 @@ class CheckoutController extends BaseController
 
         // Check if user is logged in
         if (!isset($_SESSION['user_id'])) {
-            $_SESSION['error'] = 'You must be logged in to process your order.';
+            $_SESSION['error'] = 'You must be logged in to complete a purchase.';
             header('Location: /pcbuild/public/login');
             exit();
         }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $_SESSION['error'] = 'Invalid request method.';
-            header('Location: /pcbuild/public/cart'); // Redirect to cart or appropriate page
+            $_SESSION['error'] = 'Invalid request method for checkout process.';
+            header('Location: /pcbuild/public/checkout'); // Redirect to cart or appropriate page
             exit();
         }
 
@@ -98,7 +111,6 @@ class CheckoutController extends BaseController
         if (empty($shippingMethod)) $errors[] = 'Shipping method is required.';
 
         // Validation for SHIPPING Mobile Number (based on country code)
-        // This is a simplified example; a real application would have a comprehensive list of regex patterns per country code.
         // The frontend already sends the *digits only* for shipping mobile number.
         if ($countryCode === '+63') {
             // For PH, expected 10 digits (e.g., 9123456789)
@@ -118,7 +130,6 @@ class CheckoutController extends BaseController
                  $errors[] = 'Please enter a valid phone number for shipping.';
              }
         }
-
 
         // Validation for PAYMENT Mobile Number (conditional for GCash/PayPal)
         if ($paymentMethod === 'GCash' || $paymentMethod === 'PayPal') {
@@ -176,7 +187,8 @@ class CheckoutController extends BaseController
                 ]
             ];
 
-            $orderId = $this->orderModel->createOrder($orderDataForCreation); // Pass the entire array
+            // Corrected: The Order model's createOrder now correctly maps this single array.
+            $orderId = $this->orderModel->createOrder($orderDataForCreation);
 
             if ($orderId) {
                 // Now add cart items to the order
@@ -223,7 +235,7 @@ class CheckoutController extends BaseController
         $order = null;
         if ($orderId) {
             // Assuming getOrderById can fetch comprehensive order details including shipping and items
-            $order = $this->orderModel->getOrderById($orderId); // Added this method to Order model
+            $order = $this->orderModel->getOrderById($orderId);
         }
 
         $data = [

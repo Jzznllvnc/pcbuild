@@ -149,6 +149,12 @@ class Router
         $this->post('/register', 'AuthController@register');   // Process registration form submission
         $this->get('/logout', 'AuthController@logout');       // Handle logout (CHANGED TO GET)
 
+        // Password Reset Routes (UPDATED FOR CODE-BASED RESET)
+        $this->get('/forgot-password', 'AuthController@showForgotPassword');       // Display forgot password form with code
+        $this->post('/forgot-password', 'AuthController@processForgotPasswordRequest'); // Process username/email and code
+        $this->get('/reset-password', 'AuthController@showResetPassword');         // Display set new password form
+        $this->post('/reset-password', 'AuthController@resetPassword');            // Process new password submission
+
         // Cart Routes
         $this->get('/cart', 'CartController@index'); // Display the shopping cart
 
@@ -167,6 +173,11 @@ class Router
 
         // User Dashboard Route
         $this->get('/dashboard', 'UserController@dashboard'); // User dashboard and order history
+
+        // User Profile Routes
+        $this->get('/profile', 'UserController@profile'); // Display user profile page
+        $this->post('/profile/update-general', 'UserController@updateGeneralInformation'); // Handle profile general info update
+        $this->post('/profile/update-phone', 'UserController@updatePhoneNumber'); // Handle phone number update (NEW)
 
         // Admin Routes
         $this->get('/admin', 'AdminController@dashboard'); // Admin dashboard for /admin

@@ -55,8 +55,8 @@
                                     <option value="+86" data-placeholder="e.g., 138-0013-8000">CN +86</option>
                                     </select>
                                 <input type="tel" id="mobile_number" name="mobile_number" placeholder="e.g., 9123456789" required
-                                       class="flex-grow px-4 py-2 border border-gray-300 rounded-r-md shadow-sm focus:outline-none focus:ring-[--color-primary-orange] focus:border-[--color-primary-orange] sm:text-sm">
-                            </div>
+                                       class="flex-grow px-4 py-2 border border-gray-300 rounded-r-md shadow-sm focus:outline-none focus:ring-[--color-primary-orange] focus:border-[--color-primary-orange] sm:text-sm"
+                                       value="<?php echo htmlspecialchars($user['phone_number'] ?? ''); ?>"> </div>
                         </div>
                     </div>
 
