@@ -183,4 +183,19 @@ class UserController extends BaseController
         header('Location: /pcbuild/public/profile');
         exit();
     }
+
+    public function clearNewOrderNotificationApi()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Only clear if the user is logged in
+        if (isset($_SESSION['user_id'])) {
+            unset($_SESSION['new_order_notification']);
+            $this->jsonResponse(['success' => true, 'message' => 'Notification cleared.']);
+        } else {
+            $this->jsonResponse(['success' => false, 'error' => 'Not logged in.'], 401);
+        }
+    }
 }

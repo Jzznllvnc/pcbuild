@@ -37,25 +37,13 @@
 </div>
 
 <script>
-    // Ensure renderCartItems is called when the DOM is fully loaded for this page
     document.addEventListener('DOMContentLoaded', () => {
         // Only call renderCartItems if the container exists, ensuring it's the cart page
         if (document.getElementById('cart-items-container')) {
-            renderCartItems();
+            renderCartItems(); // This function in main.js now handles fetching based on login status
         }
-
-        // Adjust the "Proceed to Checkout" button's state based on cart emptiness and login status
-        const checkoutButton = document.getElementById('proceed-to-checkout-button');
-        const cart = getCart(); // Get current cart items
-
-        if (cart.length === 0) {
-            // If cart is empty, always disable the button and show appropriate message
-            checkoutButton.disabled = true;
-            checkoutButton.classList.add('opacity-50', 'cursor-not-allowed');
-            checkoutButton.textContent = 'Your cart is empty'; // Override text if cart is empty
-        } else {
-            // If cart has items, and user is not logged in, PHP has already handled the text and disabled state
-            // If cart has items and user is logged in, PHP has rendered the active link
-        }
+        // The logic for enabling/disabling the checkout button based on cart emptiness and login status
+        // is now fully encapsulated within the renderCartItems -> updateCheckoutButtonState functions in main.js.
+        // So, the old explicit update here is removed.
     });
 </script>

@@ -274,43 +274,47 @@ class AdminController extends BaseController
      */
     public function toggleUserBan($userId)
     {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $_SESSION['error'] = 'Invalid request method for user ban toggle.';
-            header('Location: /pcbuild/public/admin/users');
-            exit();
+            $this->jsonResponse(['success' => false, 'error' => 'Invalid request method.'], 405);
+            return;
+        }
+
+        // Ensure user is admin (redundant with constructor, but good for specific actions)
+        if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
+            $this->jsonResponse(['success' => false, 'error' => 'Authentication required or not an admin.'], 403);
+            return;
         }
 
         $user = $this->userModel->findById($userId);
 
         if (!$user) {
-            $_SESSION['error'] = 'User not found.';
-            header('Location: /pcbuild/public/admin/users');
-            exit();
+            $this->jsonResponse(['success' => false, 'error' => 'User not found.'], 404);
+            return;
         }
 
         // Prevent banning/deleting oneself if user_id is the current admin's ID
         if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $userId) {
-            $_SESSION['error'] = 'You cannot ban or delete your own admin account.';
-            header('Location: /pcbuild/public/admin/users');
-            exit();
+            $this->jsonResponse(['success' => false, 'error' => 'You cannot ban or delete your own admin account.'], 403);
+            return;
         }
 
         if ($user['is_banned']) {
             if ($this->userModel->unbanUser($userId)) {
-                $_SESSION['success'] = 'User ' . htmlspecialchars($user['username']) . ' has been unbanned.';
+                $this->jsonResponse(['success' => true, 'message' => 'User ' . htmlspecialchars($user['username']) . ' has been unbanned.']);
             } else {
-                $_SESSION['error'] = 'Failed to unban user ' . htmlspecialchars($user['username']) . '.';
+                $this->jsonResponse(['success' => false, 'error' => 'Failed to unban user ' . htmlspecialchars($user['username']) . '.'], 500);
             }
         } else {
             if ($this->userModel->banUser($userId)) {
-                $_SESSION['success'] = 'User ' . htmlspecialchars($user['username']) . ' has been banned.';
+                $this->jsonResponse(['success' => true, 'message' => 'User ' . htmlspecialchars($user['username']) . ' has been banned.']);
             } else {
-                $_SESSION['error'] = 'Failed to ban user ' . htmlspecialchars($user['username']) . '.';
+                $this->jsonResponse(['success' => false, 'error' => 'Failed to ban user ' . htmlspecialchars($user['username']) . '.'], 500);
             }
         }
-
-        header('Location: /pcbuild/public/admin/users');
-        exit();
     }
 
     /**
@@ -319,35 +323,39 @@ class AdminController extends BaseController
      */
     public function deleteUserAccount($userId)
     {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $_SESSION['error'] = 'Invalid request method for user deletion.';
-            header('Location: /pcbuild/public/admin/users');
-            exit();
+            $this->jsonResponse(['success' => false, 'error' => 'Invalid request method.'], 405);
+            return;
+        }
+
+        // Ensure user is admin (redundant with constructor, but good for specific actions)
+        if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
+            $this->jsonResponse(['success' => false, 'error' => 'Authentication required or not an admin.'], 403);
+            return;
         }
 
         $user = $this->userModel->findById($userId);
 
         if (!$user) {
-            $_SESSION['error'] = 'User not found.';
-            header('Location: /pcbuild/public/admin/users');
-            exit();
+            $this->jsonResponse(['success' => false, 'error' => 'User not found.'], 404);
+            return;
         }
 
         // Prevent banning/deleting oneself if user_id is the current admin's ID
         if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $userId) {
-            $_SESSION['error'] = 'You cannot ban or delete your own admin account.';
-            header('Location: /pcbuild/public/admin/users');
-            exit();
+            $this->jsonResponse(['success' => false, 'error' => 'You cannot ban or delete your own admin account.'], 403);
+            return;
         }
 
         if ($this->userModel->deleteUser($userId)) {
-            $_SESSION['success'] = 'User ' . htmlspecialchars($user['username']) . ' and all associated data have been deleted.';
+            $this->jsonResponse(['success' => true, 'message' => 'User ' . htmlspecialchars($user['username']) . ' and all associated data have been deleted.']);
         } else {
-            $_SESSION['error'] = 'Failed to delete user ' . htmlspecialchars($user['username']) . '.';
+            $this->jsonResponse(['success' => false, 'error' => 'Failed to delete user ' . htmlspecialchars($user['username']) . '.'], 500);
         }
-
-        header('Location: /pcbuild/public/admin/users');
-        exit();
     }
 
     /**

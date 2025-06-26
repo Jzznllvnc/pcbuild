@@ -158,6 +158,14 @@ class Router
         // Cart Routes
         $this->get('/cart', 'CartController@index'); // Display the shopping cart
 
+        // Cart API Endpoints
+        $this->post('/cart/add', 'CartController@addOrUpdateCartItemApi');
+        $this->post('/cart/update-quantity', 'CartController@setCartItemQuantityApi');
+        $this->post('/cart/remove', 'CartController@removeCartItemApi');
+        $this->post('/cart/clear', 'CartController@clearCartApi');
+        $this->post('/cart/sync', 'CartController@syncCartApi');
+        $this->get('/cart/get', 'CartController@getCartApi'); // For fetching cart content for logged-in users
+
         // AI Chat Routes
         $this->get('/ai-chat-content', 'AiChatController@getChatContent'); // Route to fetch ONLY chat content for the pop-up
         $this->post('/ai-chat/api', 'AiChatController@chatApi');  // API endpoint for AI chat requests
@@ -170,6 +178,9 @@ class Router
         $this->get('/checkout', 'CheckoutController@index'); // Display checkout form
         $this->post('/checkout/process', 'CheckoutController@processOrder'); // Process order/simulated payment
         $this->get('/checkout/success', 'CheckoutController@success'); // Order confirmation page
+
+        // User API Endpoints
+        $this->post('/user/clear-order-notification', 'UserController@clearNewOrderNotificationApi');
 
         // User Dashboard Route
         $this->get('/dashboard', 'UserController@dashboard'); // User dashboard and order history

@@ -171,7 +171,12 @@ if (session_status() == PHP_SESSION_NONE) {
             <div class="flex items-center space-x-4">
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <a href="/pcbuild/public/products" class="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors">Products</a>
-                    <a href="/pcbuild/public/dashboard" class="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors">Order History</a>
+                    <a href="/pcbuild/public/dashboard" id="order-history-link" class="relative rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors flex items-center">
+                        Order History
+                        <span id="new-order-notification" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">
+                            1
+                        </span>
+                    </a>
                     <a href="/pcbuild/public/build-rate" class="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors">Rate Your Build</a>
 
                     <a href="/pcbuild/public/cart" class="relative rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors flex items-center">
@@ -212,5 +217,15 @@ if (session_status() == PHP_SESSION_NONE) {
                 <?php endif; ?>
             </div>
         </nav>
+    <script>
+        const isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+        const performCartSync = <?php echo isset($_SESSION['sync_cart_on_load']) && $_SESSION['sync_cart_on_load'] === true ? 'true' : 'false'; ?>;
+        <?php unset($_SESSION['sync_cart_on_load']); // Clear the flag immediately after setting JS variable ?>
+        
+        // Add this line for new order notification
+        const hasNewOrderNotification = <?php echo isset($_SESSION['new_order_notification']) && $_SESSION['new_order_notification'] === true ? 'true' : 'false'; ?>;
+        <?php unset($_SESSION['new_order_notification']); // Clear the flag immediately after reading ?>
+    </script>
+</head>
     </header>
     <main class="flex-grow">

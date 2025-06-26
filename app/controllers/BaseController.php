@@ -37,4 +37,17 @@ class BaseController
         require_once $filePath;
         require_once BASE_PATH . 'includes/footer.php';
     }
+
+    /**
+     * Helper method to send a JSON response and terminate script execution.
+     * @param array $data The data array to be encoded as JSON.
+     * @param int $statusCode The HTTP status code to send (default: 200 OK).
+     */
+    protected function jsonResponse(array $data, int $statusCode = 200)
+    {
+        header('Content-Type: application/json; charset=utf-8');
+        http_response_code($statusCode);
+        echo json_encode($data);
+        exit(); // Crucially stops further script execution and output
+    }
 }

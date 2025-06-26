@@ -285,7 +285,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const cart = getCart(); // From main.js
         const checkoutCartSummary = document.getElementById('checkout-cart-summary');
         const cartSubtotalSpan = document.getElementById('cart-subtotal');
         const cartShippingCostSpan = document.getElementById('cart-shipping-cost');
@@ -315,6 +314,7 @@
         let subtotal = 0;
         let shippingCost = 0;
         let total = 0;
+        let currentCartData = []; // Store the actual cart items here
 
         // Phone Number Formats for Shipping Page
         const countryPhoneFormats = {
@@ -388,28 +388,25 @@
             });
         }
 
-
         // Function to control visibility of action buttons based on active section
         function updateActionButtonsVisibility() {
             if (shippingSection.classList.contains('active')) {
-                // On shipping page: show continue button outside, hide others
                 continueToPaymentButtonOutsideSummary.style.display = 'block';
                 placeOrderButton.style.display = 'none';
-                backToShippingButton.style.display = 'none'; // Hide back button on shipping
+                backToShippingButton.style.display = 'none';
             } else if (paymentSection.classList.contains('active')) {
-                // On payment page: hide continue button, show place order and back button
                 continueToPaymentButtonOutsideSummary.style.display = 'none';
                 placeOrderButton.style.display = 'block';
-                backToShippingButton.style.display = 'block'; // Ensure back button is visible
+                backToShippingButton.style.display = 'block';
             }
         }
 
-
-        function updateOrderSummary() {
+        function updateOrderSummary(cartItems) {
+            currentCartData = cartItems; // Store the fetched cart items
             subtotal = 0;
             let summaryHtml = '';
 
-            if (cart.length === 0) {
+            if (currentCartData.length === 0) {
                 summaryHtml = '<p class="text-center text-red-600 font-semibold py-4">Your cart is empty. Please add items to proceed to checkout.</p>';
                 continueToPaymentButtonShipping.disabled = true;
                 continueToPaymentButtonShipping.classList.add('opacity-50', 'cursor-not-allowed');
@@ -418,7 +415,7 @@
                 placeOrderButton.disabled = true;
                 placeOrderButton.classList.add('opacity-50', 'cursor-not-allowed');
             } else {
-                cart.forEach(item => {
+                currentCartData.forEach(item => {
                     const itemTotal = item.price * item.quantity;
                     subtotal += itemTotal;
                     summaryHtml += `
@@ -453,21 +450,19 @@
             total = subtotal + shippingCost + estimatedTaxes;
 
             checkoutCartSummary.innerHTML = summaryHtml;
-            cartSubtotalSpan.textContent = subtotal.toFixed(2); // Subtotal here reflects the total before taxes
+            cartSubtotalSpan.textContent = subtotal.toFixed(2);
             cartShippingCostSpan.textContent = shippingCost.toFixed(2);
-            cartTotalAmountSpan.textContent = total.toFixed(2); // This total includes shipping and fixed taxes
+            cartTotalAmountSpan.textContent = total.toFixed(2);
 
-            // Dynamically apply max-height and overflow-y-auto for cart summary
-            const maxVisibleItems = 3; 
+            const maxVisibleItems = 3;
             const actualProductRows = checkoutCartSummary.querySelectorAll('.product-summary-item').length;
 
-            if (actualProductRows > maxVisibleItems) { 
-                // Using requestAnimationFrame to ensure repaint/layout is done
+            if (actualProductRows > maxVisibleItems) {
                 requestAnimationFrame(() => {
-                     const firstItem = checkoutCartSummary.querySelector('.product-summary-item');
+                    const firstItem = checkoutCartSummary.querySelector('.product-summary-item');
                     if (firstItem) {
                         const itemHeight = firstItem.getBoundingClientRect().height;
-                        const targetMaxHeight = (itemHeight * maxVisibleItems) + 25; // Added buffer
+                        const targetMaxHeight = (itemHeight * maxVisibleItems) + 25;
                         checkoutCartSummary.style.maxHeight = `${targetMaxHeight}px`;
                         checkoutCartSummary.style.overflowY = 'auto';
                         checkoutCartSummary.style.paddingRight = '1rem';
@@ -482,11 +477,28 @@
             }
         }
 
-        updateOrderSummary(); // Initial call on DOMContentLoaded
+        // Initial cart load based on login status
+        // `isLoggedIn` is a global constant set in header.php
+        if (isLoggedIn) {
+            performActionViaFetch('/pcbuild/public/cart/get', 'GET')
+                .then(response => {
+                    if (response.success && response.cart) {
+                        updateOrderSummary(response.cart);
+                    } else {
+                        updateOrderSummary([]); // Pass an empty array if cart not fetched
+                        alertMessage('error', response.error || 'Failed to load cart for checkout.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching cart for checkout:', error);
+                    updateOrderSummary([]); // Pass an empty array on fetch error
+                    alertMessage('error', 'An error occurred while loading your cart.');
+                });
+        } else {
+            // For guests, still rely on localStorage
+            updateOrderSummary(getCart()); // getCart is from main.js
+        }
 
-        shippingMethodRadios.forEach(radio => {
-            radio.addEventListener('change', updateOrderSummary);
-        });
 
         function updatePhoneNumberField(countryCodeElement, phoneNumberElement) {
             const selectedOption = countryCodeElement.options[countryCodeElement.selectedIndex];
@@ -557,7 +569,7 @@
             document.getElementById('h_notes').value = document.getElementById('notes').value;
             document.getElementById('h_shipping_method').value = document.querySelector('input[name="shipping_method"]:checked').value;
             document.getElementById('h_shipping_cost').value = shippingCost.toFixed(2);
-            document.getElementById('h_cart_items_json').value = JSON.stringify(cart);
+            document.getElementById('h_cart_items_json').value = JSON.stringify(currentCartData); // Use currentCartData
             document.getElementById('h_total_amount').value = total.toFixed(2);
 
             // Animate transition
@@ -572,10 +584,10 @@
             setTimeout(() => {
                 paymentSection.style.visibility = 'visible';
                 setMainContentColumnHeight(); // Adjust height (min-height) for parent content
-                updateOrderSummary();
-                
+                updateOrderSummary(currentCartData); // Pass currentCartData explicitly
+
                 // Directly control button visibility here for robustness
-                backToShippingButton.style.display = 'block'; 
+                backToShippingButton.style.display = 'block';
                 placeOrderButton.style.display = 'block';
                 continueToPaymentButtonOutsideSummary.style.display = 'none';
             }, 10);
@@ -602,18 +614,18 @@
             shippingSection.style.visibility = 'visible'; // Ensure shipping is visible
 
             // Trigger reflow/re-render to ensure height calculation is correct
-            shippingSection.offsetWidth; 
+            shippingSection.offsetWidth;
 
             setTimeout(() => {
                 setMainContentColumnHeight(); // Adjust height (min-height) for parent content
-                updateOrderSummary();
+                updateOrderSummary(currentCartData); // Pass currentCartData explicitly
 
                 // Directly control button visibility here for robustness
-                backToShippingButton.style.display = 'none'; 
+                backToShippingButton.style.display = 'none';
                 placeOrderButton.style.display = 'none';
                 continueToPaymentButtonOutsideSummary.style.display = 'block';
             }, 10);
-           
+
 
             stepPayment.classList.remove('text-[--color-primary-orange]');
             stepPayment.classList.add('text-gray-500');
@@ -627,7 +639,7 @@
             if (selectedPaymentMethod && (selectedPaymentMethod.value === 'GCash' || selectedPaymentMethod.value === 'PayPal')) {
                 paymentMobileNumberGroup.classList.remove('hidden');
                 paymentMobileNumberDisplayInput.setAttribute('required', 'required');
-                
+
                 paymentMobileNumberDisplayInput.placeholder = "e.g., 09123456789";
                 paymentMobileNumberDisplayInput.minLength = 11;
                 paymentMobileNumberDisplayInput.maxLength = 11;
@@ -642,7 +654,7 @@
 
                 paymentMobileNumberError.classList.add('hidden');
                 paymentMobileNumberError.textContent = '';
-                
+
                 paymentMobileNumberDisplayInput.focus();
             } else {
                 paymentMobileNumberGroup.classList.add('hidden');
@@ -650,7 +662,6 @@
                 paymentMobileNumberDisplayInput.value = '';
                 paymentMobileNumberError.classList.add('hidden');
             }
-            // Button visibility is now controlled directly by goToPayment/goToShipping, not here.
         }
 
         paymentMethodRadios.forEach(radio => {
@@ -673,9 +684,9 @@
                 return;
             }
 
-            if (!paymentMobileNumberGroup.classList.contains('hidden') && 
+            if (!paymentMobileNumberGroup.classList.contains('hidden') &&
                 (paymentMethodSelected.value === 'GCash' || paymentMethodSelected.value === 'PayPal')) {
-                
+
                 const mobileNumber = paymentMobileNumberDisplayInput.value.trim();
                 const phElevenDigitRegex = /^09\d{9}$/;
 

@@ -3,12 +3,10 @@
 // Make sure to include the BaseController and the User model
 require_once BASE_PATH . 'app/controllers/BaseController.php';
 require_once BASE_PATH . 'app/models/User.php';
-// Removed: require_once BASE_PATH . 'app/models/PasswordReset.php'; // No longer needed for this flow
 
 class AuthController extends BaseController
 {
     protected $userModel;
-    // Removed: protected $passwordResetModel; // No longer needed for this flow
 
     /**
      * Constructor for AuthController.
@@ -19,7 +17,6 @@ class AuthController extends BaseController
     {
         parent::__construct($pdo); // Call the parent constructor to set $this->pdo
         $this->userModel = new User($pdo); // Instantiate the User model
-        // Removed: $this->passwordResetModel = new PasswordReset($pdo); // No longer needed for this flow
     }
 
     /**
@@ -84,6 +81,9 @@ class AuthController extends BaseController
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['is_admin'] = (bool)$user['is_admin']; // Store admin status
                 $_SESSION['success'] = 'Welcome back, ' . htmlspecialchars($user['username']) . '!';
+
+                // Add this line to signal cart sync on next page load
+                $_SESSION['sync_cart_on_load'] = true;
 
                 // Update last login timestamp
                 $this->userModel->updateLastLogin($user['id']);
@@ -202,6 +202,9 @@ class AuthController extends BaseController
             $userId = $this->userModel->createUser($username, $email, $passwordHash);
 
             if ($userId) {
+                // Add this line to signal cart sync on next page load
+                // $_SESSION['sync_cart_on_load'] = true;
+
                 $_SESSION['success'] = 'Account created successfully! Please log in.';
                 error_log("Auth Controller: User registration successful. User ID: {$userId}");
                 header('Location: /pcbuild/public/login');
@@ -416,7 +419,7 @@ class AuthController extends BaseController
 
             // 2. Update password
             $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-            $updated = $this->userModel->updatePassword($userId, $hashedPassword); // This method is in User.php
+            $updated = $this->userModel->updatePassword($userId, $hashedPassword);
 
             if ($updated) {
                 // Password updated successfully, clear the session variable

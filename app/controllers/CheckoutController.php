@@ -203,6 +203,9 @@ class CheckoutController extends BaseController
                     exit();
                 }
 
+                // Add this line to set the new order notification flag
+                $_SESSION['new_order_notification'] = true;
+
                 $_SESSION['last_order_id'] = $orderId; // Store order ID for success page
                 header('Location: /pcbuild/public/checkout/success');
                 exit();
