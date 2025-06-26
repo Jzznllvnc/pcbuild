@@ -209,23 +209,36 @@ class AdminController extends BaseController
      */
     public function deleteProduct($id)
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { // Expect POST for deletion for security
-            $_SESSION['error'] = 'Invalid request method for deletion.';
-            header('Location: /pcbuild/public/admin/products');
+        // Set header to return JSON response
+        header('Content-Type: application/json');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['error' => 'Invalid request method for deletion.']);
+            http_response_code(400); // Bad Request
+            exit();
+        }
+
+        // Check if user is logged in and is admin
+        // This is a redundant check if the constructor already handles it, but good for specific action
+        if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
+            echo json_encode(['error' => 'Authentication required or not an admin.']);
+            http_response_code(403); // Forbidden
             exit();
         }
 
         $deleted = $this->productModel->deleteProduct($id);
 
         if ($deleted === 'referenced') {
-            $_SESSION['error'] = 'Cannot delete product: It is linked to existing orders.';
+            echo json_encode(['error' => 'Cannot delete product: It is linked to existing orders.']);
+            http_response_code(409); // Conflict
         } elseif ($deleted) {
-            $_SESSION['success'] = 'Product deleted successfully!';
+            echo json_encode(['success' => 'Product deleted successfully!']);
+            http_response_code(200); // OK
         } else {
-            $_SESSION['error'] = 'Failed to delete product. It might not exist.';
+            echo json_encode(['error' => 'Failed to delete product. It might not exist or a database error occurred.']);
+            http_response_code(500); // Internal Server Error (or 404 if not found)
         }
-        header('Location: /pcbuild/public/admin/products');
-        exit();
+        exit(); // Crucial to stop execution and send JSON response
     }
 
 
@@ -233,7 +246,7 @@ class AdminController extends BaseController
 
     /**
      * Displays the list of users.
-     * @param string|null $search_term Optional search term from URL path.
+     * @param string|null $search_term Optional term to search by username or email.
      */
     public function manageUsers($search_term = null) // Added $search_term parameter
     {

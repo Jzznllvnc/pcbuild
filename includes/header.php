@@ -193,7 +193,10 @@ if (session_status() == PHP_SESSION_NONE) {
                             Manage Profile </a>
                     <?php endif; ?>
 
-                    <a href="javascript:void(0);" id="logout-button" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors">Logout</a>
+                    <a href="javascript:void(0);" id="logout-button" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors flex items-center">
+                        <img src="/pcbuild/assets/images/logout.svg" alt="Logout Icon" class="h-5 w-5 mr-2 inline" />
+                        Logout
+                    </a>
                 <?php else: ?>
                     <a href="/pcbuild/public/products" class="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors">Products</a>
                     <a href="/pcbuild/public/cart" class="relative rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors flex items-center">

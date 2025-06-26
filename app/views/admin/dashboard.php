@@ -1,4 +1,4 @@
-<div class="container mx-auto p-8 pb-10 pt-20 bg-white shadow-lg rounded-lg mt-40 mb-40 max-w-4xl">
+<div class="container mx-auto p-8 pb-10 pt-20 bg-white shadow-lg rounded-lg mt-40 mb-20 max-w-4xl">
     <h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center">Admin Dashboard</h1>
 
     <p class="text-center text-xl text-gray-700 mb-10">Welcome back! Admin <span class="font-semibold text-[--color-primary-orange]"><?php echo htmlspecialchars($_SESSION['username'] ?? 'Admin'); ?></span></p>

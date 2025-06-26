@@ -868,12 +868,11 @@ function initializeConfirmationModals() {
         confirmActionBtn.addEventListener('click', () => {
             console.log("Custom modal confirmed button clicked."); // Debugging line
             hideConfirmationModal(); // Hides modal
-            // IMPORTANT: Get the callback before potentially clearing it in hideConfirmationModal if it was there
             const callbackToExecute = currentConfirmationCallback;
-            currentConfirmationCallback = null; // Clear it immediately before executing, or after. Safer here.
+            currentConfirmationCallback = null;
 
             if (callbackToExecute) {
-                callbackToExecute(true); // Execute callback with true for confirm
+                callbackToExecute(true);
             }
         });
     }
@@ -918,56 +917,97 @@ function initializeConfirmationModals() {
             const isBanned = target.dataset.isBanned === '1'; // Convert to boolean
             const actionUrl = `/pcbuild/public/admin/users/toggle-ban/${userId}`;
 
-            console.log("Ban/Unban button clicked. User ID:", userId, "Username:", username, "Is Banned:", isBanned); // Debugging: Button click detected
+            console.log("Ban/Unban button clicked. User ID:", userId, "Username:", username, "Is Banned:", isBanned);
 
             showConfirmationModal(
                 isBanned ? 'Unban User' : 'Ban User',
                 `Are you sure you want to ${isBanned ? 'unban' : 'ban'} user ${username}?`,
                 (confirmed) => {
                     if (confirmed) {
-                        console.log('Callback: Confirmed BAN/UNBAN for user ID:', userId); // Debugging: Callback received true
-                        performActionViaFetch(actionUrl, 'POST', {}) // Perform action via fetch
+                        console.log('Callback: Confirmed BAN/UNBAN for user ID:', userId);
+                        performActionViaFetch(actionUrl, 'POST', {})
                             .then(response => {
-                                console.log("Fetch response for Ban/Unban:", response); // Debugging: Check fetch response
-                                window.location.reload(); // Reload page to reflect changes
+                                console.log("Fetch response for Ban/Unban:", response);
+                                window.location.reload();
                             })
                             .catch(error => {
-                                console.error('Fetch error for Ban/Unban:', error); // Debugging: Log fetch error
+                                console.error('Fetch error for Ban/Unban:', error);
                                 alertMessage('error', 'An error occurred during the ban/unban action.');
                             });
                     } else {
-                        console.log('Callback: BAN/UNBAN cancelled for user ID:', userId); // Debugging: Callback received false
+                        console.log('Callback: BAN/UNBAN cancelled for user ID:', userId);
                     }
                 }
             );
         }
 
-        // Check if the clicked element (or its parent) is a Delete button
+        // Check if the clicked element (or its parent) is a Delete button for users
         if (target.matches('.js-delete-user-btn')) {
-            e.preventDefault(); // Prevent default button behavior (if any)
+            e.preventDefault();
             const userId = target.dataset.userId;
             const username = target.dataset.username;
             const actionUrl = `/pcbuild/public/admin/users/delete/${userId}`;
 
-            console.log("Delete button clicked. User ID:", userId, "Username:", username); // Debugging: Button click detected
+            console.log("Delete button clicked. User ID:", userId, "Username:", username);
 
             showConfirmationModal(
                 'Delete User',
                 `Are you sure you want to delete user ${username}? This action cannot be undone.`,
                 (confirmed) => {
                     if (confirmed) {
-                        console.log('Callback: Confirmed DELETE for user ID:', userId); // Debugging: Callback received true
-                        performActionViaFetch(actionUrl, 'POST', {}) // Perform action via fetch
+                        console.log('Callback: Confirmed DELETE for user ID:', userId);
+                        performActionViaFetch(actionUrl, 'POST', {})
                             .then(response => {
-                                console.log("Fetch response for Delete:", response); // Debugging: Check fetch response
-                                window.location.reload(); // Reload page to reflect changes
+                                console.log("Fetch response for Delete:", response);
+                                window.location.reload();
                             })
                             .catch(error => {
-                                console.error('Fetch error for Delete:', error); // Debugging: Log fetch error
+                                console.error('Fetch error for Delete:', error);
                                 alertMessage('error', 'An error occurred during the delete action.');
                             });
                     } else {
-                        console.log('Callback: DELETE cancelled for user ID:', userId); // Debugging: Callback received false
+                        console.log('Callback: DELETE cancelled for user ID:', userId);
+                    }
+                }
+            );
+        }
+
+        // Handle product deletion via custom modal
+        const deleteProductButton = target.closest('.js-delete-product-btn');
+        if (deleteProductButton) {
+            e.preventDefault();
+            const productId = deleteProductButton.dataset.productId;
+            const productName = deleteProductButton.dataset.productName;
+            const actionUrl = `/pcbuild/public/admin/products/delete/${productId}`;
+
+            console.log("Product delete button clicked. Product ID:", productId, "Product Name:", productName);
+
+            showConfirmationModal(
+                'Delete Product',
+                `Are you sure you want to delete product ${productName}? This action cannot be undone.`,
+                (confirmed) => {
+                    if (confirmed) {
+                        console.log('Callback: Confirmed DELETE for product ID:', productId);
+                        performActionViaFetch(actionUrl, 'POST', {})
+                            .then(data => {
+                                if (data && data.success) {
+                                    alertMessage('success', data.success);
+                                    // INCREASE THE DELAY HERE
+                                    setTimeout(() => {
+                                        window.location.reload();
+                                    }, 2500); // Changed to 2.5 seconds
+                                } else if (data && data.error) {
+                                    alertMessage('error', data.error);
+                                } else {
+                                    alertMessage('error', 'Unknown response from server after delete.');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Fetch error for product delete:', error);
+                                alertMessage('error', 'An error occurred while trying to delete the product.');
+                            });
+                    } else {
+                        console.log('Callback: DELETE cancelled for product ID:', productId);
                     }
                 }
             );
