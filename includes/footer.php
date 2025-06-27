@@ -44,17 +44,17 @@
                     <div class="flex flex-col items-center md:items-end">
                         <h4 class="text-lg font-semibold text-white mb-3 text-center md:text-right">Follow Us</h4>
                         <div class="flex justify-center md:justify-end items-center space-x-4">
-                            <a href="https://www.facebook.com/jazznelle.vince" class="text-[--footer-text-light] hover:text-[--footer-link-hover] transition-colors" aria-label="Facebook">
+                            <a href="https://www.facebook.com/jazznelle.vince" target="_blank" rel="noopener noreferrer" class="text-[--footer-text-light] hover:text-[--footer-link-hover] transition-colors" aria-label="Facebook">
                                 <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33V22C17.361 21.153 22 16.904 22 12z" clip-rule="evenodd" />
                                 </svg>
                             </a>
-                            <a href="https://x.com/jzznllvnc_" class="text-[--footer-text-light] hover:text-[--footer-link-hover] transition-colors" aria-label="Twitter">
+                            <a href="https://x.com/jzznllvnc_" target="_blank" rel="noopener noreferrer" class="text-[--footer-text-light] hover:text-[--footer-link-hover] transition-colors" aria-label="Twitter">
                                 <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.007-.532A8.318 8.318 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 014 9.402v.053a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
                                 </svg>
                             </a>
-                            <a href="https://www.instagram.com/jzznllvnc/" class="text-[--footer-text-light] hover:text-[--footer-link-hover] transition-colors" aria-label="Instagram">
+                            <a href="https://www.instagram.com/jzznllvnc/" target="_blank" rel="noopener noreferrer" class="text-[--footer-text-light] hover:text-[--footer-link-hover] transition-colors" aria-label="Instagram">
                                 <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm3.333 4a.667.667 0 100 1.334.667.667 0 000-1.334zm-2.666 4a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zM12 10.667a1.333 1.333 0 100 2.666 1.333 1.333 0 000-2.666z" clip-rule="evenodd" />
                                 </svg>
