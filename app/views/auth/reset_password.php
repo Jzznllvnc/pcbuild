@@ -1,4 +1,4 @@
-<div class="relative w-full h-full flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-cover bg-center pt-60 pb-72" style="background-image: url('/pcbuild/assets/images/CraftWisebg.png'); background-size: cover; background-position: center;">
+<div class="relative w-full h-full flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-cover min-h-screen bg-center pt-40 pb-72" style="background-image: url('/pcbuild/assets/images/CraftWisebg.png'); background-size: cover; background-position: center;">
     <div class="relative z-10 p-8 sm:p-10 bg-white shadow-2xl rounded-xl w-full max-w-md mx-auto">
         <h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center leading-tight">
             Set New Password

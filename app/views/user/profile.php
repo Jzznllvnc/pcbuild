@@ -1,4 +1,4 @@
-<div class="container mx-auto p-8 pt-20 bg-white shadow-lg rounded-lg mt-40 mb-16 max-w-5xl">
+<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg mt-40 mb-16 max-w-5xl">
     <h1 class="text-4xl font-extrabold text-gray-900 mb-10 text-center">User Profile</h1>
     <p class="text-center text-gray-600 mb-10">Manage your details, update username and phone number, or change your password.</p>
 
