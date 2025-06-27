@@ -1,22 +1,6 @@
 <div class="container mx-auto p-8 pt-20 bg-white shadow-lg rounded-lg mt-40 mb-16 max-w-5xl">
     <h1 class="text-4xl font-extrabold text-gray-900 mb-10 text-center">User Profile</h1>
-    <p class="text-center text-gray-600 mb-10">Manage your details, view your tier status and change your password.</p>
-
-    <?php if (isset($success) && $success): ?>
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative mb-4 transition-all duration-300 ease-in-out transform scale-95 opacity-0 animate-fadeIn" role="alert">
-            <strong class="font-bold">Success!</strong>
-            <span class="block sm:inline"><?php echo htmlspecialchars($success); ?></span>
-        </div>
-        <style>.animate-fadeIn { animation: fadeIn 0.5s forwards; } @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }</style>
-    <?php endif; ?>
-
-    <?php if (isset($error) && $error): ?>
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-4 transition-all duration-300 ease-in-out transform scale-95 opacity-0 animate-fadeIn" role="alert">
-            <strong class="font-bold">Error!</strong>
-            <span class="block sm:inline"><?php echo htmlspecialchars($error); ?></span>
-        </div>
-        <style>.animate-fadeIn { animation: fadeIn 0.5s forwards; } @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }</style>
-    <?php endif; ?>
+    <p class="text-center text-gray-600 mb-10">Manage your details, update username and phone number, or change your password.</p>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-1 bg-gray-50 p-6 rounded-lg shadow-md flex flex-col items-center justify-center text-center">
@@ -42,7 +26,7 @@
                 </div>
                 <button type="submit"
                         class="w-full sm:w-auto bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-2 px-6 rounded-md shadow-lg transition-colors">
-                    Update Profile
+                    Update Username
                 </button>
             </form>
         </div>
@@ -85,6 +69,28 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const successMsg = urlParams.get('success_msg');
+        const errorMsg = urlParams.get('error_msg');
+
+        if (successMsg) {
+            alertMessage('success', decodeURIComponent(successMsg));
+        } else if (errorMsg) {
+            alertMessage('error', decodeURIComponent(errorMsg));
+        }
+
+        // Optional: Remove the query parameters from the URL to clean it up
+        // and prevent messages from reappearing on refresh.
+        if (successMsg || errorMsg) {
+            urlParams.delete('success_msg');
+            urlParams.delete('error_msg');
+            const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+            window.history.replaceState({}, document.title, newUrl);
+        }
+    });
+</script>
 
 <style>
     /* Add any specific styles for this page if needed */

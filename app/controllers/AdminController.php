@@ -45,17 +45,21 @@ class AdminController extends BaseController
      */
     public function products() // Method renamed from listProducts to products
     {
-        // Use getProducts with large limits and offset 0 to fetch all products for admin view
-        $products = $this->productModel->getProducts(1000, 0); // Fetch up to 1000 products, assuming that's "all" for practical purposes
+        // Ensure session messages are cleared before being potentially displayed on this page
+        // This prevents "Welcome back" from showing on this list
+        unset($_SESSION['success']); 
+        unset($_SESSION['error']);
+        
+        $products = $this->productModel->getProducts(1000, 0);
 
         $data = [
             'title' => 'Manage Products',
             'products' => $products,
-            'success' => $_SESSION['success'] ?? null,
-            'error' => $_SESSION['error'] ?? null
+            //'success' => $_SESSION['success'] ?? null,
+            //'error' => $_SESSION['error'] ?? null
         ];
-        unset($_SESSION['success']);
-        unset($_SESSION['error']);
+        //unset($_SESSION['success']);
+        //unset($_SESSION['error']);
 
         $this->view('admin/products/index', $data);
     }
@@ -117,8 +121,7 @@ class AdminController extends BaseController
 
 
         if ($productId) {
-            $_SESSION['success'] = 'Product "' . htmlspecialchars($data['name']) . '" added successfully!';
-            header('Location: /pcbuild/public/admin/products');
+            header('Location: /pcbuild/public/admin/products?success_msg=' . urlencode('Product "' . htmlspecialchars($data['name']) . '" added successfully!'));
             exit();
         } else {
             $_SESSION['error'] = 'Failed to add product. Please try again.';
@@ -193,8 +196,7 @@ class AdminController extends BaseController
         );
 
         if ($updated) {
-            $_SESSION['success'] = 'Product "' . htmlspecialchars($data['name']) . '" updated successfully!';
-            header('Location: /pcbuild/public/admin/products');
+            header('Location: /pcbuild/public/admin/products?success_msg=' . urlencode('Product "' . htmlspecialchars($data['name']) . '" updated successfully!'));
             exit();
         } else {
             $_SESSION['error'] = 'Failed to update product. Please try again or check if changes were made.';
@@ -229,16 +231,18 @@ class AdminController extends BaseController
         $deleted = $this->productModel->deleteProduct($id);
 
         if ($deleted === 'referenced') {
-            echo json_encode(['error' => 'Cannot delete product: It is linked to existing orders.']);
-            http_response_code(409); // Conflict
+            $_SESSION['error'] = 'Cannot delete product: It is linked to existing orders.'; // Set an error message
+            header('Location: /pcbuild/public/admin/products'); // Redirect back to product list
+            exit();
         } elseif ($deleted) {
-            echo json_encode(['success' => 'Product deleted successfully!']);
-            http_response_code(200); // OK
+            // On success, redirect with a success message in the URL
+            header('Location: /pcbuild/public/admin/products?success_msg=' . urlencode('Product deleted successfully!'));
+            exit();
         } else {
-            echo json_encode(['error' => 'Failed to delete product. It might not exist or a database error occurred.']);
-            http_response_code(500); // Internal Server Error (or 404 if not found)
+            $_SESSION['error'] = 'Failed to delete product. It might not exist or a database error occurred.'; // Set an error message
+            header('Location: /pcbuild/public/admin/products'); // Redirect back to product list
+            exit();
         }
-        exit(); // Crucial to stop execution and send JSON response
     }
 
 
@@ -250,6 +254,12 @@ class AdminController extends BaseController
      */
     public function manageUsers($search_term = null) // Added $search_term parameter
     {
+
+        // Ensure session messages are cleared before being potentially displayed on this page
+        // This prevents "Welcome back" from showing on this list
+        unset($_SESSION['success']);
+        unset($_SESSION['error']);
+
         $searchTerm = $_GET['search'] ?? $search_term ?? ''; // Prioritize GET, then path param
         $searchTerm = trim($searchTerm);
 
@@ -259,11 +269,11 @@ class AdminController extends BaseController
             'title' => 'Manage Users',
             'users' => $users,
             'searchTerm' => $searchTerm,
-            'error' => $_SESSION['error'] ?? null,
-            'success' => $_SESSION['success'] ?? null,
+            //'error' => $_SESSION['error'] ?? null,
+            //'success' => $_SESSION['success'] ?? null,
         ];
-        unset($_SESSION['error']);
-        unset($_SESSION['success']);
+        //unset($_SESSION['error']);
+        //unset($_SESSION['success']);
 
         $this->view('admin/users/index', $data);
     }

@@ -619,6 +619,7 @@ function initializePasswordToggle() {
 
 // Initialize cart count on page load
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOMContentLoaded fired! Starting initializations...'); // Add this line
     updateCartCount();
     // Initialize AI chat components on DOMContentLoaded
     initializeAiChat();
@@ -636,6 +637,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // NEW: Initialize new order notification
     initializeNewOrderNotification(); // Add this line
+
+    console.log('Attempting to initialize dismissible alerts...'); // Add this line
+    initializeDismissibleAlerts();
+    console.log('Dismissible alerts initialization attempted.'); // Add this line
 
     // renderCartItems will be called by cart/index.php if on that page.
 });
@@ -1036,6 +1041,45 @@ function initializeLogoutConfirmation() {
     }
 }
 
+// Function to initialize auto-hide and dismiss functionality for static PHP-rendered alerts
+function initializeDismissibleAlerts() {
+    const dismissibleAlerts = document.querySelectorAll('.js-dismissible-alert');
+
+    // console.log('Found dismissible alerts:', dismissibleAlerts.length, dismissibleAlerts); // Keep for debugging if needed
+
+    dismissibleAlerts.forEach(alertDiv => {
+        const dismissBtn = alertDiv.querySelector('.js-dismiss-btn');
+
+        // Ensure element has transition properties if they might be missing or overridden
+        alertDiv.classList.add('transition-opacity', 'duration-300', 'ease-in-out'); 
+        
+        // Ensure element starts visible (if not already by animate-fadeIn or other CSS)
+        // By removing opacity-0 class if it's there, and setting inline opacity to ensure it's high.
+        alertDiv.classList.remove('opacity-0');
+        alertDiv.style.opacity = '1'; // Force inline style for immediate visibility control
+
+
+        const hideAndRemoveAlert = () => {
+            alertDiv.style.opacity = '0'; // Force opacity to 0 using inline style for fade-out
+            alertDiv.style.pointerEvents = 'none'; // Disable clicks immediately
+
+            // Set a timeout to remove the element from the DOM after the transition duration
+            // This is a robust way to ensure removal even if 'transitionend' behaves inconsistently.
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 300); // This duration (300ms) should match Tailwind's 'duration-300'
+        };
+
+        // Set auto-hide timeout (e.g., 5 seconds after DOMContentLoaded/alert appears)
+        setTimeout(hideAndRemoveAlert, 5000); 
+
+        // Add click listener to the dismiss button
+        if (dismissBtn) {
+            dismissBtn.addEventListener('click', hideAndRemoveAlert);
+        }
+    });
+}
+
 // --- Custom Confirmation Modal Logic ---
 let currentConfirmationCallback = null; // Stores the function to call on confirmation
 
@@ -1209,28 +1253,43 @@ function initializeConfirmationModals() {
 
             showConfirmationModal(
                 'Delete Product',
-                `Are you sure you want to delete product ${productName}? This action cannot be undone.`,
+                `Are you sure you want to delete product "${productName}"? This action cannot be undone.`,
                 (confirmed) => {
                     if (confirmed) {
                         console.log('Callback: Confirmed DELETE for product ID:', productId);
-                        performActionViaFetch(actionUrl, 'POST', {})
-                            .then(data => {
-                                if (data && data.success) {
-                                    alertMessage('success', data.success);
-                                    // INCREASE THE DELAY HERE
-                                    setTimeout(() => {
-                                        window.location.reload();
-                                    }, 2500); // Changed to 2.5 seconds
-                                } else if (data && data.error) {
-                                    alertMessage('error', data.error);
-                                } else {
-                                    alertMessage('error', 'Unknown response from server after delete.');
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Fetch error for product delete:', error);
-                                alertMessage('error', 'An error occurred while trying to delete the product.');
-                            });
+                        // Use a direct fetch and let the browser handle the redirect from the server
+                        fetch(actionUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            // As AdminController expects product ID from URL, body is not strictly needed for deletion to work
+                            // However, including it can be good practice with application/x-www-form-urlencoded
+                            body: new URLSearchParams({ product_id: productId }).toString(),
+                        })
+                        .then(response => {
+                            if (response.redirected) {
+                                // Explicitly navigate to the final URL after the redirect
+                                // This will cause the page to refresh and pick up the success_msg from the URL
+                                window.location.href = response.url;
+                            } else {
+                                // If it didn't redirect, it means there was an error response from the server
+                                // Try to parse it as JSON to get the error message
+                                return response.json()
+                                    .then(errorData => {
+                                        alertMessage('error', errorData.error || 'Deletion failed with unexpected response.');
+                                    })
+                                    .catch(() => {
+                                        // Catch if the non-redirecting response is not valid JSON
+                                        alertMessage('error', 'Deletion failed: Unexpected non-redirecting response from server.');
+                                    });
+                            }
+                        })
+                        .catch(error => {
+                            // This catch block handles network errors that prevent the request from completing
+                            console.error('Network error during product delete:', error);
+                            alertMessage('error', 'A network error occurred during deletion. Please try again.');
+                        });
                     } else {
                         console.log('Callback: DELETE cancelled for product ID:', productId);
                     }

@@ -64,23 +64,24 @@ class UserController extends BaseController
         }
 
         $userId = $_SESSION['user_id'];
-        // Fetch all user details, including phone_number
         $user = $this->userModel->findById($userId);
 
         if (!$user) {
             $_SESSION['error'] = 'User not found.';
-            header('Location: /pcbuild/public/home'); // Redirect if user somehow not found
+            header('Location: /pcbuild/public/home');
             exit();
         }
+
+        // Clear these session messages BEFORE passing them to the view
+        unset($_SESSION['success']);
+        unset($_SESSION['error']);
 
         $data = [
             'title' => 'My Profile',
             'user' => $user,
-            'success' => $_SESSION['success'] ?? null,
-            'error' => $_SESSION['error'] ?? null,
+            'success' => null, // Now explicitly null or whatever you want, as it's unset
+            'error' => null,   // Now explicitly null or whatever you want, as it's unset
         ];
-        unset($_SESSION['success']);
-        unset($_SESSION['error']);
 
         $this->view('user/profile', $data);
     }
@@ -129,9 +130,11 @@ class UserController extends BaseController
 
         if ($updated) {
             $_SESSION['username'] = $newUsername; // Update session username if changed
-            $_SESSION['success'] = 'Profile updated successfully!';
+            header('Location: /pcbuild/public/profile?success_msg=' . urlencode('Profile updated successfully!'));
+            exit();
         } else {
-            $_SESSION['error'] = 'Failed to update profile. Please try again.';
+            header('Location: /pcbuild/public/profile?error_msg=' . urlencode('Failed to update profile. Please try again.'));
+            exit();
         }
 
         header('Location: /pcbuild/public/profile');
@@ -175,9 +178,11 @@ class UserController extends BaseController
         $updated = $this->userModel->updatePhoneNumber($userId, $phoneNumberToStore);
 
         if ($updated) {
-            $_SESSION['success'] = 'Phone number updated successfully!';
+            header('Location: /pcbuild/public/profile?success_msg=' . urlencode('Phone number updated successfully!'));
+            exit();
         } else {
-            $_SESSION['error'] = 'Failed to update phone number. Please try again.';
+            header('Location: /pcbuild/public/profile?error_msg=' . urlencode('Failed to update phone number. Please try again.'));
+            exit();
         }
 
         header('Location: /pcbuild/public/profile');

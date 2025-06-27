@@ -1,13 +1,6 @@
 <div class="container mx-auto p-8 bg-white shadow-lg rounded-lg mt-40 mb-16">
     <h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center"><?php echo htmlspecialchars($title); ?></h1>
 
-    <?php if (isset($success) && $success): ?>
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-            <strong class="font-bold">Success!</strong>
-            <span class="block sm:inline"><?php echo htmlspecialchars($success); ?></span>
-        </div>
-    <?php endif; ?>
-
     <?php if (isset($error) && $error): ?>
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
             <strong class="font-bold">Error!</strong>
@@ -106,3 +99,21 @@
         </div>
     <?php endif; ?>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check for success message in URL query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const successMsg = urlParams.get('success_msg');
+
+        if (successMsg) {
+            // Display the success message using the alertMessage function from main.js
+            alertMessage('success', decodeURIComponent(successMsg));
+
+            // Optional: Remove the query parameter from the URL to clean it up
+            // and prevent the message from reappearing on refresh.
+            urlParams.delete('success_msg');
+            const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+            window.history.replaceState({}, document.title, newUrl);
+        }
+    });
+</script>
