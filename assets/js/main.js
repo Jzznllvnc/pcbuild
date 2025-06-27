@@ -37,13 +37,13 @@ function initializeNewOrderNotification() {
         performActionViaFetch('/pcbuild/public/user/clear-order-notification', 'POST', {})
             .then(response => {
                 if (response.success) {
-                    console.log('New order notification cleared on server.');
+                    // console.log('New order notification cleared on server.');
                 } else {
-                    console.error('Failed to clear new order notification on server:', response.error);
+                    // console.error('Failed to clear new order notification on server:', response.error);
                 }
             })
             .catch(error => {
-                console.error('Fetch error clearing new order notification:', error);
+                // console.error('Fetch error clearing new order notification:', error);
             });
         // Note: The default link navigation will still occur, taking the user to the dashboard.
     });
@@ -80,7 +80,7 @@ async function performActionViaFetch(url, method, body = {}) {
         }
         return await response.json();
     } catch (error) {
-        console.error('Fetch operation failed:', error);
+        // console.error('Fetch operation failed:', error);
         throw error;
     }
 }
@@ -100,7 +100,7 @@ function addToCart(productId, productName, productPrice, productImage, quantity 
                 alertMessage('error', response.error || 'Failed to add to cart.');
             }
         }).catch(error => {
-            console.error('Add to cart fetch error:', error);
+            // console.error('Add to cart fetch error:', error);
             alertMessage('error', 'An error occurred while adding to cart.');
         });
     } else {
@@ -143,7 +143,7 @@ function updateCartItemQuantity(productId, newQuantity) {
                 alertMessage('error', response.error || 'Failed to update quantity.');
             }
         }).catch(error => {
-            console.error('Update quantity fetch error:', error);
+            // console.error('Update quantity fetch error:', error);
             alertMessage('error', 'An error occurred while updating quantity.');
         });
     } else {
@@ -184,7 +184,7 @@ function removeFromCart(productId) {
                 alertMessage('error', response.error || 'Failed to remove item.');
             }
         }).catch(error => {
-            console.error('Remove from cart fetch error:', error);
+            // console.error('Remove from cart fetch error:', error);
             alertMessage('error', 'An error occurred while removing item.');
         });
     } else {
@@ -216,7 +216,7 @@ function clearCart() {
                 }
             })
             .catch(error => {
-                console.error('Clear cart fetch error:', error);
+                // console.error('Clear cart fetch error:', error);
                 alertMessage('error', 'An error occurred while clearing cart.');
             });
     } else {
@@ -248,7 +248,7 @@ function updateCartCount() {
                 }
             })
             .catch(error => {
-                console.error('Failed to fetch server cart count:', error);
+                // console.error('Failed to fetch server cart count:', error);
                 cartCountElement.textContent = ''; // Fallback to empty if API fails
                 cartCountElement.classList.add('hidden');
             });
@@ -277,14 +277,14 @@ async function syncLocalCartToServer() {
                 updateCartCount(); // Refresh cart count from server
                 // If there were warnings, you might want to log them or display them more prominently
                 if (response.warnings && response.warnings.length > 0) {
-                    console.warn('Cart sync warnings:', response.warnings);
+                    // console.warn('Cart sync warnings:', response.warnings);
                     // alertMessage('warning', 'Some items could not be synced due to stock issues.');
                 }
             } else {
                 // alertMessage('error', response.error || 'Cart sync failed.');
             }
         } catch (error) {
-            console.error('Cart sync error:', error);
+            // console.error('Cart sync error:', error);
             alertMessage('error', 'An error occurred during cart synchronization.');
         }
     }
@@ -326,7 +326,7 @@ function setupQuantityControls(container, displayId, hiddenInputId, minusBtnId, 
     const errorElement = container.querySelector(`#${errorId}`);
 
     if (!quantityDisplay || !quantityHiddenInput || !minusBtn || !plusBtn || !errorElement) {
-        console.error("Missing quantity control elements for:", container.id);
+        // console.error("Missing quantity control elements for:", container.id);
         return;
     }
 
@@ -619,7 +619,7 @@ function initializePasswordToggle() {
 
 // Initialize cart count on page load
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOMContentLoaded fired! Starting initializations...'); // Add this line
+    // console.log('DOMContentLoaded fired! Starting initializations...'); // Add this line
     updateCartCount();
     // Initialize AI chat components on DOMContentLoaded
     initializeAiChat();
@@ -638,9 +638,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // NEW: Initialize new order notification
     initializeNewOrderNotification(); // Add this line
 
-    console.log('Attempting to initialize dismissible alerts...'); // Add this line
+    // console.log('Attempting to initialize dismissible alerts...'); // Add this line
     initializeDismissibleAlerts();
-    console.log('Dismissible alerts initialization attempted.'); // Add this line
+    // console.log('Dismissible alerts initialization attempted.'); // Add this line
 
     // renderCartItems will be called by cart/index.php if on that page.
 });
@@ -670,7 +670,7 @@ function renderCartItems() {
                 }
             })
             .catch(error => {
-                console.error('Error fetching cart items:', error);
+                // console.error('Error fetching cart items:', error);
                 cartItemsContainer.innerHTML = '<p class="text-center text-red-600 text-lg py-8">Error loading cart items.</p>';
                 checkoutSection.classList.add('hidden');
                 updateCheckoutButtonState(0, false); // Disable checkout button
@@ -833,11 +833,11 @@ function initializeAiChat() {
 
             } else {
                 chatContentPlaceholder.innerHTML = `<p class="text-center text-red-600 py-8">Failed to load AI Chat content.</p>`;
-                console.error('Failed to fetch AI chat content:', htmlContent);
+                // console.error('Failed to fetch AI chat content:', htmlContent);
             }
         } catch (error) {
             alertMessage('error', 'Could not connect to the AI assistant.');
-            console.error('Fetch error:', error);
+            // console.error('Fetch error:', error);
         }
     }
 
@@ -880,7 +880,7 @@ function initializeAiChat() {
 // Function to append a message to the chat display (made globally accessible)
 function appendMessage(role, text) {
     if (!chatMessages) { // Ensure chatMessages element exists before appending
-        console.error("Chat messages container not found!");
+        // console.error("Chat messages container not found!");
         return;
     }
 
@@ -945,11 +945,11 @@ async function sendMessage() {
             chatHistory.push({ role: "model", text: aiResponse });
         } else {
             alertMessage('error', `AI Service error: ${data.error || 'Something went wrong.'}`);
-            console.error('AI API Error:', data.error);
+            // console.error('AI API Error:', data.error);
         }
     } catch (error) {
         alertMessage('error', 'Could not connect to the AI assistant.');
-        console.error('Fetch error:', error);
+        // console.error('Fetch error:', error);
     } finally {
         sendButton.disabled = false;
         sendButton.textContent = 'Send';
@@ -969,7 +969,7 @@ function showLogoutConfirmation() {
             logoutModal.querySelector('div').classList.add('scale-100', 'opacity-100');
         }, 10);
     } else {
-        console.error('Logout modal element not found!');
+        // console.error('Logout modal element not found!');
     }
 }
 
@@ -987,16 +987,16 @@ function hideLogoutConfirmation() {
 
 function initializeLogoutConfirmation() {
     const logoutButton = document.getElementById('logout-button');
-    console.log("Logout button element found:", logoutButton); // Debugging line
+    // console.log("Logout button element found:", logoutButton); // Debugging line
 
     if (logoutButton) {
         logoutButton.addEventListener('click', (e) => {
             e.preventDefault(); // Prevent default link behavior
-            console.log("Logout button clicked, showing confirmation modal."); // Debugging line
+            // console.log("Logout button clicked, showing confirmation modal."); // Debugging line
             showLogoutConfirmation();
         });
     } else {
-        console.error("Logout button with ID 'logout-button' not found on DOMContentLoaded."); // Debugging line
+        // console.error("Logout button with ID 'logout-button' not found on DOMContentLoaded."); // Debugging line
     }
 
     const confirmLogoutBtn = document.getElementById('confirm-logout-btn');
@@ -1004,19 +1004,19 @@ function initializeLogoutConfirmation() {
 
     if (confirmLogoutBtn) {
         confirmLogoutBtn.addEventListener('click', () => {
-            console.log("Logout confirmed, submitting logout form."); // Debugging line
+            // console.log("Logout confirmed, submitting logout form."); // Debugging line
             const logoutForm = document.getElementById('logout-form'); // Get the hidden logout form
             if (logoutForm) {
                 // Use requestSubmit() for more robust programmatic submission
                 if (typeof logoutForm.requestSubmit === 'function') {
                     logoutForm.requestSubmit();
-                    console.log("Logout form submitted with requestSubmit().");
+                    // console.log("Logout form submitted with requestSubmit().");
                 } else {
                     logoutForm.submit();
-                    console.log("Logout form submitted with .submit().");
+                    // console.log("Logout form submitted with .submit().");
                 }
             } else {
-                console.error("Logout form not found with ID 'logout-form'.");
+                // console.error("Logout form not found with ID 'logout-form'.");
                 // Fallback to direct redirect if form is not found (less reliable for POST)
                 window.location.href = '/pcbuild/public/logout';
             }
@@ -1025,7 +1025,7 @@ function initializeLogoutConfirmation() {
 
     if (cancelLogoutBtn) {
         cancelLogoutBtn.addEventListener('click', () => {
-            console.log("Logout cancelled."); // Debugging line
+            // console.log("Logout cancelled."); // Debugging line
             hideLogoutConfirmation();
         });
     }
@@ -1034,7 +1034,7 @@ function initializeLogoutConfirmation() {
     if (logoutModal) {
         logoutModal.addEventListener('click', (e) => {
             if (e.target === logoutModal) {
-                console.log("Clicked outside logout modal, hiding."); // Debugging line
+                // console.log("Clicked outside logout modal, hiding."); // Debugging line
                 hideLogoutConfirmation();
             }
         });
@@ -1097,7 +1097,7 @@ function showConfirmationModal(title, message, callback) {
     const modalMessage = document.getElementById('confirmation-modal-message');
 
     if (!confirmationModal || !modalTitle || !modalMessage) {
-        console.error("Custom confirmation modal elements not found!");
+        // console.error("Custom confirmation modal elements not found!");
         return; // Prevent errors if elements are missing
     }
 
@@ -1112,7 +1112,7 @@ function showConfirmationModal(title, message, callback) {
         confirmationModal.querySelector('div').classList.remove('scale-95', 'opacity-0');
         confirmationModal.querySelector('div').classList.add('scale-100', 'opacity-100');
     }, 10);
-    console.log("Custom confirmation modal shown."); // Debugging line
+    // console.log("Custom confirmation modal shown."); // Debugging line
 }
 
 function hideConfirmationModal() {
@@ -1125,7 +1125,7 @@ function hideConfirmationModal() {
             confirmationModal.classList.add('hidden', 'pointer-events-none');
         }, { once: true });
     }
-    console.log("Custom confirmation modal hidden."); // Debugging line
+    // console.log("Custom confirmation modal hidden."); // Debugging line
 }
 
 function initializeConfirmationModals() {
@@ -1135,7 +1135,7 @@ function initializeConfirmationModals() {
 
     if (confirmActionBtn) {
         confirmActionBtn.addEventListener('click', () => {
-            console.log("Custom modal confirmed button clicked."); // Debugging line
+            // console.log("Custom modal confirmed button clicked."); // Debugging line
             hideConfirmationModal(); // Hides modal
             const callbackToExecute = currentConfirmationCallback;
             currentConfirmationCallback = null;
@@ -1148,7 +1148,7 @@ function initializeConfirmationModals() {
 
     if (cancelActionBtn) {
         cancelActionBtn.addEventListener('click', () => {
-            console.log("Custom modal cancelled button clicked."); // Debugging line
+            // console.log("Custom modal cancelled button clicked."); // Debugging line
             hideConfirmationModal();
             const callbackToExecute = currentConfirmationCallback;
             currentConfirmationCallback = null;
@@ -1162,7 +1162,7 @@ function initializeConfirmationModals() {
     if (confirmationModal) {
         confirmationModal.addEventListener('click', (e) => {
             if (e.target === confirmationModal) {
-                console.log("Clicked outside custom modal, treating as cancel."); // Debugging line
+                // console.log("Clicked outside custom modal, treating as cancel."); // Debugging line
                 hideConfirmationModal();
                 const callbackToExecute = currentConfirmationCallback;
                 currentConfirmationCallback = null;
@@ -1186,25 +1186,25 @@ function initializeConfirmationModals() {
             const isBanned = target.dataset.isBanned === '1'; // Convert to boolean
             const actionUrl = `/pcbuild/public/admin/users/toggle-ban/${userId}`;
 
-            console.log("Ban/Unban button clicked. User ID:", userId, "Username:", username, "Is Banned:", isBanned);
+            // console.log("Ban/Unban button clicked. User ID:", userId, "Username:", username, "Is Banned:", isBanned);
 
             showConfirmationModal(
                 isBanned ? 'Unban User' : 'Ban User',
                 `Are you sure you want to ${isBanned ? 'unban' : 'ban'} user ${username}?`,
                 (confirmed) => {
                     if (confirmed) {
-                        console.log('Callback: Confirmed BAN/UNBAN for user ID:', userId);
+                        // console.log('Callback: Confirmed BAN/UNBAN for user ID:', userId);
                         performActionViaFetch(actionUrl, 'POST', {})
                             .then(response => {
-                                console.log("Fetch response for Ban/Unban:", response);
+                                // console.log("Fetch response for Ban/Unban:", response);
                                 window.location.reload();
                             })
                             .catch(error => {
-                                console.error('Fetch error for Ban/Unban:', error);
+                                // console.error('Fetch error for Ban/Unban:', error);
                                 alertMessage('error', 'An error occurred during the ban/unban action.');
                             });
                     } else {
-                        console.log('Callback: BAN/UNBAN cancelled for user ID:', userId);
+                        // console.log('Callback: BAN/UNBAN cancelled for user ID:', userId);
                     }
                 }
             );
@@ -1217,25 +1217,25 @@ function initializeConfirmationModals() {
             const username = target.dataset.username;
             const actionUrl = `/pcbuild/public/admin/users/delete/${userId}`;
 
-            console.log("Delete button clicked. User ID:", userId, "Username:", username);
+            // console.log("Delete button clicked. User ID:", userId, "Username:", username);
 
             showConfirmationModal(
                 'Delete User',
                 `Are you sure you want to delete user ${username}? This action cannot be undone.`,
                 (confirmed) => {
                     if (confirmed) {
-                        console.log('Callback: Confirmed DELETE for user ID:', userId);
+                        // console.log('Callback: Confirmed DELETE for user ID:', userId);
                         performActionViaFetch(actionUrl, 'POST', {})
                             .then(response => {
-                                console.log("Fetch response for Delete:", response);
+                                // console.log("Fetch response for Delete:", response);
                                 window.location.reload();
                             })
                             .catch(error => {
-                                console.error('Fetch error for Delete:', error);
+                                // console.error('Fetch error for Delete:', error);
                                 alertMessage('error', 'An error occurred during the delete action.');
                             });
                     } else {
-                        console.log('Callback: DELETE cancelled for user ID:', userId);
+                        // console.log('Callback: DELETE cancelled for user ID:', userId);
                     }
                 }
             );
@@ -1249,14 +1249,14 @@ function initializeConfirmationModals() {
             const productName = deleteProductButton.dataset.productName;
             const actionUrl = `/pcbuild/public/admin/products/delete/${productId}`;
 
-            console.log("Product delete button clicked. Product ID:", productId, "Product Name:", productName);
+            // console.log("Product delete button clicked. Product ID:", productId, "Product Name:", productName);
 
             showConfirmationModal(
                 'Delete Product',
                 `Are you sure you want to delete product "${productName}"? This action cannot be undone.`,
                 (confirmed) => {
                     if (confirmed) {
-                        console.log('Callback: Confirmed DELETE for product ID:', productId);
+                        // console.log('Callback: Confirmed DELETE for product ID:', productId);
                         // Use a direct fetch and let the browser handle the redirect from the server
                         fetch(actionUrl, {
                             method: 'POST',
@@ -1287,11 +1287,11 @@ function initializeConfirmationModals() {
                         })
                         .catch(error => {
                             // This catch block handles network errors that prevent the request from completing
-                            console.error('Network error during product delete:', error);
+                            // console.error('Network error during product delete:', error);
                             alertMessage('error', 'A network error occurred during deletion. Please try again.');
                         });
                     } else {
-                        console.log('Callback: DELETE cancelled for product ID:', productId);
+                        // console.log('Callback: DELETE cancelled for product ID:', productId);
                     }
                 }
             );

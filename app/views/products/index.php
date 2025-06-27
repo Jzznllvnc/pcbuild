@@ -22,6 +22,24 @@
             Apply Filters
         </button>
     </form>
+    <div class="mb-8 overflow-x-auto pb-4 scrollbar-hide">
+        <div class="flex flex-nowrap space-x-3">
+            <a href="/pcbuild/public/products?search=<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
+               class="flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium
+               <?php echo empty($currentCategory) ? 'bg-[--color-dark-blue] text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'; ?>
+               transition-colors duration-200 whitespace-nowrap">
+                All Products
+            </a>
+            <?php foreach ($categories as $cat): ?>
+                <a href="/pcbuild/public/products?category=<?php echo htmlspecialchars($cat); ?>&search=<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
+                   class="flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium
+                   <?php echo ($currentCategory === $cat) ? 'bg-[--color-dark-blue] text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'; ?>
+                   transition-colors duration-200 whitespace-nowrap">
+                    <?php echo htmlspecialchars($cat); ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
 
     <?php if (empty($products)): ?>
         <p class="text-center text-gray-600 text-lg py-10">No products found matching your criteria.</p>

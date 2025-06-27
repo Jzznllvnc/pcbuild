@@ -159,6 +159,14 @@ if (session_status() == PHP_SESSION_NONE) {
         #logout-confirmation-modal > div {
             transition: all 0.3s ease-in-out;
         }
+        /* Hide scrollbar for category tabs */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
