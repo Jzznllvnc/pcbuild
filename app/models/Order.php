@@ -17,7 +17,7 @@ class Order
      * first_name, last_name, email, country_code, shipping_mobile_number, address, city, state, zip_code, notes, payment_mobile_number.
      * @return int|false The ID of the newly created order, or false on failure.
      */
-    public function createOrder($orderDetails) // Modified to accept a single array
+    public function createOrder($orderDetails)
     {
         try {
             $stmt = $this->pdo->prepare("INSERT INTO orders (user_id, total_amount, payment_method, shipping_method, shipping_cost, first_name, last_name, email, country_code, shipping_mobile_number, address, city, state, zip_code, notes, payment_mobile_number) VALUES (:user_id, :total_amount, :payment_method, :shipping_method, :shipping_cost, :first_name, :last_name, :email, :country_code, :shipping_mobile_number, :address, :city, :state, :zip_code, :notes, :payment_mobile_number)");
@@ -143,5 +143,145 @@ class Order
             error_log("Order Model Error: getOrderById failed: " . $e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * Get the total revenue from orders within a specified date range.
+     *
+     * @param string $startDate The start date (e.g., 'YYYY-MM-DD HH:MM:SS').
+     * @return float The total revenue.
+     */
+    public function getTotalRevenue($startDate)
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT SUM(total_amount) AS total_revenue FROM orders WHERE order_date >= :start_date");
+            $stmt->execute([':start_date' => $startDate]);
+            return (float) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("Order Model Error: getTotalRevenue failed: " . $e->getMessage());
+            return 0.00;
+        }
+    }
+
+    /**
+     * Get the total number of orders within a specified date range.
+     *
+     * @param string $startDate The start date (e.g., 'YYYY-MM-DD HH:MM:SS').
+     * @return int The total number of orders.
+     */
+    public function getTotalOrders($startDate)
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT COUNT(id) AS total_orders FROM orders WHERE order_date >= :start_date");
+            $stmt->execute([':start_date' => $startDate]);
+            return (int) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("Order Model Error: getTotalOrders failed: " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    /**
+     * Get the number of pending orders within a specified date range.
+     *
+     * @param string $startDate The start date (e.g., 'YYYY-MM-DD HH:MM:SS').
+     * @return int The number of pending orders.
+     */
+    public function getPendingOrders($startDate)
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT COUNT(id) AS pending_orders FROM orders WHERE status = 'Pending' AND order_date >= :start_date");
+            $stmt->execute([':start_date' => $startDate]);
+            return (int) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("Order Model Error: getPendingOrders failed: " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    /**
+     * Get daily total revenue for the last N days.
+     *
+     * @param int $days Number of past days to fetch data for.
+     * @return array An associative array where keys are dates (YYYY-MM-DD) and values are total revenues.
+     */
+    public function getDailyRevenue($days = 30)
+    {
+        $dailyRevenue = [];
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT
+                    DATE(order_date) AS order_day,
+                    SUM(total_amount) AS daily_revenue
+                FROM
+                    orders
+                WHERE
+                    order_date >= DATE_SUB(CURDATE(), INTERVAL :days DAY)
+                GROUP BY
+                    order_day
+                ORDER BY
+                    order_day ASC
+            ");
+            $stmt->bindValue(':days', $days, PDO::PARAM_INT);
+            $stmt->execute();
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Initialize all dates within the range with 0 revenue
+            for ($i = $days - 1; $i >= 0; $i--) {
+                $date = date('Y-m-d', strtotime("-$i days"));
+                $dailyRevenue[$date] = 0.00;
+            }
+
+            // Populate with actual revenue
+            foreach ($results as $row) {
+                $dailyRevenue[$row['order_day']] = (float)$row['daily_revenue'];
+            }
+
+        } catch (PDOException $e) {
+            error_log("Order Model Error: getDailyRevenue failed: " . $e->getMessage());
+        }
+        return $dailyRevenue;
+    }
+
+    /**
+     * Get monthly total revenue for a given year.
+     *
+     * @param int $year The year to fetch data for. Defaults to current year.
+     * @return array An associative array where keys are month numbers (1-12) and values are total revenues.
+     */
+    public function getMonthlyRevenue($year = null)
+    {
+        if ($year === null) {
+            $year = date('Y');
+        }
+
+        $monthlyRevenue = array_fill(1, 12, 0.00); // Initialize all 12 months with 0 revenue
+
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT
+                    MONTH(order_date) AS order_month,
+                    SUM(total_amount) AS monthly_revenue
+                FROM
+                    orders
+                WHERE
+                    YEAR(order_date) = :year
+                GROUP BY
+                    order_month
+                ORDER BY
+                    order_month ASC
+            ");
+            $stmt->bindValue(':year', $year, PDO::PARAM_INT);
+            $stmt->execute();
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($results as $row) {
+                $monthlyRevenue[(int)$row['order_month']] = (float)$row['monthly_revenue'];
+            }
+
+        } catch (PDOException $e) {
+            error_log("Order Model Error: getMonthlyRevenue failed: " . $e->getMessage());
+        }
+        return $monthlyRevenue;
     }
 }

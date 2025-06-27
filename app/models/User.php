@@ -278,4 +278,20 @@ class User
             return false;
         }
     }
+
+    /**
+     * Get the total number of registered users.
+     *
+     * @return int The total number of users.
+     */
+    public function getTotalUsersRegistered()
+    {
+        try {
+            $stmt = $this->pdo->query("SELECT COUNT(id) FROM users");
+            return (int) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("User Model Error: getTotalUsersRegistered failed: " . $e->getMessage());
+            return 0;
+        }
+    }
 }

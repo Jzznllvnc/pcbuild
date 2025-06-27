@@ -34,8 +34,38 @@ class AdminController extends BaseController
      */
     public function dashboard()
     {
+        // Calculate dates for "last 30 days" for summary cards
+        $thirtyDaysAgo = date('Y-m-d H:i:s', strtotime('-30 days'));
+        
+        // Fetch Dashboard Data for top cards
+        $newOrders = $this->orderModel->getTotalOrders($thirtyDaysAgo);
+        $totalIncome = $this->orderModel->getTotalRevenue($thirtyDaysAgo);
+        $totalCustomers = $this->userModel->getTotalUsersRegistered(); // Total registered users
+        // Assuming "Pending Delivery" from the screenshot corresponds to current pending orders, not just new users
+        $pendingDelivery = $this->orderModel->getPendingOrders($thirtyDaysAgo);
+
+        // Placeholder for "Total Expense" and "New User" as they require more complex data or separate tables
+        $totalExpense = 24567.00; // Placeholder value
+        $newUser = 34567; // Placeholder for new users or existing total customers if you prefer
+
+        // Fetch monthly revenue data for Yearly Stats and Sales/Revenue charts
+        $currentYear = date('Y');
+        $monthlyRevenueData = $this->orderModel->getMonthlyRevenue($currentYear);
+        $monthlyLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        $monthlyDataValues = array_values($monthlyRevenueData);
+
+        // Calculate total for yearly stats (sum of all months)
+        $yearlyStatsTotal = array_sum($monthlyDataValues);
+
         $data = [
-            'title' => 'Admin Dashboard'
+            'title' => 'Admin Dashboard',
+            'newOrders' => $newOrders,
+            'totalIncome' => $totalIncome,
+            'totalExpense' => $totalExpense,
+            'newUser' => $totalCustomers, // Using total customers for now as a general user metric
+            'yearlyStatsTotal' => $yearlyStatsTotal,
+            'monthlyLabels' => json_encode($monthlyLabels),
+            'monthlyDataValues' => json_encode($monthlyDataValues),
         ];
         $this->view('admin/dashboard', $data);
     }
@@ -47,7 +77,7 @@ class AdminController extends BaseController
     {
         // Ensure session messages are cleared before being potentially displayed on this page
         // This prevents "Welcome back" from showing on this list
-        unset($_SESSION['success']); 
+        unset($_SESSION['success']);
         unset($_SESSION['error']);
         
         $products = $this->productModel->getProducts(1000, 0);
@@ -268,7 +298,6 @@ class AdminController extends BaseController
         $data = [
             'title' => 'Manage Users',
             'users' => $users,
-            'searchTerm' => $searchTerm,
             //'error' => $_SESSION['error'] ?? null,
             //'success' => $_SESSION['success'] ?? null,
         ];
