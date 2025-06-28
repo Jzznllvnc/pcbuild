@@ -182,8 +182,8 @@ class Router
         // User API Endpoints
         $this->post('/user/clear-order-notification', 'UserController@clearNewOrderNotificationApi');
 
-        // User Dashboard Route
-        $this->get('/dashboard', 'UserController@dashboard'); // User dashboard and order history
+        // User Order History Route
+        $this->get('/orderhistory', 'UserController@orderhistory'); // Order history
 
         // User Profile Routes
         $this->get('/profile', 'UserController@profile'); // Display user profile page

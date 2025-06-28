@@ -3,8 +3,7 @@
     
     <?php if (empty($orders)): ?>
         <div class="text-center py-12 bg-gray-50 rounded-lg border border-gray-200 shadow-md">
-            <p class="text-gray-600 text-xl mb-4">You haven't placed any orders yet.</p>
-            <a href="/pcbuild/public/products" class="inline-block bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-3 px-6 rounded-md shadow-lg transition-colors transform hover:scale-105">Start Shopping!</a>
+            <p class="text-gray-600 text-xl mb-4">You haven't placed any orders yet. Successful checkout of order will appear here.</p>
         </div>
     <?php else: ?>
         <div class="space-y-8">

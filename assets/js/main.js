@@ -651,7 +651,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function renderCartItems() {
     const cartItemsContainer = document.getElementById('cart-items-container');
-    if (!cartItemsContainer) return; // Exit if not on cart page
+    const emptyCartState = document.getElementById('empty-cart-state');
+    if (!cartItemsContainer || !emptyCartState) return; // Exit if not on cart page
 
     const checkoutSection = document.getElementById('checkout-section');
     let subtotal = 0;
@@ -664,14 +665,18 @@ function renderCartItems() {
                 if (response.success && response.cart) {
                     displayCartContent(response.cart);
                 } else {
-                    cartItemsContainer.innerHTML = '<p class="text-center text-gray-600 text-lg py-8">Failed to load cart or cart is empty.</p>';
+                    cartItemsContainer.innerHTML = ''; // Clear loading text
+                    cartItemsContainer.classList.add('hidden'); // Hide the container itself
+                    emptyCartState.classList.remove('hidden'); // Show empty cart message
                     checkoutSection.classList.add('hidden');
                     updateCheckoutButtonState(0, false); // Disable checkout button
                 }
             })
             .catch(error => {
                 // console.error('Error fetching cart items:', error);
-                cartItemsContainer.innerHTML = '<p class="text-center text-red-600 text-lg py-8">Error loading cart items.</p>';
+                cartItemsContainer.innerHTML = ''; // Clear loading text
+                cartItemsContainer.classList.add('hidden'); // Hide the container itself
+                emptyCartState.classList.remove('hidden'); // Show empty cart message
                 checkoutSection.classList.add('hidden');
                 updateCheckoutButtonState(0, false); // Disable checkout button
             });
@@ -687,10 +692,14 @@ function renderCartItems() {
         subtotal = 0;
 
         if (cart.length === 0) {
-            cartHtml = '<p class="text-center text-gray-600 text-lg py-8">Your cart is empty.</p>';
+            cartItemsContainer.innerHTML = ''; // Clear any existing content
+            cartItemsContainer.classList.add('hidden'); // Hide the container itself
+            emptyCartState.classList.remove('hidden'); // Show empty cart message
             checkoutSection.classList.add('hidden');
             updateCheckoutButtonState(0, false); // Disable checkout button
         } else {
+            emptyCartState.classList.add('hidden'); // Hide empty cart message
+            cartItemsContainer.classList.remove('hidden'); // Ensure container is visible
             cart.forEach(item => {
                 const itemTotal = item.price * item.quantity;
                 subtotal += itemTotal;
@@ -706,7 +715,7 @@ function renderCartItems() {
 
                 cartHtml += `
                     <div class="flex items-center border-b border-gray-200 py-4">
-                        <img src="${item.image || 'https://placehold.co/80x80/e2e8f0/475569?text=No+Image'}" alt="${item.name}" class="w-20 h-20 object-contain rounded-md mr-4">
+                        <img src="${item.image || '/pcbuild/assets/images/placeholder.png'}" alt="${item.name}" class="w-20 h-20 object-contain rounded-md mr-4">
                         <div class="flex-grow">
                             <h3 class="text-lg font-semibold text-gray-800">${item.name}</h3>
                             <p class="text-gray-600 text-sm">$${item.price.toFixed(2)}</p>

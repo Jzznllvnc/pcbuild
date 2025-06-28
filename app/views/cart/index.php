@@ -1,8 +1,18 @@
 <div class="container mx-auto p-8 bg-white shadow-lg rounded-lg mt-28 mb-16 max-w-5xl">
-    <h1 class="text-4xl font-extrabold text-gray-900 mb-20 mt-6 text-center"><?php echo htmlspecialchars($title); ?></h1>
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-12 mt-6 text-center"><?php echo htmlspecialchars($title); ?></h1>
 
     <div id="cart-items-container" class="border border-gray-200 rounded-lg p-4 mb-6">
         <p class="text-center text-gray-500 py-8">Loading cart...</p>
+    </div>
+
+    <div id="empty-cart-state" class="text-center py-10 hidden">
+        <img src="/pcbuild/assets/images/emptycart.png" alt="Empty Cart" class="mx-auto w-48 h-48 object-contain mb-6">
+        <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Your Cart is <span class="text-[--color-primary-orange]">Empty!</span></h2>
+        <p class="text-gray-600 mb-8">Must add items on the cart before you proceed to check out.</p>
+        <a href="/pcbuild/public/products" class="inline-block bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-3 px-8 rounded-full
+         shadow-lg transition-all duration-300 transform hover:scale-105">
+            Browse Products
+        </a>
     </div>
 
     <div id="checkout-section" class="border-t border-gray-200 pt-6 mt-6">

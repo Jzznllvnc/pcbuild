@@ -17,9 +17,9 @@ class UserController extends BaseController
     }
 
     /**
-     * Displays the user dashboard with personal information and order history.
+     * Displays the user orders with personal information and order history.
      */
-    public function dashboard()
+    public function orderhistory()
     {
         // Start session if not already started
         if (session_status() == PHP_SESSION_NONE) {
@@ -28,7 +28,7 @@ class UserController extends BaseController
 
         // Check if user is logged in
         if (!isset($_SESSION['user_id'])) {
-            $_SESSION['error'] = 'You must be logged in to view your dashboard.';
+            $_SESSION['error'] = 'You must be logged in to view your orders.';
             header('Location: /pcbuild/public/login');
             exit();
         }
@@ -40,12 +40,12 @@ class UserController extends BaseController
         $userOrders = $this->orderModel->getOrdersByUserId($userId);
 
         $data = [
-            'title' => 'My Dashboard',
+            'title' => 'My Orders',
             'username' => $username,
             'orders' => $userOrders
         ];
 
-        $this->view('user/dashboard', $data);
+        $this->view('user/orderhistory', $data);
     }
 
     /**

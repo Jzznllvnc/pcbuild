@@ -15,7 +15,7 @@
                     <ul class="space-y-2">
                         <li><a href="/pcbuild/public/products" class="hover:text-[--footer-link-hover] transition-colors">Products</a></li>
                         <li><a href="/pcbuild/public/build-rate" class="hover:text-[--footer-link-hover] transition-colors">Build Your PC</a></li>
-                        <li><a href="/pcbuild/public/dashboard" class="hover:text-[--footer-link-hover] transition-colors">My Orders</a></li>
+                        <li><a href="/pcbuild/public/orderhistory" class="hover:text-[--footer-link-hover] transition-colors">My Orders</a></li>
                     </ul>
                 </div>
 
