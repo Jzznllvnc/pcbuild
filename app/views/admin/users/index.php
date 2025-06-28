@@ -1,5 +1,5 @@
-<div class="container mx-auto p-8 pt-20 bg-white shadow-lg rounded-lg mt-40 mb-16">
-    <h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center">Manage Users</h1>
+<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg mt-28 mb-16">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-12 mt-8 text-center">Manage Users</h1>
 
         <?php if (isset($success) && $success): ?>
             <div class="js-dismissible-alert bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative mb-4 transition-all duration-300 ease-in-out" role="alert">

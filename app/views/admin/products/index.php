@@ -1,5 +1,5 @@
-<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg mt-40 mb-16">
-    <h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center"><?php echo htmlspecialchars($title); ?></h1>
+<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg mt-28 mb-16">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-6 mt-8 text-center"><?php echo htmlspecialchars($title); ?></h1>
 
     <?php if (isset($error) && $error): ?>
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">

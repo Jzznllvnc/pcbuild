@@ -1,9 +1,9 @@
-<div class="container mx-auto p-8 pt-20 bg-white shadow-lg rounded-lg mt-40 mb-24 max-w-5xl">
-    <h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center"><?php echo htmlspecialchars($title); ?></h1>
+<div class="container mx-auto p-4 md:p-8 mt-24 mb-12 max-w-7xl">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-6 mt-8 text-center"><?php echo htmlspecialchars($title); ?></h1>
 
-    <p class="text-center text-gray-700 mb-20 text-lg">Select your desired PC components below and click "Get Build Rating" to see how well they perform together!</p>
+    <p class="text-center text-gray-700 mb-12 text-lg">Select your desired PC components below and click "Get Build Rating" to see how well they perform together!</p>
 
-    <form id="build-form" class="space-y-8">
+    <form id="build-form">
         <?php
         // More unique and visually distinct SVG icons for each category
         $componentIcons = [
@@ -16,32 +16,34 @@
             'Case' => '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-box"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>',
         ];
         ?>
-        <?php foreach ($components as $category => $products): ?>
-            <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-200 component-card">
-                <label for="<?php echo strtolower($category); ?>" class="flex items-center text-xl font-bold text-gray-800 mb-4">
-                    <span class="text-[--color-primary-orange] mr-3"><?php echo $componentIcons[$category]; ?></span>
-                    <?php echo htmlspecialchars($category); ?>:
-                </label>
-                <div class="relative">
-                    <select id="<?php echo strtolower($category); ?>" name="<?php echo strtolower($category); ?>"
-                            class="block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[--color-primary-orange] focus:border-[--color-primary-orange] sm:text-base bg-white appearance-none pr-8 transition-all duration-200"
-                            onchange="updateBuildSummary()">
-                        <option value="">-- Select a <?php echo htmlspecialchars($category); ?> --</option>
-                        <?php foreach ($products as $product): ?>
-                            <option value="<?php echo htmlspecialchars($product['id']); ?>"
-                                    data-price="<?php echo htmlspecialchars($product['price']); ?>"
-                                    data-name="<?php echo htmlspecialchars($product['name'], ENT_QUOTES); ?>">
-                                <?php echo htmlspecialchars($product['name']); ?> ($<?php echo number_format($product['price'], 2); ?>)
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9l4.95 4.95z"/></svg>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <?php foreach ($components as $category => $products): ?>
+                <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-200 component-card">
+                    <label for="<?php echo strtolower($category); ?>" class="flex items-center text-xl font-bold text-gray-800 mb-4">
+                        <span class="text-[--color-primary-orange] mr-3"><?php echo $componentIcons[$category]; ?></span>
+                        <?php echo htmlspecialchars($category); ?>:
+                    </label>
+                    <div class="relative">
+                        <select id="<?php echo strtolower($category); ?>" name="<?php echo strtolower($category); ?>"
+                                class="block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[--color-primary-orange] focus:border-[--color-primary-orange] sm:text-base bg-white appearance-none pr-8 transition-all duration-200"
+                                onchange="updateBuildSummary()">
+                            <option value="">-- Select a <?php echo htmlspecialchars($category); ?> --</option>
+                            <?php foreach ($products as $product): ?>
+                                <option value="<?php echo htmlspecialchars($product['id']); ?>"
+                                        data-price="<?php echo htmlspecialchars($product['price']); ?>"
+                                        data-name="<?php echo htmlspecialchars($product['name'], ENT_QUOTES); ?>">
+                                    <?php echo htmlspecialchars($product['name']); ?> ($<?php echo number_format($product['price'], 2); ?>)
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9l4.95 4.95z"/></svg>
+                        </div>
                     </div>
+                    <div id="<?php echo strtolower($category); ?>-summary" class="mt-3 text-gray-600 text-sm italic"></div>
                 </div>
-                <div id="<?php echo strtolower($category); ?>-summary" class="mt-3 text-gray-600 text-sm italic"></div>
-            </div>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
+        </div>
 
         <div class="border-t border-gray-200 pt-8 mt-8">
             <div class="flex justify-between items-center mb-6 text-2xl font-bold text-gray-800">

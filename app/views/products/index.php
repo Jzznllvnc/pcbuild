@@ -1,5 +1,6 @@
-<div class="container mx-auto p-8 pt-20 bg-white shadow-lg rounded-lg mt-40 mb-24">
-    <h1 class="text-4xl font-extrabold text-gray-900 mb-12 text-center"><?php echo htmlspecialchars($title); ?></h1>
+<div class="container mx-auto p-10 bg-white shadow-lg rounded-lg mt-28 mb-24">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-6 mt-8 text-center"><?php echo htmlspecialchars($title); ?></h1>
+    <p class="text-center text-gray-700 mb-12 text-lg">Your <span class="text-[--color-primary-orange]">perfect build</span> starts here. Shop the latest CPUs, GPUs, and more!</p>
 
     <!-- Search and Filter Form -->
     <form action="/pcbuild/public/products" method="GET" class="mb-8 flex flex-col sm:flex-row gap-4 items-center">
