@@ -11,7 +11,7 @@
                 class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[--color-primary-orange]">
             <option value="">All Categories</option>
             <?php
-            $categories = ['CPU', 'GPU', 'Motherboard', 'RAM', 'Storage', 'PSU', 'Case', 'CPU Cooler', 'Keyboard', 'Monitor', 'Mouse'];
+            $categories = ['CPU', 'GPU', 'Motherboard', 'RAM', 'Storage', 'PSU', 'Case', 'Cooler', 'Keyboard', 'Monitor', 'Mouse'];
             foreach ($categories as $cat) {
                 $selected = ($currentCategory === $cat) ? 'selected' : '';
                 echo "<option value=\"{$cat}\" {$selected}>{$cat}</option>";

@@ -35,7 +35,7 @@
     <div class="mb-8 overflow-x-auto pb-4 scrollbar-hide">
         <div class="flex flex-nowrap space-x-3">
             <?php
-            $categories = ['CPU', 'GPU', 'Motherboard', 'RAM', 'Storage', 'PSU', 'Case', 'CPU Cooler', 'Keyboard', 'Monitor', 'Mouse', 'Webcam']; // Added webcam
+            $categories = ['CPU', 'GPU', 'Motherboard', 'RAM', 'Storage', 'PSU', 'Case', 'Cooler', 'Keyboard', 'Monitor', 'Mouse'];
             ?>
             <a href="/pcbuild/public/admin/products?search=<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
                class="flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium
