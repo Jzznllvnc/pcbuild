@@ -277,7 +277,6 @@ async function syncLocalCartToServer() {
                 updateCartCount(); // Refresh cart count from server
                 // If there were warnings, you might want to log them or display them more prominently
                 if (response.warnings && response.warnings.length > 0) {
-                    // console.warn('Cart sync warnings:', response.warnings);
                     // alertMessage('warning', 'Some items could not be synced due to stock issues.');
                 }
             } else {
@@ -619,7 +618,6 @@ function initializePasswordToggle() {
 
 // Initialize cart count on page load
 document.addEventListener('DOMContentLoaded', () => {
-    // console.log('DOMContentLoaded fired! Starting initializations...'); // Add this line
     updateCartCount();
     // Initialize AI chat components on DOMContentLoaded
     initializeAiChat();
@@ -628,7 +626,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize logout confirmation modal
     initializeLogoutConfirmation();
     // NEW: Initialize custom confirmation modals
-    initializeConfirmationModals(); // Call new initializer
+    initializeConfirmationModals();
     
     // NEW: Perform cart sync if flag is set (from AuthController after login/register)
     if (typeof performCartSync !== 'undefined' && performCartSync) {
@@ -636,13 +634,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // NEW: Initialize new order notification
-    initializeNewOrderNotification(); // Add this line
+    initializeNewOrderNotification();
 
-    // console.log('Attempting to initialize dismissible alerts...'); // Add this line
     initializeDismissibleAlerts();
-    // console.log('Dismissible alerts initialization attempted.'); // Add this line
-
-    // renderCartItems will be called by cart/index.php if on that page.
 });
 
 
@@ -673,7 +667,6 @@ function renderCartItems() {
                 }
             })
             .catch(error => {
-                // console.error('Error fetching cart items:', error);
                 cartItemsContainer.innerHTML = ''; // Clear loading text
                 cartItemsContainer.classList.add('hidden'); // Hide the container itself
                 emptyCartState.classList.remove('hidden'); // Show empty cart message
@@ -784,21 +777,21 @@ function updateCheckoutButtonState(cartItemCount, isUserLoggedIn) {
 
 
 // --- AI Chat Pop-up Logic (Centralized and Initialized) ---
-let chatHistory = []; // Moved global here
-// Declared globally, initialized inside initializeAiChat
-let chatMessages, userInput, sendButton, chatInputForm;
+let chatHistory = [];
+let chatMessages, userInput, sendButton, chatInputForm, initialAiGreeting;
+let initialChatHtmlContent = ''; // [NEW] Global variable to store the original HTML of the initial chat view
 
 function initializeAiChat() {
     const aiChatFab = document.getElementById('ai-chat-fab');
     const aiChatSidebar = document.getElementById('ai-chat-sidebar');
     const closeChatSidebarButton = document.getElementById('close-chat-sidebar');
+    const newChatButton = document.getElementById('new-chat-button');
     const chatContentPlaceholder = document.getElementById('ai-chat-content-placeholder');
-    const body = document.body; // Reference to the body element
+    const body = document.body;
 
-    // Function to load initial chat content (now only HTML)
     async function loadInitialChatContent() {
         try {
-            const response = await fetch('/pcbuild/public/ai-chat-content'); // This fetches the pure HTML
+            const response = await fetch('/pcbuild/public/ai-chat-content');
             const htmlContent = await response.text();
 
             if (response.ok) {
@@ -808,60 +801,99 @@ function initializeAiChat() {
                 chatMessages = document.getElementById('chat-messages');
                 userInput = document.getElementById('user-input');
                 sendButton = document.getElementById('send-button');
-                chatInputForm = document.getElementById('chat-input-form'); // Get form reference
+                chatInputForm = document.getElementById('chat-input-form');
+                initialAiGreeting = document.getElementById('initial-ai-greeting'); // Get reference to the greeting div
 
-                // Initialize chat history and display initial message ONLY IF it's empty
-                // This prevents duplicate initial messages if sidebar is opened/closed
-                if (chatHistory.length === 0) {
-                    const initialMessage = "Hello! I'm Kraft-E, your PC Build Assistant. Ask me anything about PC components, compatibility, or general build advice!";
-                    chatHistory.push({ role: "model", text: initialMessage });
-                    // Append this initial message to the displayed chat
-                    appendMessage('model', initialMessage);
+                // [NEW] Store the initial HTML content of chatMessages
+                // This includes the initialAiGreeting div itself.
+                initialChatHtmlContent = chatMessages.innerHTML;
+
+                // If history exists, hide the initial greeting and re-render messages from history.
+                if (chatHistory.length > 0) {
+                    if (initialAiGreeting) {
+                        initialAiGreeting.classList.add('hidden'); // Hide the greeting
+                    }
+                    chatMessages.innerHTML = ''; // Clear initial content to append historical messages
+                    chatHistory.forEach(msg => appendMessage(msg.role, msg.text));
+                } else {
+                    // If chat history is empty, ensure the initial greeting is visible initially
+                    if (initialAiGreeting) {
+                        initialAiGreeting.classList.remove('hidden');
+                    }
+                    // Add the initial message to history for AI context for the *first* conversation if not already there
+                    const initialMessageTextForHistory = "Hello! I'm Kraft-E, your PC Build Assistant.\n\nAsk me anything about PC components, compatibility,\nor general build advice!"; //
+                    if (chatHistory.length === 0) { // Only push if history is genuinely empty
+                        chatHistory.push({ role: "model", text: initialMessageTextForHistory });
+                    }
                 }
 
                 // Attach event listeners for chat functionality
-                if (chatInputForm) { // Attach listener to the form to handle submission
+                if (chatInputForm) {
                     chatInputForm.addEventListener('submit', (e) => {
-                        e.preventDefault(); // Prevent default form submission (page reload)
+                        e.preventDefault();
                         sendMessage();
                     });
-                } else if (sendButton && userInput) { // Fallback for direct button click if form not found
+                } else if (sendButton && userInput) {
                     sendButton.addEventListener('click', sendMessage);
                     userInput.addEventListener('keypress', (e) => {
                         if (e.key === 'Enter') {
-                            e.preventDefault(); // Also prevent default for keypress if not handled by form submit
+                            e.preventDefault();
                             sendMessage();
                         }
                     });
                 }
 
-                // Ensure chat messages scroll to bottom after content load
                 if (chatMessages) {
                     chatMessages.scrollTop = chatMessages.scrollHeight;
                 }
 
             } else {
                 chatContentPlaceholder.innerHTML = `<p class="text-center text-red-600 py-8">Failed to load AI Chat content.</p>`;
-                // console.error('Failed to fetch AI chat content:', htmlContent);
             }
         } catch (error) {
             alertMessage('error', 'Could not connect to the AI assistant.');
-            // console.error('Fetch error:', error);
         }
     }
 
-    // Load chat content immediately when the page's DOM is ready
+    // [NEW] Function to reset the chat to its initial state
+    function resetChat() {
+        chatHistory = []; // Clear chat history
+
+        // Restore the initial HTML content, which includes the greeting
+        if (chatMessages && initialChatHtmlContent) {
+            chatMessages.innerHTML = initialChatHtmlContent;
+        }
+
+        // Re-get reference to initialAiGreeting as it might have been re-created by innerHTML
+        initialAiGreeting = document.getElementById('initial-ai-greeting');
+        if (initialAiGreeting) {
+            initialAiGreeting.classList.remove('hidden'); // Ensure it's visible
+        }
+        
+        // Re-add the initial message to history for AI context for the *next* conversation
+        const initialMessageTextForHistory = "Hello! I'm Kraft-E, your PC Build Assistant.\n\nAsk me anything about PC components, compatibility,\nor general build advice!"; //
+        chatHistory.push({ role: "model", text: initialMessageTextForHistory }); // Push the clean text version
+
+        if (userInput) {
+            userInput.value = ''; // Clear input field
+            userInput.focus();
+        }
+
+        if (chatMessages) {
+            chatMessages.scrollTop = 0; // Scroll to top
+        }
+    }
+
     loadInitialChatContent();
 
-    // Toggle sidebar visibility
     if (aiChatFab) {
         aiChatFab.addEventListener('click', () => {
-            aiChatSidebar.classList.add('open'); // Show sidebar
-            body.classList.add('ai-chat-open'); // Add class to body to prevent scrolling
-            if (chatMessages) { // Ensure scroll after opening
+            aiChatSidebar.classList.add('open');
+            body.classList.add('ai-chat-open');
+            if (chatMessages) {
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
-            if (userInput) { // Focus on input field when chat opens
+            if (userInput) {
                 userInput.focus();
             }
         });
@@ -869,14 +901,16 @@ function initializeAiChat() {
 
     if (closeChatSidebarButton) {
         closeChatSidebarButton.addEventListener('click', () => {
-            aiChatSidebar.classList.remove('open'); // Hide sidebar
-            body.classList.remove('ai-chat-open'); // Remove class from body
+            aiChatSidebar.classList.remove('open');
+            body.classList.remove('ai-chat-open');
         });
     }
 
-    // Close sidebar if clicked outside
+    if (newChatButton) {
+        newChatButton.addEventListener('click', resetChat); // Attach reset function to the button
+    }
+
     document.addEventListener('click', (event) => {
-        // Check if the click is outside the sidebar AND outside the FAB, and if the sidebar is open
         if (aiChatSidebar && aiChatFab && aiChatSidebar.classList.contains('open') &&
             !aiChatSidebar.contains(event.target) &&
             !aiChatFab.contains(event.target)) {
@@ -886,24 +920,19 @@ function initializeAiChat() {
     });
 }
 
-// Function to append a message to the chat display (made globally accessible)
 function appendMessage(role, text) {
-    if (!chatMessages) { // Ensure chatMessages element exists before appending
-        // console.error("Chat messages container not found!");
+    if (!chatMessages) {
         return;
     }
 
     const messageDiv = document.createElement('div');
-    // Ensure padding for message bubbles directly, not just their container
     messageDiv.className = `flex items-start ${role === 'user' ? 'justify-end' : ''} p-2`;
 
     const avatar = document.createElement('div');
-    // Updated avatar colors and added margin for spacing
     avatar.className = `flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${role === 'user' ? 'bg-[--color-primary-orange] ml-3' : 'bg-[--color-dark-blue] mr-3'}`;
     avatar.textContent = role === 'user' ? 'You' : 'AI';
 
     const textBubble = document.createElement('div');
-    // Updated text bubble colors for user message
     textBubble.className = `p-3 rounded-lg max-w-[80%] shadow-sm ${role === 'user' ? 'bg-[--color-primary-orange] text-white ml-auto' : 'bg-gray-200 text-gray-800 mr-auto'} markdown-content`;
 
     if (role === 'model') {
@@ -921,16 +950,22 @@ function appendMessage(role, text) {
     }
 
     chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
+    chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// Function to send message to AI API (made globally accessible)
 async function sendMessage() {
     const prompt = userInput.value.trim();
     if (prompt === '') return;
 
+    // Hide the initial AI greeting when the user sends their first message
+    if (initialAiGreeting && !initialAiGreeting.classList.contains('hidden')) {
+        initialAiGreeting.classList.add('hidden'); // Hide the greeting
+        chatMessages.innerHTML = ''; // Clear ALL messages (including the now-hidden greeting)
+    }
+
     appendMessage('user', prompt);
-    chatHistory.push({ role: "model", text: prompt }); // Assuming model is also a part of history as per previous turn
+    chatHistory.push({ role: "user", text: prompt });
+
     userInput.value = '';
 
     sendButton.disabled = true;
@@ -954,16 +989,14 @@ async function sendMessage() {
             chatHistory.push({ role: "model", text: aiResponse });
         } else {
             alertMessage('error', `AI Service error: ${data.error || 'Something went wrong.'}`);
-            // console.error('AI API Error:', data.error);
         }
     } catch (error) {
         alertMessage('error', 'Could not connect to the AI assistant.');
-        // console.error('Fetch error:', error);
     } finally {
         sendButton.disabled = false;
         sendButton.textContent = 'Send';
         sendButton.classList.remove('opacity-50', 'cursor-not-allowed');
-        chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 }
 
@@ -996,16 +1029,11 @@ function hideLogoutConfirmation() {
 
 function initializeLogoutConfirmation() {
     const logoutButton = document.getElementById('logout-button');
-    // console.log("Logout button element found:", logoutButton); // Debugging line
-
     if (logoutButton) {
         logoutButton.addEventListener('click', (e) => {
-            e.preventDefault(); // Prevent default link behavior
-            // console.log("Logout button clicked, showing confirmation modal."); // Debugging line
+            e.preventDefault();
             showLogoutConfirmation();
         });
-    } else {
-        // console.error("Logout button with ID 'logout-button' not found on DOMContentLoaded."); // Debugging line
     }
 
     const confirmLogoutBtn = document.getElementById('confirm-logout-btn');
@@ -1013,20 +1041,14 @@ function initializeLogoutConfirmation() {
 
     if (confirmLogoutBtn) {
         confirmLogoutBtn.addEventListener('click', () => {
-            // console.log("Logout confirmed, submitting logout form."); // Debugging line
-            const logoutForm = document.getElementById('logout-form'); // Get the hidden logout form
+            const logoutForm = document.getElementById('logout-form');
             if (logoutForm) {
-                // Use requestSubmit() for more robust programmatic submission
                 if (typeof logoutForm.requestSubmit === 'function') {
                     logoutForm.requestSubmit();
-                    // console.log("Logout form submitted with requestSubmit().");
                 } else {
                     logoutForm.submit();
-                    // console.log("Logout form submitted with .submit().");
                 }
             } else {
-                // console.error("Logout form not found with ID 'logout-form'.");
-                // Fallback to direct redirect if form is not found (less reliable for POST)
                 window.location.href = '/pcbuild/public/logout';
             }
         });
@@ -1034,7 +1056,6 @@ function initializeLogoutConfirmation() {
 
     if (cancelLogoutBtn) {
         cancelLogoutBtn.addEventListener('click', () => {
-            // console.log("Logout cancelled."); // Debugging line
             hideLogoutConfirmation();
         });
     }
@@ -1043,7 +1064,6 @@ function initializeLogoutConfirmation() {
     if (logoutModal) {
         logoutModal.addEventListener('click', (e) => {
             if (e.target === logoutModal) {
-                // console.log("Clicked outside logout modal, hiding."); // Debugging line
                 hideLogoutConfirmation();
             }
         });
@@ -1054,35 +1074,25 @@ function initializeLogoutConfirmation() {
 function initializeDismissibleAlerts() {
     const dismissibleAlerts = document.querySelectorAll('.js-dismissible-alert');
 
-    // console.log('Found dismissible alerts:', dismissibleAlerts.length, dismissibleAlerts); // Keep for debugging if needed
-
     dismissibleAlerts.forEach(alertDiv => {
         const dismissBtn = alertDiv.querySelector('.js-dismiss-btn');
 
-        // Ensure element has transition properties if they might be missing or overridden
         alertDiv.classList.add('transition-opacity', 'duration-300', 'ease-in-out'); 
         
-        // Ensure element starts visible (if not already by animate-fadeIn or other CSS)
-        // By removing opacity-0 class if it's there, and setting inline opacity to ensure it's high.
         alertDiv.classList.remove('opacity-0');
-        alertDiv.style.opacity = '1'; // Force inline style for immediate visibility control
-
+        alertDiv.style.opacity = '1';
 
         const hideAndRemoveAlert = () => {
-            alertDiv.style.opacity = '0'; // Force opacity to 0 using inline style for fade-out
-            alertDiv.style.pointerEvents = 'none'; // Disable clicks immediately
+            alertDiv.style.opacity = '0';
+            alertDiv.style.pointerEvents = 'none';
 
-            // Set a timeout to remove the element from the DOM after the transition duration
-            // This is a robust way to ensure removal even if 'transitionend' behaves inconsistently.
             setTimeout(() => {
                 alertDiv.remove();
-            }, 300); // This duration (300ms) should match Tailwind's 'duration-300'
+            }, 300);
         };
 
-        // Set auto-hide timeout (e.g., 5 seconds after DOMContentLoaded/alert appears)
         setTimeout(hideAndRemoveAlert, 5000); 
 
-        // Add click listener to the dismiss button
         if (dismissBtn) {
             dismissBtn.addEventListener('click', hideAndRemoveAlert);
         }
@@ -1090,38 +1100,27 @@ function initializeDismissibleAlerts() {
 }
 
 // --- Custom Confirmation Modal Logic ---
-let currentConfirmationCallback = null; // Stores the function to call on confirmation
+let currentConfirmationCallback = null;
 
-// These functions are defined here so they are hoisted/available before initializeConfirmationModals might reference them.
-/**
- * Shows a custom confirmation modal.
- * @param {string} title The title for the modal.
- * @param {string} message The message to display in the modal.
- * @param {function(boolean): void} callback Function to call when user confirms/cancels.
- * Receives `true` for confirm, `false` for cancel.
- */
 function showConfirmationModal(title, message, callback) {
     const confirmationModal = document.getElementById('confirmation-modal');
     const modalTitle = document.getElementById('confirmation-modal-title');
     const modalMessage = document.getElementById('confirmation-modal-message');
 
     if (!confirmationModal || !modalTitle || !modalMessage) {
-        // console.error("Custom confirmation modal elements not found!");
-        return; // Prevent errors if elements are missing
+        return;
     }
 
     modalTitle.textContent = title;
     modalMessage.textContent = message;
-    currentConfirmationCallback = callback; // Store the callback
+    currentConfirmationCallback = callback;
 
-    // Show modal with animation and make it interactive
     confirmationModal.classList.remove('hidden', 'pointer-events-none');
     setTimeout(() => {
         confirmationModal.classList.add('opacity-100');
         confirmationModal.querySelector('div').classList.remove('scale-95', 'opacity-0');
         confirmationModal.querySelector('div').classList.add('scale-100', 'opacity-100');
     }, 10);
-    // console.log("Custom confirmation modal shown."); // Debugging line
 }
 
 function hideConfirmationModal() {
@@ -1134,7 +1133,6 @@ function hideConfirmationModal() {
             confirmationModal.classList.add('hidden', 'pointer-events-none');
         }, { once: true });
     }
-    // console.log("Custom confirmation modal hidden."); // Debugging line
 }
 
 function initializeConfirmationModals() {
@@ -1144,8 +1142,7 @@ function initializeConfirmationModals() {
 
     if (confirmActionBtn) {
         confirmActionBtn.addEventListener('click', () => {
-            // console.log("Custom modal confirmed button clicked."); // Debugging line
-            hideConfirmationModal(); // Hides modal
+            hideConfirmationModal();
             const callbackToExecute = currentConfirmationCallback;
             currentConfirmationCallback = null;
 
@@ -1157,7 +1154,6 @@ function initializeConfirmationModals() {
 
     if (cancelActionBtn) {
         cancelActionBtn.addEventListener('click', () => {
-            // console.log("Custom modal cancelled button clicked."); // Debugging line
             hideConfirmationModal();
             const callbackToExecute = currentConfirmationCallback;
             currentConfirmationCallback = null;
@@ -1171,7 +1167,6 @@ function initializeConfirmationModals() {
     if (confirmationModal) {
         confirmationModal.addEventListener('click', (e) => {
             if (e.target === confirmationModal) {
-                // console.log("Clicked outside custom modal, treating as cancel."); // Debugging line
                 hideConfirmationModal();
                 const callbackToExecute = currentConfirmationCallback;
                 currentConfirmationCallback = null;
@@ -1183,74 +1178,56 @@ function initializeConfirmationModals() {
         });
     }
 
-    // --- Event Delegation for Ban/Delete Buttons ---
     document.addEventListener('click', (e) => {
         const target = e.target;
 
-        // Check if the clicked element (or its parent) is a Ban/Unban button
         if (target.matches('.js-toggle-ban-btn')) {
-            e.preventDefault(); // Prevent default button behavior (if any)
+            e.preventDefault();
             const userId = target.dataset.userId;
             const username = target.dataset.username;
-            const isBanned = target.dataset.isBanned === '1'; // Convert to boolean
+            const isBanned = target.dataset.isBanned === '1';
             const actionUrl = `/pcbuild/public/admin/users/toggle-ban/${userId}`;
-
-            // console.log("Ban/Unban button clicked. User ID:", userId, "Username:", username, "Is Banned:", isBanned);
 
             showConfirmationModal(
                 isBanned ? 'Unban User' : 'Ban User',
                 `Are you sure you want to ${isBanned ? 'unban' : 'ban'} user ${username}?`,
                 (confirmed) => {
                     if (confirmed) {
-                        // console.log('Callback: Confirmed BAN/UNBAN for user ID:', userId);
                         performActionViaFetch(actionUrl, 'POST', {})
                             .then(response => {
-                                // console.log("Fetch response for Ban/Unban:", response);
                                 window.location.reload();
                             })
                             .catch(error => {
-                                // console.error('Fetch error for Ban/Unban:', error);
                                 alertMessage('error', 'An error occurred during the ban/unban action.');
                             });
-                    } else {
-                        // console.log('Callback: BAN/UNBAN cancelled for user ID:', userId);
                     }
                 }
             );
         }
 
-        // Check if the clicked element (or its parent) is a Delete button for users
         if (target.matches('.js-delete-user-btn')) {
             e.preventDefault();
             const userId = target.dataset.userId;
             const username = target.dataset.username;
             const actionUrl = `/pcbuild/public/admin/users/delete/${userId}`;
 
-            // console.log("Delete button clicked. User ID:", userId, "Username:", username);
-
             showConfirmationModal(
                 'Delete User',
                 `Are you sure you want to delete user ${username}? This action cannot be undone.`,
                 (confirmed) => {
                     if (confirmed) {
-                        // console.log('Callback: Confirmed DELETE for user ID:', userId);
                         performActionViaFetch(actionUrl, 'POST', {})
                             .then(response => {
-                                // console.log("Fetch response for Delete:", response);
                                 window.location.reload();
                             })
                             .catch(error => {
-                                // console.error('Fetch error for Delete:', error);
                                 alertMessage('error', 'An error occurred during the delete action.');
                             });
-                    } else {
-                        // console.log('Callback: DELETE cancelled for user ID:', userId);
                     }
                 }
             );
         }
 
-        // Handle product deletion via custom modal
         const deleteProductButton = target.closest('.js-delete-product-btn');
         if (deleteProductButton) {
             e.preventDefault();
@@ -1258,49 +1235,34 @@ function initializeConfirmationModals() {
             const productName = deleteProductButton.dataset.productName;
             const actionUrl = `/pcbuild/public/admin/products/delete/${productId}`;
 
-            // console.log("Product delete button clicked. Product ID:", productId, "Product Name:", productName);
-
             showConfirmationModal(
                 'Delete Product',
                 `Are you sure you want to delete product "${productName}"? This action cannot be undone.`,
                 (confirmed) => {
                     if (confirmed) {
-                        // console.log('Callback: Confirmed DELETE for product ID:', productId);
-                        // Use a direct fetch and let the browser handle the redirect from the server
                         fetch(actionUrl, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',
                             },
-                            // As AdminController expects product ID from URL, body is not strictly needed for deletion to work
-                            // However, including it can be good practice with application/x-www-form-urlencoded
                             body: new URLSearchParams({ product_id: productId }).toString(),
                         })
                         .then(response => {
                             if (response.redirected) {
-                                // Explicitly navigate to the final URL after the redirect
-                                // This will cause the page to refresh and pick up the success_msg from the URL
                                 window.location.href = response.url;
                             } else {
-                                // If it didn't redirect, it means there was an error response from the server
-                                // Try to parse it as JSON to get the error message
                                 return response.json()
                                     .then(errorData => {
                                         alertMessage('error', errorData.error || 'Deletion failed with unexpected response.');
                                     })
                                     .catch(() => {
-                                        // Catch if the non-redirecting response is not valid JSON
                                         alertMessage('error', 'Deletion failed: Unexpected non-redirecting response from server.');
                                     });
                             }
                         })
                         .catch(error => {
-                            // This catch block handles network errors that prevent the request from completing
-                            // console.error('Network error during product delete:', error);
                             alertMessage('error', 'A network error occurred during deletion. Please try again.');
                         });
-                    } else {
-                        // console.log('Callback: DELETE cancelled for product ID:', productId);
                     }
                 }
             );

@@ -74,12 +74,16 @@
 
     <div id="ai-chat-sidebar">
         <div class="sidebar-header">
-            <h2 class="text-xl font-bold">Kraft-E</h2>
-            <button id="close-chat-sidebar" class="text-white hover:text-gray-200">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
+            <h2 class="text-xl font-bold">AI Chat Assistant</h2>
+            <div class="flex space-x-2"> <button id="new-chat-button" class="text-white mr-4 font-bold rounded-md underline underline-offset-4 hover:decoration-orange-500 decoration-transparent decoration-2 py-1 px-1">
+                    New Chat
+                </button>
+                <button id="close-chat-sidebar" class="text-white hover:text-orange-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
         </div>
         <div id="ai-chat-content-placeholder">
             <div class="text-center text-gray-500 py-8">Loading AI Chat...</div>
