@@ -21,7 +21,25 @@
                 <?php echo nl2br(htmlspecialchars($product['description'])); ?>
             </p>
 
-            <!-- Quantity Selector for Show Page -->
+            <?php if (!empty($product['additional_details'])): ?>
+                <div class="bg-gray-100 p-4 rounded-md mb-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Specifications:</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <?php
+                        $details = explode("\n", $product['additional_details']);
+                        foreach ($details as $detail) {
+                            $trimmedDetail = trim($detail);
+                            if (!empty($trimmedDetail)) {
+                                // REMOVED \d from the regex to prevent stripping leading numbers
+                                $cleanedDetail = preg_replace('/^[\s\*\-\•]+\s*/', '', $trimmedDetail);
+                                echo '<li>' . htmlspecialchars($cleanedDetail) . '</li>';
+                            }
+                        }
+                        ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
+
             <div class="flex items-center justify-start space-x-3 mb-6">
                 <button id="page-quantity-minus" class="quantity-btn p-2 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -34,8 +52,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m0 0H6" />
                     </svg>
                 </button>
-                <input type="hidden" id="page-quantity-value" value="1"> <!-- Hidden input to store actual value for JS -->
-                <p id="page-quantity-error" class="text-red-500 text-xs italic ml-4 hidden"></p>
+                <input type="hidden" id="page-quantity-value" value="1"> <p id="page-quantity-error" class="text-red-500 text-xs italic ml-4 hidden"></p>
             </div>
 
             <div class="flex space-x-4">
@@ -61,4 +78,3 @@
         <p class="text-center text-gray-600 text-lg py-10">Product not found.</p>
     <?php endif; ?>
 </div>
-<!-- The quantity-modal div is removed from this file. It is only used on the products/index.php page. -->

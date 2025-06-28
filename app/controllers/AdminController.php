@@ -36,17 +36,19 @@ class AdminController extends BaseController
     {
         // Calculate dates for "last 30 days" for summary cards
         $thirtyDaysAgo = date('Y-m-d H:i:s', strtotime('-30 days'));
-        
+
         // Fetch Dashboard Data for top cards
         $newOrders = $this->orderModel->getTotalOrders($thirtyDaysAgo);
         $totalIncome = $this->orderModel->getTotalRevenue($thirtyDaysAgo);
-        $totalCustomers = $this->userModel->getTotalUsersRegistered(); // Total registered users
+        $totalCustomers = $this->userModel->getTotalUsersRegistered();
         // Assuming "Pending Delivery" from the screenshot corresponds to current pending orders, not just new users
         $pendingDelivery = $this->orderModel->getPendingOrders($thirtyDaysAgo);
 
-        // Placeholder for "Total Expense" and "New User" as they require more complex data or separate tables
-        $totalExpense = 24567.00; // Placeholder value
-        $newUser = 34567; // Placeholder for new users or existing total customers if you prefer
+        // Dynamically get total product value for "Total Expense"
+        $totalExpense = $this->productModel->getTotalInventoryValue();
+
+        // Placeholder for "New User" as they require more complex data or separate tables
+        $newUser = $totalCustomers; // Using total customers for now as a general user metric
 
         // Fetch monthly revenue data for Yearly Stats and Sales/Revenue charts
         $currentYear = date('Y');
@@ -61,8 +63,8 @@ class AdminController extends BaseController
             'title' => 'Admin Dashboard',
             'newOrders' => $newOrders,
             'totalIncome' => $totalIncome,
-            'totalExpense' => $totalExpense,
-            'newUser' => $totalCustomers, // Using total customers for now as a general user metric
+            'totalExpense' => $totalExpense, // Now dynamically calculated
+            'newUser' => $newUser,
             'yearlyStatsTotal' => $yearlyStatsTotal,
             'monthlyLabels' => json_encode($monthlyLabels),
             'monthlyDataValues' => json_encode($monthlyDataValues),
@@ -79,7 +81,7 @@ class AdminController extends BaseController
         // This prevents "Welcome back" from showing on this list
         unset($_SESSION['success']);
         unset($_SESSION['error']);
-        
+
         $products = $this->productModel->getProducts(1000, 0);
 
         $data = [
@@ -124,7 +126,8 @@ class AdminController extends BaseController
             'price' => (float)($_POST['price'] ?? 0),
             'image_url' => trim($_POST['image_url'] ?? ''),
             'category' => trim($_POST['category'] ?? ''),
-            'stock' => (int)($_POST['stock'] ?? 0)
+            'stock' => (int)($_POST['stock'] ?? 0),
+            'additional_details' => trim($_POST['additional_details'] ?? '') // New field
         ];
 
         // Basic validation
@@ -146,7 +149,8 @@ class AdminController extends BaseController
             $data['price'],
             $data['image_url'],
             $data['category'],
-            $data['stock']
+            $data['stock'],
+            $data['additional_details'] // Pass new field
         );
 
 
@@ -200,7 +204,8 @@ class AdminController extends BaseController
             'price' => (float)($_POST['price'] ?? 0),
             'image_url' => trim($_POST['image_url'] ?? ''),
             'category' => trim($_POST['category'] ?? ''),
-            'stock' => (int)($_POST['stock'] ?? 0)
+            'stock' => (int)($_POST['stock'] ?? 0),
+            'additional_details' => trim($_POST['additional_details'] ?? '') // New field
         ];
 
         // Basic validation
@@ -222,7 +227,8 @@ class AdminController extends BaseController
             $data['price'],
             $data['image_url'],
             $data['category'],
-            $data['stock']
+            $data['stock'],
+            $data['additional_details'] // Pass new field
         );
 
         if ($updated) {
@@ -255,7 +261,7 @@ class AdminController extends BaseController
         if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
             echo json_encode(['error' => 'Authentication required or not an admin.']);
             http_response_code(403); // Forbidden
-            exit();
+            return;
         }
 
         $deleted = $this->productModel->deleteProduct($id);

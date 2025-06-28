@@ -25,6 +25,13 @@
                       placeholder="Detailed product description..."></textarea>
         </div>
         <div>
+            <label for="additional_details" class="block text-sm font-medium text-gray-700">Additional Details (Bulleted List)</label>
+            <textarea name="additional_details" id="additional_details" rows="6"
+                      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[--color-primary-orange] focus:border-[--color-primary-orange] sm:text-sm"
+                      placeholder="Enter specs here, one per line (e.g.,&#10;• Processor Base Frequency: 3.0 GHz&#10;• Max Turbo Frequency: 4.8 GHz&#10;• Cores: 8&#10;• Threads: 16)"></textarea>
+            <p class="mt-1 text-sm text-gray-500">Each line will be displayed as a new bullet point.</p>
+        </div>
+        <div>
             <label for="price" class="block text-sm font-medium text-gray-700">Price ($) <span class="text-red-500">*</span></label>
             <input type="number" name="price" id="price" step="0.01" min="0.01" required
                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[--color-primary-orange] focus:border-[--color-primary-orange] sm:text-sm"

@@ -68,7 +68,7 @@ class Product
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 
         $stmt->execute();
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -118,8 +118,8 @@ class Product
 
         $stmt = $this->pdo->prepare($query);
         // Execute with parameters.
-        $stmt->execute($params); 
-        
+        $stmt->execute($params);
+
         return (int)$stmt->fetchColumn();
     }
 
@@ -133,12 +133,13 @@ class Product
      * @param string $image_url
      * @param string $category
      * @param int $stock
+     * @param string|null $additional_details
      * @return int|false The ID of the newly created product, or false on failure.
      */
-    public function createProduct($name, $description, $price, $image_url, $category, $stock)
+    public function createProduct($name, $description, $price, $image_url, $category, $stock, $additional_details = null)
     {
         try {
-            $query = "INSERT INTO " . $this->table_name . " (name, description, price, image_url, category, stock) VALUES (:name, :description, :price, :image_url, :category, :stock)";
+            $query = "INSERT INTO " . $this->table_name . " (name, description, price, image_url, category, stock, additional_details) VALUES (:name, :description, :price, :image_url, :category, :stock, :additional_details)";
             $stmt = $this->pdo->prepare($query);
 
             $stmt->bindParam(':name', $name);
@@ -147,6 +148,7 @@ class Product
             $stmt->bindParam(':image_url', $image_url);
             $stmt->bindParam(':category', $category);
             $stmt->bindParam(':stock', $stock);
+            $stmt->bindParam(':additional_details', $additional_details);
 
             $stmt->execute();
             return $this->pdo->lastInsertId();
@@ -166,12 +168,13 @@ class Product
      * @param string $image_url
      * @param string $category
      * @param int $stock
+     * @param string|null $additional_details
      * @return bool True on success, false if no rows affected or on error.
      */
-    public function updateProduct($id, $name, $description, $price, $image_url, $category, $stock)
+    public function updateProduct($id, $name, $description, $price, $image_url, $category, $stock, $additional_details = null)
     {
         try {
-            $query = "UPDATE " . $this->table_name . " SET name = :name, description = :description, price = :price, image_url = :image_url, category = :category, stock = :stock WHERE id = :id";
+            $query = "UPDATE " . $this->table_name . " SET name = :name, description = :description, price = :price, image_url = :image_url, category = :category, stock = :stock, additional_details = :additional_details WHERE id = :id";
             $stmt = $this->pdo->prepare($query);
 
             $stmt->bindParam(':name', $name);
@@ -180,6 +183,7 @@ class Product
             $stmt->bindParam(':image_url', $image_url);
             $stmt->bindParam(':category', $category);
             $stmt->bindParam(':stock', $stock);
+            $stmt->bindParam(':additional_details', $additional_details);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
             $stmt->execute();
@@ -211,12 +215,29 @@ class Product
             $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
             $stmt = $this->pdo->prepare($query);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            
+
             $stmt->execute();
             return $stmt->rowCount() > 0; // True if deleted, false if not found
         } catch (PDOException $e) {
             error_log("Product Model Error: deleteProduct failed: " . $e->getMessage());
             return false;
+        }
+    }
+
+    /**
+     * Calculates the total value of all products in stock (price * stock).
+     *
+     * @return float The total inventory value.
+     */
+    public function getTotalInventoryValue()
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT SUM(price * stock) FROM " . $this->table_name);
+            $stmt->execute();
+            return (float)$stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("Product Model Error: getTotalInventoryValue failed: " . $e->getMessage());
+            return 0.00;
         }
     }
 }

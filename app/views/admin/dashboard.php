@@ -1,5 +1,5 @@
 <div class="container mx-auto p-4 md:p-8 mt-24 mb-8 max-w-full min-h-screen">
-    <h1 class="text-4xl font-extrabold text-gray-900 mb-16 text-center">Admin Dashboard</h1>
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-8 text-center">Admin Dashboard</h1>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between border border-gray-200">
@@ -32,7 +32,10 @@
                 </p>
             </div>
             <div class="p-3 bg-green-100 rounded-full text-green-600 flex items-center justify-center">
-                <span class="text-3xl font-bold leading-none h-8 w-8 flex items-center justify-center">$</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V9m0 3v1m0 3v1m0 0h2.5M12 12h2.5M12 15h2.5" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2z" />
+                </svg>
             </div>
         </div>
 
