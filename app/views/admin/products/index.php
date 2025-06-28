@@ -17,8 +17,45 @@
         </a>
     </div>
 
+    <form action="/pcbuild/public/admin/products" method="GET" class="mb-8 flex flex-col sm:flex-row gap-4 items-center">
+        <input type="text" name="search" placeholder="Search by name or description..."
+               value="<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
+               class="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[--color-primary-orange]">
+        <button type="submit"
+                class="bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-2 px-6 rounded-md transition-colors shadow-md">
+            Search
+        </button>
+        <?php if (!empty($currentSearch) || !empty($currentCategory)): ?>
+            <a href="/pcbuild/public/admin/products" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-md transition-colors shadow-md">
+                Clear Filters
+            </a>
+        <?php endif; ?>
+    </form>
+
+    <div class="mb-8 overflow-x-auto pb-4 scrollbar-hide">
+        <div class="flex flex-nowrap space-x-3">
+            <?php
+            $categories = ['CPU', 'GPU', 'Motherboard', 'RAM', 'Storage', 'PSU', 'Case', 'CPU Cooler', 'Keyboard', 'Monitor', 'Mouse', 'Webcam']; // Added webcam
+            ?>
+            <a href="/pcbuild/public/admin/products?search=<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
+               class="flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium
+               <?php echo empty($currentCategory) ? 'bg-[--color-dark-blue] text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'; ?>
+               transition-colors duration-200 whitespace-nowrap">
+                All Products
+            </a>
+            <?php foreach ($categories as $cat): ?>
+                <a href="/pcbuild/public/admin/products?category=<?php echo urlencode($cat); ?>&search=<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
+                   class="flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium
+                   <?php echo ($currentCategory === $cat) ? 'bg-[--color-dark-blue] text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'; ?>
+                   transition-colors duration-200 whitespace-nowrap">
+                    <?php echo htmlspecialchars($cat); ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
     <?php if (empty($products)): ?>
-        <p class="text-center text-gray-600 text-lg py-8">No products found. Add your first product!</p>
+        <p class="text-center text-gray-600 text-lg py-8">No products found matching your criteria.</p>
     <?php else: ?>
         <div class="overflow-x-auto rounded-lg shadow-md border border-gray-200">
             <table class="min-w-full leading-normal">

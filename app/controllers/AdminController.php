@@ -81,12 +81,19 @@ class AdminController extends BaseController
         // This prevents "Welcome back" from showing on this list
         unset($_SESSION['success']);
         unset($_SESSION['error']);
+        
+        $category = $_GET['category'] ?? null; // Get category from URL query parameter
+        $search = $_GET['search'] ?? null; // Get search term from URL query parameter
 
-        $products = $this->productModel->getProducts(1000, 0);
+        // Fetch products based on category and search filters
+        // Using arbitrary high limit for admin page since pagination isn't implemented here yet.
+        $products = $this->productModel->getProducts(10000, 0, $category, $search);
 
         $data = [
             'title' => 'Manage Products',
             'products' => $products,
+            'currentCategory' => $category, // Pass current category to the view
+            'currentSearch' => $search, // Pass current search term to the view
             //'success' => $_SESSION['success'] ?? null,
             //'error' => $_SESSION['error'] ?? null
         ];
