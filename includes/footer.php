@@ -1,7 +1,7 @@
 </main>
     <footer class="bg-[--footer-bg-dark] text-[--footer-text-light] py-10 shadow-inner">
         <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-start text-center md:text-left space-y-8 md:space-y-0">
+            <div class="flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left space-y-8 md:space-y-0">
                 <div class="flex-shrink-0 md:w-1/4">
                     <h3 class="text-2xl font-bold text-white mb-2 flex items-center justify-center md:justify-start">
                         <img src="/pcbuild/assets/images/CraftWise.png" alt="CraftWise Logo" class="h-8 w-8 mr-2 object-contain">
@@ -11,7 +11,7 @@
                     <p class="text-sm mt-4">&copy; 2025 jzznllvnc. All rights reserved.</p>
                 </div>
 
-                <div class="flex-grow md:w-1/6 lg:w-auto ml-auto"> <h4 class="text-lg font-semibold text-white mb-3">Quick Links</h4>
+                <div class="hidden md:block flex-grow md:w-1/6 lg:w-auto ml-auto"> <h4 class="text-lg font-semibold text-white mb-3">Quick Links</h4>
                     <ul class="space-y-2">
                         <li><a href="/pcbuild/public/products" class="hover:text-[--footer-link-hover] transition-colors">Products</a></li>
                         <li><a href="/pcbuild/public/build-rate" class="hover:text-[--footer-link-hover] transition-colors">Build Your PC</a></li>
@@ -19,8 +19,7 @@
                     </ul>
                 </div>
 
-                <div class="flex-grow md:w-1/6 lg:w-auto">
-                    <h4 class="text-lg font-semibold text-white mb-3">Company Policies</h4>
+                <div class="hidden md:block flex-grow md:w-1/6 lg:w-auto"> <h4 class="text-lg font-semibold text-white mb-3">Company Policies</h4>
                     <ul class="space-y-2">
                         <li><a href="#" class="hover:text-[--footer-link-hover] transition-colors">Privacy Policy</a></li>
                         <li><a href="#" class="hover:text-[--footer-link-hover] transition-colors">Terms of Service</a></li>

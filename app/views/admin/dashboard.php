@@ -1,7 +1,6 @@
 <div class="container mx-auto p-4 md:p-8 mt-24 mb-8 max-w-full min-h-screen">
     <h1 class="text-4xl font-extrabold text-gray-900 mb-12 mt-8 text-center">Admin Dashboard</h1>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between border border-gray-200">
             <div>
                 <p class="text-lg font-medium text-gray-500">New Orders</p>
