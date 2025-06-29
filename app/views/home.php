@@ -92,13 +92,13 @@
             <div class="p-8 border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center feature-card-hover text-white">
                 <div class="text-5xl mb-4 text-purple-600">🤖</div>
                 <h3 class="text-2xl font-bold text-gray-900 mb-3">AI-Powered Assistance</h3>
-                <p class="text-gray-700 mb-6 flex-grow">Get instant answers and expert advice on components, compatibility, or general build advice from our Gemini AI assistant.</p>
+                <p class="text-gray-700 mb-6 flex-grow">Get instant answers and expert advice on components, compatibility, or general build advice from our very own Kraft-E AI chat assistant.</p>
             </div>
 
             <div class="p-8 border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center feature-card-hover text-white">
-                <div class="text-5xl mb-4 text-[--color-dark-blue]">📞</div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Dedicated Customer Support</h3>
-                <p class="text-gray-700 mb-6 flex-grow">Our expert team is ready to assist you with any questions or issues, ensuring a smooth and satisfactory experience.</p>
+                <div class="text-5xl mb-4 text-[--color-dark-blue]">😎</div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Ease of Use</h3>
+                <p class="text-gray-700 mb-6 flex-grow">Our system is made to be a universal experience, you will not get lost navigating your needs.</p>
             </div>
 
             <div class="p-8 border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center feature-card-hover text-white">
