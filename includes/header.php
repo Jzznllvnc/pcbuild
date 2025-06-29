@@ -9,7 +9,8 @@ if (session_status() == PHP_SESSION_NONE) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PC Build e-commerce</title>
+    <link rel="icon" href="/pcbuild/assets/images/CraftWise.png" type="image/png">
+    <title>CraftWise - Shop Now!</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
@@ -183,7 +184,7 @@ if (session_status() == PHP_SESSION_NONE) {
                 top: 100%; /* Position below the header */
                 left: 0;
                 width: 100%;
-                background-color: var(--color-dark-blue); /* Same as header */
+                background-color: var(--footer-bg-dark); /* Same as header */
                 padding: 1rem 0;
                 box-shadow: 0 8px 10px -5px rgba(0, 0, 0, 0.2);
                 z-index: 40; /* Below header, above content */
@@ -243,7 +244,11 @@ if (session_status() == PHP_SESSION_NONE) {
                 display: block; /* Show them inside the hamburger menu */
             }
         }
-
+        @media (min-width: 525px) {
+            .mobile-menu .sm-custom-hidden-up {
+                display: none !important;
+            }
+        }
         /* Default desktop styles (applies from 768px and up) */
         @media (min-width: 768px) {
             .main-header .desktop-nav-links {
