@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/pcbuild/assets/images/CraftWise.png" type="image/png">
+    <link rel="icon" href="/assets/images/CraftWise.png" type="image/png">
     <title>CraftWise - Shop Now!</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -267,7 +267,7 @@ if (session_status() == PHP_SESSION_NONE) {
     <header class="main-header text-white p-4 fixed top-0 w-full z-50">
         <nav class="container mx-auto flex justify-between items-center relative">
             <a href="/pcbuild//home" class="text-2xl font-bold rounded-md px-3 py-1 hover:bg-gray-700 transition-colors flex items-center">
-                <img src="/pcbuild/assets/images/CraftWise.png" alt="CraftWise Logo" class="h-12 w-12 mr-2 object-contain">
+                <img src="/assets/images/CraftWise.png" alt="CraftWise Logo" class="h-12 w-12 mr-2 object-contain">
                 CraftWise
             </a>
 
@@ -302,7 +302,7 @@ if (session_status() == PHP_SESSION_NONE) {
                     <?php endif; ?>
 
                     <a href="javascript:void(0);" id="logout-button" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors flex items-center">
-                        <img src="/pcbuild/assets/images/logout.svg" alt="Logout Icon" class="h-5 w-5 mr-2 inline" />
+                        <img src="/assets/images/logout.svg" alt="Logout Icon" class="h-5 w-5 mr-2 inline" />
                         Logout
                     </a>
                 <?php else: ?>
@@ -331,7 +331,7 @@ if (session_status() == PHP_SESSION_NONE) {
                         </a>
                     <?php endif; ?>
                     <a href="javascript:void(0);" id="logout-button-mobile" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-md shadow-lg transition-colors flex items-center text-sm sm-custom-hidden-below">
-                        <img src="/pcbuild/assets/images/logout.svg" alt="Logout Icon" class="h-4 w-4 mr-1 inline" />
+                        <img src="/assets/images/logout.svg" alt="Logout Icon" class="h-4 w-4 mr-1 inline" />
                         Logout
                     </a>
                 <?php else: ?>
@@ -363,7 +363,7 @@ if (session_status() == PHP_SESSION_NONE) {
                     <?php echo (isset($_SESSION['is_admin']) && $_SESSION['is_admin']) ? 'Administration' : 'Manage Profile'; ?>
                 </a>
                 <a href="javascript:void(0);" id="logout-button-mobile-menu" class="block sm-custom-hidden-up">
-                    <img src="/pcbuild/assets/images/logout.svg" alt="Logout Icon" class="h-4 w-4 mr-2 inline" />
+                    <img src="/assets/images/logout.svg" alt="Logout Icon" class="h-4 w-4 mr-2 inline" />
                     Logout
                 </a>
             <?php else: ?>

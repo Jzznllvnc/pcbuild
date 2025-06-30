@@ -4,7 +4,7 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-1 bg-gray-50 p-6 rounded-lg shadow-md flex flex-col items-center justify-center text-center">
-            <img src="/pcbuild/assets/images/user.png"
+            <img src="/assets/images/user.png"
                  alt="User Avatar"
                  class="w-32 h-32 rounded-full object-cover border-4 border-[--color-primary-orange] mb-4 shadow-lg">
             <h2 class="text-2xl font-bold text-gray-900 mb-1"><?php echo htmlspecialchars($user['username']); ?></h2>

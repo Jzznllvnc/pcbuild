@@ -1,6 +1,6 @@
 <div id="chat-messages" class="flex-grow overflow-y-auto bg-[--color-light-bg] p-4 rounded-lg shadow-inner space-y-5">
     <div id="initial-ai-greeting" class="flex flex-col items-center justify-center p-4 text-center">
-        <img src="/pcbuild/assets/images/CraftWiseAI.png" alt="Kraft-E AI Assistant" class="w-60 h-60 object-contain mb-4">
+        <img src="/assets/images/CraftWiseAI.png" alt="Kraft-E AI Assistant" class="w-60 h-60 object-contain mb-4">
         <div class="p-3 rounded-lg max-w-[90%] initial-message markdown-content text-[#1f2937] font-bold text-xl">
             Hello! I'm Kraft-E, your PC Build Assistant.<br><br>
             Ask me anything about PC components, compatibility,<br>

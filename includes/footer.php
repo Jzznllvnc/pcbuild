@@ -4,7 +4,7 @@
             <div class="flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left space-y-8 md:space-y-0">
                 <div class="flex-shrink-0 md:w-1/4">
                     <h3 class="text-2xl font-bold text-white mb-2 flex items-center justify-center md:justify-start">
-                        <img src="/pcbuild/assets/images/CraftWise.png" alt="CraftWise Logo" class="h-8 w-8 mr-2 object-contain">
+                        <img src="/assets/images/CraftWise.png" alt="CraftWise Logo" class="h-8 w-8 mr-2 object-contain">
                         CraftWise
                     </h3>
                     <p class="text-sm">Your ultimate destination for building custom PCs.</p>
@@ -131,6 +131,6 @@
         </div>
     </div>
 
-    <script src="/pcbuild/assets/js/main.js"></script>
+    <script src="/assets/js/main.js"></script>
 </body>
 </html>

@@ -6,7 +6,7 @@
     </div>
 
     <div id="empty-cart-state" class="text-center py-10 hidden">
-        <img src="/pcbuild/assets/images/emptycart.png" alt="Empty Cart" class="mx-auto w-48 h-48 object-contain mb-6">
+        <img src="/assets/images/emptycart.png" alt="Empty Cart" class="mx-auto w-48 h-48 object-contain mb-6">
         <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Your Cart is <span class="text-[--color-primary-orange]">Empty!</span></h2>
         <p class="text-gray-600 mb-8">Must add items on the cart before you proceed to check out.</p>
         <a href="/pcbuild/products" class="inline-block bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-3 px-8 rounded-full

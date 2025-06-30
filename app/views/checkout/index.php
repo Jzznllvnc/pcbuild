@@ -118,14 +118,14 @@
                         <label class="flex items-center cursor-pointer p-4 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 has-[:checked]:border-[--color-primary-orange] has-[:checked]:ring-2 has-[:checked]:ring-[--color-primary-orange]">
                             <input type="radio" name="payment_method" value="GCash" class="form-radio text-[--color-primary-orange] h-5 w-5 flex-shrink-0" required>
                             <span class="ml-4 text-lg font-medium text-gray-700 flex items-center">
-                                <img src="/pcbuild/assets/images/gcash.svg" alt="GCash Logo" class="h-8 w-auto mr-3 object-contain">
+                                <img src="/assets/images/gcash.svg" alt="GCash Logo" class="h-8 w-auto mr-3 object-contain">
                                 GCash
                             </span>
                         </label>
                         <label class="flex items-center cursor-pointer p-4 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 has-[:checked]:border-[--color-primary-orange] has-[:checked]:ring-2 has-[:checked]:ring-[--color-primary-orange]">
                             <input type="radio" name="payment_method" value="PayPal" class="form-radio text-[--color-primary-orange] h-5 w-5 flex-shrink-0" required>
                             <span class="ml-4 text-lg font-medium text-gray-700 flex items-center">
-                                <img src="/pcbuild/assets/images/paypal.svg" alt="PayPal Logo" class="h-8 w-auto mr-3 object-contain">
+                                <img src="/assets/images/paypal.svg" alt="PayPal Logo" class="h-8 w-auto mr-3 object-contain">
                                 PayPal
                             </span>
                         </label>

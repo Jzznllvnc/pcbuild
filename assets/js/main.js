@@ -711,7 +711,7 @@ function renderCartItems() {
 
                 cartHtml += `
                     <div class="flex items-center border-b border-gray-200 py-4">
-                        <img src="${item.image || '/pcbuild/assets/images/placeholder.png'}" alt="${item.name}" class="w-20 h-20 object-contain rounded-md mr-4">
+                        <img src="${item.image || '/assets/images/placeholder.png'}" alt="${item.name}" class="w-20 h-20 object-contain rounded-md mr-4">
                         <div class="flex-grow">
                             <h3 class="text-lg font-semibold text-gray-800">${item.name}</h3>
                             <p class="text-gray-600 text-sm">$${item.price.toFixed(2)}</p>
