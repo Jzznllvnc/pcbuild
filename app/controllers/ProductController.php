@@ -48,7 +48,7 @@ class ProductController extends BaseController
 
         if (!$product) {
             // Handle product not found, e.g., redirect to 404 or product list
-            header('Location: /pcbuild/public/products');
+            header('Location: /pcbuild/products');
             exit();
         }
 

@@ -18,7 +18,7 @@
 
         <div class="lg:col-span-2 bg-gray-50 p-6 rounded-lg shadow-md">
             <h3 class="2xl font-bold text-gray-900 mb-6">General Information</h3>
-            <form action="/pcbuild/public/profile/update-general" method="POST" class="space-y-6">
+            <form action="/pcbuild/profile/update-general" method="POST" class="space-y-6">
                 <div>
                     <label for="username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
                     <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" required
@@ -48,7 +48,7 @@
                     <p class="mt-1 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm text-gray-900 sm:text-sm">
                         ••••••••
                     </p>
-                    <a href="/pcbuild/public/forgot-password"
+                    <a href="/pcbuild/forgot-password"
                        class="mt-4 profile-button-fixed-width bg-[--color-dark-blue] hover:bg-[#1a2d3a] text-white font-bold py-2 px-6 rounded-md shadow-lg transition-colors text-sm text-center">
                         Change Password
                     </a>
@@ -56,7 +56,7 @@
 
                 <div class="flex flex-col items-start">
                     <label for="phone_number" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                    <form action="/pcbuild/public/profile/update-phone" method="POST" class="space-y-4 w-full">
+                    <form action="/pcbuild/profile/update-phone" method="POST" class="space-y-4 w-full">
                         <input type="text" id="phone_number" name="phone_number"
                                value="<?php echo htmlspecialchars($user['phone_number'] ?? ''); ?>"
                                class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[--color-primary-orange] focus:border-[--color-primary-orange] sm:text-sm"

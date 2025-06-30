@@ -266,23 +266,23 @@ if (session_status() == PHP_SESSION_NONE) {
 <body class="min-h-screen flex flex-col">
     <header class="main-header text-white p-4 fixed top-0 w-full z-50">
         <nav class="container mx-auto flex justify-between items-center relative">
-            <a href="/pcbuild/public/home" class="text-2xl font-bold rounded-md px-3 py-1 hover:bg-gray-700 transition-colors flex items-center">
+            <a href="/pcbuild//home" class="text-2xl font-bold rounded-md px-3 py-1 hover:bg-gray-700 transition-colors flex items-center">
                 <img src="/pcbuild/assets/images/CraftWise.png" alt="CraftWise Logo" class="h-12 w-12 mr-2 object-contain">
                 CraftWise
             </a>
 
             <div class="desktop-nav-links items-center space-x-4">
                 <?php if (isset($_SESSION['user_id'])): ?>
-                    <a href="/pcbuild/public/products" class="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors">All Products</a>
-                    <a href="/pcbuild/public/orderhistory" id="order-history-link" class="relative rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors flex items-center">
+                    <a href="/pcbuild/products" class="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors">All Products</a>
+                    <a href="/pcbuild/orderhistory" id="order-history-link" class="relative rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors flex items-center">
                         Order History
                         <span id="new-order-notification" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">
                             1
                         </span>
                     </a>
-                    <a href="/pcbuild/public/build-rate" class="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors">Rate Your Build</a>
+                    <a href="/pcbuild/build-rate" class="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors">Rate Your Build</a>
 
-                    <a href="/pcbuild/public/cart" class="relative rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors flex items-center">
+                    <a href="/pcbuild/cart" class="relative rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
@@ -292,11 +292,11 @@ if (session_status() == PHP_SESSION_NONE) {
                     </a>
 
                     <div class="w-4"></div> <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']): ?>
-                        <a href="/pcbuild/public/admin/dashboard" class="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors">
+                        <a href="/pcbuild/admin/dashboard" class="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors">
                             Administration
                         </a>
                     <?php else: ?>
-                        <a href="/pcbuild/public/profile" class="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors">
+                        <a href="/pcbuild/profile" class="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors">
                             Manage Profile
                         </a>
                     <?php endif; ?>
@@ -306,8 +306,8 @@ if (session_status() == PHP_SESSION_NONE) {
                         Logout
                     </a>
                 <?php else: ?>
-                    <a href="/pcbuild/public/products" class="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors">All Products</a>
-                    <a href="/pcbuild/public/cart" class="relative rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors flex items-center">
+                    <a href="/pcbuild/products" class="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors">All Products</a>
+                    <a href="/pcbuild/cart" class="relative rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700 transition-colors flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
@@ -315,18 +315,18 @@ if (session_status() == PHP_SESSION_NONE) {
                         <span id="cart-item-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">
                             </span>
                     </a>
-                    <div class="w-4"></div> <a href="/pcbuild/public/login" class="bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors">Login / Register</a>
+                    <div class="w-4"></div> <a href="/pcbuild/login" class="bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors">Login / Register</a>
                 <?php endif; ?>
             </div>
 
             <div class="mobile-nav-actions md:hidden">
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']): ?>
-                        <a href="/pcbuild/public/admin/dashboard" class="rounded-md px-2 py-1 text-sm font-medium hover:bg-gray-700 transition-colors sm-custom-hidden-below">
+                        <a href="/pcbuild/admin/dashboard" class="rounded-md px-2 py-1 text-sm font-medium hover:bg-gray-700 transition-colors sm-custom-hidden-below">
                             Administration
                         </a>
                     <?php else: ?>
-                        <a href="/pcbuild/public/profile" class="rounded-md px-2 py-1 text-sm font-medium hover:bg-gray-700 transition-colors sm-custom-hidden-below">
+                        <a href="/pcbuild/profile" class="rounded-md px-2 py-1 text-sm font-medium hover:bg-gray-700 transition-colors sm-custom-hidden-below">
                             Manage Profile
                         </a>
                     <?php endif; ?>
@@ -335,7 +335,7 @@ if (session_status() == PHP_SESSION_NONE) {
                         Logout
                     </a>
                 <?php else: ?>
-                    <a href="/pcbuild/public/login" class="bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-1 px-2 rounded-md shadow-lg transition-colors text-sm sm-custom-hidden-below">Login / Register</a>
+                    <a href="/pcbuild/login" class="bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-1 px-2 rounded-md shadow-lg transition-colors text-sm sm-custom-hidden-below">Login / Register</a>
                 <?php endif; ?>
 
                 <button id="hamburger-button" class="text-white focus:outline-none p-1">
@@ -347,19 +347,19 @@ if (session_status() == PHP_SESSION_NONE) {
         </nav>
 
         <div id="mobile-menu" class="mobile-menu md:hidden">
-            <a href="/pcbuild/public/products" class="block">All Products</a>
-            <a href="/pcbuild/public/orderhistory" class="block relative">
+            <a href="/pcbuild/products" class="block">All Products</a>
+            <a href="/pcbuild/orderhistory" class="block relative">
                 Order History
                 <span id="new-order-notification-mobile" class="absolute top-1/2 -translate-y-1/2 right-4 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">1</span>
             </a>
-            <a href="/pcbuild/public/build-rate" class="block">Rate Your Build</a>
-            <a href="/pcbuild/public/cart" class="block relative">
+            <a href="/pcbuild/build-rate" class="block">Rate Your Build</a>
+            <a href="/pcbuild/cart" class="block relative">
                 Cart
                 <span id="cart-item-count-mobile" class="absolute top-1/2 -translate-y-1/2 right-4 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden"></span>
             </a>
 
             <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="<?php echo (isset($_SESSION['is_admin']) && $_SESSION['is_admin']) ? '/pcbuild/public/admin/dashboard' : '/pcbuild/public/profile'; ?>" class="block sm-custom-hidden-up">
+                <a href="<?php echo (isset($_SESSION['is_admin']) && $_SESSION['is_admin']) ? '/pcbuild/admin/dashboard' : '/pcbuild/profile'; ?>" class="block sm-custom-hidden-up">
                     <?php echo (isset($_SESSION['is_admin']) && $_SESSION['is_admin']) ? 'Administration' : 'Manage Profile'; ?>
                 </a>
                 <a href="javascript:void(0);" id="logout-button-mobile-menu" class="block sm-custom-hidden-up">
@@ -367,7 +367,7 @@ if (session_status() == PHP_SESSION_NONE) {
                     Logout
                 </a>
             <?php else: ?>
-                <a href="/pcbuild/public/login" class="block sm-custom-hidden-up">Login / Register</a>
+                <a href="/pcbuild/login" class="block sm-custom-hidden-up">Login / Register</a>
             <?php endif; ?>
         </div>
 
@@ -402,7 +402,7 @@ if (session_status() == PHP_SESSION_NONE) {
                     showLogoutConfirmation(); // Function from main.js
                 } else {
                     console.error('showLogoutConfirmation function not found. Ensure main.js is loaded.');
-                    window.location.href = '/pcbuild/public/logout'; // Fallback
+                    window.location.href = '/pcbuild/logout'; // Fallback
                 }
             };
 
@@ -440,7 +440,7 @@ if (session_status() == PHP_SESSION_NONE) {
                 if (isLoggedIn) {
                     // Assuming performActionViaFetch is available globally from main.js
                     if (typeof performActionViaFetch === 'function') {
-                        performActionViaFetch('/pcbuild/public/cart/get', 'GET')
+                        performActionViaFetch('/pcbuild/cart/get', 'GET')
                             .then(response => {
                                 if (response.success && response.cart) {
                                     const totalItems = response.cart.reduce((sum, item) => sum + item.quantity, 0);

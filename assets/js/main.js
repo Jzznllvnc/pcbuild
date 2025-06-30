@@ -34,7 +34,7 @@ function initializeNewOrderNotification() {
 
         // Send AJAX request to clear the session flag on the server
         // Use performActionViaFetch which is already available in main.js
-        performActionViaFetch('/pcbuild/public/user/clear-order-notification', 'POST', {})
+        performActionViaFetch('/pcbuild/user/clear-order-notification', 'POST', {})
             .then(response => {
                 if (response.success) {
                     // console.log('New order notification cleared on server.');
@@ -89,7 +89,7 @@ async function performActionViaFetch(url, method, body = {}) {
 function addToCart(productId, productName, productPrice, productImage, quantity = 1) {
     if (isLoggedIn) { // isLoggedIn is defined in header.php
         // Server-side cart logic
-        performActionViaFetch('/pcbuild/public/cart/add', 'POST', {
+        performActionViaFetch('/pcbuild/cart/add', 'POST', {
             product_id: productId,
             quantity: quantity
         }).then(response => {
@@ -128,7 +128,7 @@ function addToCart(productId, productName, productPrice, productImage, quantity 
 function updateCartItemQuantity(productId, newQuantity) {
     if (isLoggedIn) {
         // Server-side cart logic
-        performActionViaFetch('/pcbuild/public/cart/update-quantity', 'POST', {
+        performActionViaFetch('/pcbuild/cart/update-quantity', 'POST', {
             product_id: productId,
             quantity: newQuantity
         }).then(response => {
@@ -171,7 +171,7 @@ function updateCartItemQuantity(productId, newQuantity) {
 function removeFromCart(productId) {
     if (isLoggedIn) {
         // Server-side cart logic
-        performActionViaFetch('/pcbuild/public/cart/remove', 'POST', {
+        performActionViaFetch('/pcbuild/cart/remove', 'POST', {
             product_id: productId
         }).then(response => {
             if (response.success) {
@@ -203,7 +203,7 @@ function removeFromCart(productId) {
 function clearCart() {
     if (isLoggedIn) {
         // Server-side cart logic
-        performActionViaFetch('/pcbuild/public/cart/clear', 'POST', {})
+        performActionViaFetch('/pcbuild/cart/clear', 'POST', {})
             .then(response => {
                 if (response.success) {
                     alertMessage('success', response.message || 'Cart cleared!');
@@ -236,7 +236,7 @@ function updateCartCount() {
     if (!cartCountElement) return;
 
     if (isLoggedIn) {
-        performActionViaFetch('/pcbuild/public/cart/get', 'GET')
+        performActionViaFetch('/pcbuild/cart/get', 'GET')
             .then(response => {
                 if (response.success && response.cart) {
                     const totalItems = response.cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -268,7 +268,7 @@ async function syncLocalCartToServer() {
     const localCart = getCart();
     if (localCart.length > 0) {
         try {
-            const response = await performActionViaFetch('/pcbuild/public/cart/sync', 'POST', {
+            const response = await performActionViaFetch('/pcbuild/cart/sync', 'POST', {
                 cart: JSON.stringify(localCart)
             });
             if (response.success) {
@@ -657,7 +657,7 @@ function renderCartItems() {
     // Determine cart source based on login status
     if (isLoggedIn) {
         // Fetch cart from server
-        performActionViaFetch('/pcbuild/public/cart/get', 'GET')
+        performActionViaFetch('/pcbuild/cart/get', 'GET')
             .then(response => {
                 if (response.success && response.cart) {
                     displayCartContent(response.cart);
@@ -794,7 +794,7 @@ function initializeAiChat() {
 
     async function loadInitialChatContent() {
         try {
-            const response = await fetch('/pcbuild/public/ai-chat-content');
+            const response = await fetch('/pcbuild/ai-chat-content');
             const htmlContent = await response.text();
 
             if (response.ok) {
@@ -976,7 +976,7 @@ async function sendMessage() {
     sendButton.classList.add('opacity-50', 'cursor-not-allowed');
 
     try {
-        const response = await fetch('/pcbuild/public/ai-chat/api', {
+        const response = await fetch('/pcbuild/ai-chat/api', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1052,7 +1052,7 @@ function initializeLogoutConfirmation() {
                     logoutForm.submit();
                 }
             } else {
-                window.location.href = '/pcbuild/public/logout';
+                window.location.href = '/pcbuild/logout';
             }
         });
     }
@@ -1189,7 +1189,7 @@ function initializeConfirmationModals() {
             const userId = target.dataset.userId;
             const username = target.dataset.username;
             const isBanned = target.dataset.isBanned === '1';
-            const actionUrl = `/pcbuild/public/admin/users/toggle-ban/${userId}`;
+            const actionUrl = `/pcbuild/admin/users/toggle-ban/${userId}`;
 
             showConfirmationModal(
                 isBanned ? 'Unban User' : 'Ban User',
@@ -1212,7 +1212,7 @@ function initializeConfirmationModals() {
             e.preventDefault();
             const userId = target.dataset.userId;
             const username = target.dataset.username;
-            const actionUrl = `/pcbuild/public/admin/users/delete/${userId}`;
+            const actionUrl = `/pcbuild/admin/users/delete/${userId}`;
 
             showConfirmationModal(
                 'Delete User',
@@ -1236,7 +1236,7 @@ function initializeConfirmationModals() {
             e.preventDefault();
             const productId = deleteProductButton.dataset.productId;
             const productName = deleteProductButton.dataset.productName;
-            const actionUrl = `/pcbuild/public/admin/products/delete/${productId}`;
+            const actionUrl = `/pcbuild/admin/products/delete/${productId}`;
 
             showConfirmationModal(
                 'Delete Product',

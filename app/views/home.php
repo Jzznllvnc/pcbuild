@@ -1,7 +1,7 @@
 <div class="relative">
     <div class="absolute inset-0 overflow-hidden" style="z-index: 0;">
         <div class="w-full h-full bg-cover bg-center animate-bg-zoom"
-             style="background-image: url('/pcbuild/public/images/landing.jpg');">
+             style="background-image: url('/pcbuild/app/views/products/images/landing.jpg');">
         </div>
         <div class="absolute inset-0 bg-black opacity-40"></div>
     </div>
@@ -15,10 +15,10 @@
                 <?php echo htmlspecialchars($message ?? 'Your ultimate destination for building custom PCs.'); ?>
             </p>
             <div class="flex justify-center space-x-4 animate-scale-in">
-                <a href="/pcbuild/public/products" class="bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 shadow-xl">
+                <a href="/pcbuild/products" class="bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 shadow-xl">
                     Shop Now
                 </a>
-                <a href="/pcbuild/public/build-rate" class="bg-white hover:bg-gray-200 text-[--color-dark-blue] font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 shadow-xl">
+                <a href="/pcbuild/build-rate" class="bg-white hover:bg-gray-200 text-[--color-dark-blue] font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 shadow-xl">
                     Build Your PC
                 </a>
             </div>
@@ -161,7 +161,7 @@
         </div>
 
         <div class="mt-16">
-            <a href="/pcbuild/public/build-rate" class="inline-block bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-4 px-10 rounded-full text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl">
+            <a href="/pcbuild/build-rate" class="inline-block bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-4 px-10 rounded-full text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl">
                 Start Your PC Build Journey
             </a>
         </div>

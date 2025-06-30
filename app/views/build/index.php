@@ -151,7 +151,7 @@
         });
 
         try {
-            const response = await fetch('/pcbuild/public/build-rate/get', {
+            const response = await fetch('/pcbuild/build-rate/get', {
                 method: 'POST',
                 body: formData, // Use FormData for traditional POST data
             });

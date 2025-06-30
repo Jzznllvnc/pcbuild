@@ -9,7 +9,7 @@
         <img src="/pcbuild/assets/images/emptycart.png" alt="Empty Cart" class="mx-auto w-48 h-48 object-contain mb-6">
         <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Your Cart is <span class="text-[--color-primary-orange]">Empty!</span></h2>
         <p class="text-gray-600 mb-8">Must add items on the cart before you proceed to check out.</p>
-        <a href="/pcbuild/public/products" class="inline-block bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-3 px-8 rounded-full
+        <a href="/pcbuild/products" class="inline-block bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-3 px-8 rounded-full
          shadow-lg transition-all duration-300 transform hover:scale-105">
             Browse Products
         </a>
@@ -26,7 +26,7 @@
                 Clear Cart
             </button>
             <?php if ($isLoggedIn): /* Check if user is logged in */ ?>
-                <a href="/pcbuild/public/checkout"
+                <a href="/pcbuild/checkout"
                    id="proceed-to-checkout-button"
                    class="inline-flex justify-center items-center bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-3 px-6 rounded-md transition-colors shadow-lg">
                     Proceed to Checkout

@@ -24,7 +24,7 @@ class AdminController extends BaseController
         }
         if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
             $_SESSION['error'] = 'Access denied. You must be an administrator to access this section.';
-            header('Location: /pcbuild/public/login'); // Redirect non-admins to login
+            header('Location: /pcbuild/login'); // Redirect non-admins to login
             exit();
         }
     }
@@ -123,7 +123,7 @@ class AdminController extends BaseController
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $_SESSION['error'] = 'Invalid request.';
-            header('Location: /pcbuild/public/admin/products/create');
+            header('Location: /pcbuild/admin/products/create');
             exit();
         }
 
@@ -140,12 +140,12 @@ class AdminController extends BaseController
         // Basic validation
         if (empty($data['name']) || empty($data['price']) || $data['price'] <= 0 || empty($data['category'])) {
             $_SESSION['error'] = 'Name, price (must be positive), and category are required.';
-            header('Location: /pcbuild/public/admin/products/create');
+            header('Location: /pcbuild/admin/products/create');
             exit();
         }
         if (!empty($data['image_url']) && !filter_var($data['image_url'], FILTER_VALIDATE_URL)) {
              $_SESSION['error'] = 'Invalid image URL provided.';
-             header('Location: /pcbuild/public/admin/products/create');
+             header('Location: /pcbuild/admin/products/create');
              exit();
         }
 
@@ -162,11 +162,11 @@ class AdminController extends BaseController
 
 
         if ($productId) {
-            header('Location: /pcbuild/public/admin/products?success_msg=' . urlencode('Product "' . htmlspecialchars($data['name']) . '" added successfully!'));
+            header('Location: /pcbuild/admin/products?success_msg=' . urlencode('Product "' . htmlspecialchars($data['name']) . '" added successfully!'));
             exit();
         } else {
             $_SESSION['error'] = 'Failed to add product. Please try again.';
-            header('Location: /pcbuild/public/admin/products/create');
+            header('Location: /pcbuild/admin/products/create');
             exit();
         }
     }
@@ -180,7 +180,7 @@ class AdminController extends BaseController
         $product = $this->productModel->getProductById($id);
         if (!$product) {
             $_SESSION['error'] = 'Product not found.';
-            header('Location: /pcbuild/public/admin/products');
+            header('Location: /pcbuild/admin/products');
             exit();
         }
 
@@ -201,7 +201,7 @@ class AdminController extends BaseController
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $_SESSION['error'] = 'Invalid request.';
-            header('Location: /pcbuild/public/admin/products/edit/' . $id);
+            header('Location: /pcbuild/admin/products/edit/' . $id);
             exit();
         }
 
@@ -218,12 +218,12 @@ class AdminController extends BaseController
         // Basic validation
         if (empty($data['name']) || empty($data['price']) || $data['price'] <= 0 || empty($data['category'])) {
             $_SESSION['error'] = 'Name, price (must be positive), and category are required.';
-            header('Location: /pcbuild/public/admin/products/edit/' . $id);
+            header('Location: /pcbuild/admin/products/edit/' . $id);
             exit();
         }
         if (!empty($data['image_url']) && !filter_var($data['image_url'], FILTER_VALIDATE_URL)) {
              $_SESSION['error'] = 'Invalid image URL provided.';
-             header('Location: /pcbuild/public/admin/products/edit/' . $id);
+             header('Location: /pcbuild/admin/products/edit/' . $id);
              exit();
         }
 
@@ -239,11 +239,11 @@ class AdminController extends BaseController
         );
 
         if ($updated) {
-            header('Location: /pcbuild/public/admin/products?success_msg=' . urlencode('Product "' . htmlspecialchars($data['name']) . '" updated successfully!'));
+            header('Location: /pcbuild/admin/products?success_msg=' . urlencode('Product "' . htmlspecialchars($data['name']) . '" updated successfully!'));
             exit();
         } else {
             $_SESSION['error'] = 'Failed to update product. Please try again or check if changes were made.';
-            header('Location: /pcbuild/public/admin/products/edit/' . $id);
+            header('Location: /pcbuild/admin/products/edit/' . $id);
             exit();
         }
     }
@@ -275,15 +275,15 @@ class AdminController extends BaseController
 
         if ($deleted === 'referenced') {
             $_SESSION['error'] = 'Cannot delete product: It is linked to existing orders.'; // Set an error message
-            header('Location: /pcbuild/public/admin/products'); // Redirect back to product list
+            header('Location: /pcbuild/admin/products'); // Redirect back to product list
             exit();
         } elseif ($deleted) {
             // On success, redirect with a success message in the URL
-            header('Location: /pcbuild/public/admin/products?success_msg=' . urlencode('Product deleted successfully!'));
+            header('Location: /pcbuild/admin/products?success_msg=' . urlencode('Product deleted successfully!'));
             exit();
         } else {
             $_SESSION['error'] = 'Failed to delete product. It might not exist or a database error occurred.'; // Set an error message
-            header('Location: /pcbuild/public/admin/products'); // Redirect back to product list
+            header('Location: /pcbuild/admin/products'); // Redirect back to product list
             exit();
         }
     }
@@ -419,7 +419,7 @@ class AdminController extends BaseController
         $user = $this->userModel->findById($userId);
         if (!$user) {
             $_SESSION['error'] = 'User not found.';
-            header('Location: /pcbuild/public/admin/users');
+            header('Location: /pcbuild/admin/users');
             exit();
         }
 

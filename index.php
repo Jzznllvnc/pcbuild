@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 // Define the base path of your application
-define('BASE_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
+define('BASE_PATH', __DIR__ . DIRECTORY_SEPARATOR);
 
 // Include necessary files
 require_once BASE_PATH . 'config/database.php'; // Your database connection

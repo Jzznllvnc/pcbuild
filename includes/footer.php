@@ -13,9 +13,9 @@
 
                 <div class="hidden md:block flex-grow md:w-1/6 lg:w-auto ml-auto"> <h4 class="text-lg font-semibold text-white mb-3">Quick Links</h4>
                     <ul class="space-y-2">
-                        <li><a href="/pcbuild/public/products" class="hover:text-[--footer-link-hover] transition-colors">Products</a></li>
-                        <li><a href="/pcbuild/public/build-rate" class="hover:text-[--footer-link-hover] transition-colors">Build Your PC</a></li>
-                        <li><a href="/pcbuild/public/orderhistory" class="hover:text-[--footer-link-hover] transition-colors">My Orders</a></li>
+                        <li><a href="/pcbuild/products" class="hover:text-[--footer-link-hover] transition-colors">Products</a></li>
+                        <li><a href="/pcbuild/build-rate" class="hover:text-[--footer-link-hover] transition-colors">Build Your PC</a></li>
+                        <li><a href="/pcbuild/orderhistory" class="hover:text-[--footer-link-hover] transition-colors">My Orders</a></li>
                     </ul>
                 </div>
 

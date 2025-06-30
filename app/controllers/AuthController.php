@@ -61,7 +61,7 @@ class AuthController extends BaseController
             if (empty($identifier) || empty($password)) {
                 $_SESSION['error'] = 'Please enter both username/email and password.';
                 error_log("Auth Controller: Empty identifier or password.");
-                header('Location: /pcbuild/public/login');
+                header('Location: /pcbuild/login');
                 exit();
             }
 
@@ -72,7 +72,7 @@ class AuthController extends BaseController
                 if ($user['is_banned']) {
                     $_SESSION['error'] = 'Your account has been banned. Please contact support.';
                     error_log("Auth Controller: Login failed: Banned user '{$identifier}' attempted to log in.");
-                    header('Location: /pcbuild/public/login');
+                    header('Location: /pcbuild/login');
                     exit();
                 }
 
@@ -92,21 +92,21 @@ class AuthController extends BaseController
                 
                 // Redirect based on admin status
                 if ($_SESSION['is_admin']) {
-                    header('Location: /pcbuild/public/admin/dashboard');
+                    header('Location: /pcbuild/admin/dashboard');
                 } else {
-                    header('Location: /pcbuild/public/home'); // Redirect to dashboard or home
+                    header('Location: /pcbuild/home'); // Redirect to dashboard or home
                 }
                 exit();
             } else {
                 // Login failed
                 $_SESSION['error'] = 'Invalid username/email or password.';
                 error_log("Auth Controller: Login failed for identifier: '{$identifier}' - User not found or password mismatch.");
-                header('Location: /pcbuild/public/login');
+                header('Location: /pcbuild/login');
                 exit();
             }
         } else {
             // If accessed directly via GET, redirect to show login form
-            header('Location: /pcbuild/public/login');
+            header('Location: /pcbuild/login');
             exit();
         }
     }
@@ -154,28 +154,28 @@ class AuthController extends BaseController
             if (empty($username) || empty($email) || empty($password) || empty($confirmPassword)) {
                 $_SESSION['error'] = 'All fields are required.';
                 error_log("Auth Controller: Registration failed: Missing fields.");
-                header('Location: /pcbuild/public/register');
+                header('Location: /pcbuild/register');
                 exit();
             }
 
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $_SESSION['error'] = 'Invalid email format.';
                 error_log("Auth Controller: Registration failed: Invalid email format.");
-                header('Location: /pcbuild/public/register');
+                header('Location: /pcbuild/register');
                 exit();
             }
 
             if ($password !== $confirmPassword) {
                 $_SESSION['error'] = 'Passwords do not match.';
                 error_log("Auth Controller: Registration failed: Passwords do not match.");
-                header('Location: /pcbuild/public/register');
+                header('Location: /pcbuild/register');
                 exit();
             }
 
             if (strlen($password) < 6) { // Minimum password length
                 $_SESSION['error'] = 'Password must be at least 6 characters long.';
                 error_log("Auth Controller: Registration failed: Password too short.");
-                header('Location: /pcbuild/public/register');
+                header('Location: /pcbuild/register');
                 exit();
             }
 
@@ -183,13 +183,13 @@ class AuthController extends BaseController
             if ($this->userModel->findByUsernameOrEmail($username)) {
                 $_SESSION['error'] = 'Username already exists. Please choose a different one.';
                 error_log("Auth Controller: Registration failed: Username '{$username}' already exists.");
-                header('Location: /pcbuild/public/register');
+                header('Location: /pcbuild/register');
                 exit();
             }
              if ($this->userModel->findByUsernameOrEmail($email)) {
                 $_SESSION['error'] = 'Email already exists. Please choose a different one.';
                 error_log("Auth Controller: Registration failed: Email '{$email}' already exists.");
-                header('Location: /pcbuild/public/register');
+                header('Location: /pcbuild/register');
                 exit();
             }
 
@@ -207,17 +207,17 @@ class AuthController extends BaseController
 
                 $_SESSION['success'] = 'Account created successfully! Please log in.';
                 error_log("Auth Controller: User registration successful. User ID: {$userId}");
-                header('Location: /pcbuild/public/login');
+                header('Location: /pcbuild/login');
                 exit();
             } else {
                 $_SESSION['error'] = 'Registration failed. Please try again.';
                 error_log("Auth Controller: User registration failed, createUser returned false.");
-                header('Location: /pcbuild/public/register');
+                header('Location: /pcbuild/register');
                 exit();
             }
 
         } else {
-            header('Location: /pcbuild/public/register'); // If accessed directly via GET
+            header('Location: /pcbuild/register'); // If accessed directly via GET
             exit();
         }
     }
@@ -251,7 +251,7 @@ class AuthController extends BaseController
         session_destroy();
 
         error_log("Auth Controller: Session destroyed, redirecting to home.");
-        header('Location: /pcbuild/public/home'); // Redirect to homepage or login page
+        header('Location: /pcbuild/home'); // Redirect to homepage or login page
         exit();
     }
 
@@ -302,7 +302,7 @@ class AuthController extends BaseController
             // 1. Validate inputs and captcha
             if (empty($identifier) || empty($captcha_input)) {
                 $_SESSION['error'] = 'All fields are required.';
-                header('Location: /pcbuild/public/forgot-password');
+                header('Location: /pcbuild/forgot-password');
                 exit();
             }
 
@@ -311,7 +311,7 @@ class AuthController extends BaseController
                 $_SESSION['error'] = 'Incorrect code. Please try again.';
                 // Regenerate captcha on error for security
                 unset($_SESSION['captcha_code']);
-                header('Location: /pcbuild/public/forgot-password');
+                header('Location: /pcbuild/forgot-password');
                 exit();
             }
 
@@ -324,17 +324,17 @@ class AuthController extends BaseController
                 unset($_SESSION['captcha_code']); // Clear captcha once used
 
                 $_SESSION['success'] = 'Code verified. Please set your new password.';
-                header('Location: /pcbuild/public/reset-password');
+                header('Location: /pcbuild/reset-password');
                 exit();
             } else {
                 // User not found, but to prevent enumeration, act as if code was wrong or just generic error
                 $_SESSION['error'] = 'Invalid username/email or incorrect code. Please try again.';
                 unset($_SESSION['captcha_code']);
-                header('Location: /pcbuild/public/forgot-password');
+                header('Location: /pcbuild/forgot-password');
                 exit();
             }
         } else {
-            header('Location: /pcbuild/public/forgot-password');
+            header('Location: /pcbuild/forgot-password');
             exit();
         }
     }
@@ -352,7 +352,7 @@ class AuthController extends BaseController
         // Check if a user ID is set in the session, meaning they've passed the code verification
         if (!isset($_SESSION['password_reset_user_id'])) {
             $_SESSION['error'] = 'Access denied. Please start the password reset process from the "Forgot Password" page.';
-            header('Location: /pcbuild/public/forgot-password');
+            header('Location: /pcbuild/forgot-password');
             exit();
         }
 
@@ -389,7 +389,7 @@ class AuthController extends BaseController
         // Ensure user ID is present in session
         if (!isset($_SESSION['password_reset_user_id'])) {
             $_SESSION['error'] = 'Access denied. Please start the password reset process from the "Forgot Password" page.';
-            header('Location: /pcbuild/public/forgot-password');
+            header('Location: /pcbuild/forgot-password');
             exit();
         }
 
@@ -401,19 +401,19 @@ class AuthController extends BaseController
             // 1. Validate input
             if (empty($newPassword) || empty($confirmNewPassword)) {
                 $_SESSION['error'] = 'All fields are required.';
-                header('Location: /pcbuild/public/reset-password');
+                header('Location: /pcbuild/reset-password');
                 exit();
             }
 
             if ($newPassword !== $confirmNewPassword) {
                 $_SESSION['error'] = 'New passwords do not match.';
-                header('Location: /pcbuild/public/reset-password');
+                header('Location: /pcbuild/reset-password');
                 exit();
             }
 
             if (strlen($newPassword) < 6) {
                 $_SESSION['error'] = 'Password must be at least 6 characters long.';
-                header('Location: /pcbuild/public/reset-password');
+                header('Location: /pcbuild/reset-password');
                 exit();
             }
 
@@ -425,16 +425,16 @@ class AuthController extends BaseController
                 // Password updated successfully, clear the session variable
                 unset($_SESSION['password_reset_user_id']);
                 $_SESSION['success'] = 'Your password has been reset successfully. You can now log in with your new password.';
-                header('Location: /pcbuild/public/login');
+                header('Location: /pcbuild/login');
                 exit();
             } else {
                 $_SESSION['error'] = 'Failed to reset password. Please try again.';
-                header('Location: /pcbuild/public/reset-password');
+                header('Location: /pcbuild/reset-password');
                 exit();
             }
         } else {
             // If accessed directly via GET, redirect to the show method
-            header('Location: /pcbuild/public/reset-password');
+            header('Location: /pcbuild/reset-password');
             exit();
         }
     }

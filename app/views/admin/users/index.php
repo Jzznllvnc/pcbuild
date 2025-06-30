@@ -22,7 +22,7 @@
         <?php endif; ?>
 
     <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
-        <form action="/pcbuild/public/admin/users" method="GET" class="flex-grow flex gap-2 max-w-lg">
+        <form action="/pcbuild/admin/users" method="GET" class="flex-grow flex gap-2 max-w-lg">
             <input type="text" name="search" placeholder="Search by username or email..."
                    value="<?php echo htmlspecialchars($searchTerm ?? ''); ?>"
                    class="flex-grow px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[--color-primary-orange]">
@@ -30,12 +30,12 @@
                 Search
             </button>
             <?php if (!empty($searchTerm)): ?>
-                <a href="/pcbuild/public/admin/users" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md shadow-lg transition-colors">
+                <a href="/pcbuild/admin/users" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md shadow-lg transition-colors">
                     Clear
                 </a>
             <?php endif; ?>
         </form>
-        <a href="/pcbuild/public/admin" class="text-[--color-primary-orange] hover:text-[#e76c3e] font-medium flex items-center">
+        <a href="/pcbuild/admin" class="text-[--color-primary-orange] hover:text-[#e76c3e] font-medium flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -138,7 +138,7 @@
                                         Delete
                                     </button>
                                     
-                                    <a href="/pcbuild/public/admin/users/orders/<?php echo htmlspecialchars($user['id']); ?>"
+                                    <a href="/pcbuild/admin/users/orders/<?php echo htmlspecialchars($user['id']); ?>"
                                        class="text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded-md transition-colors">
                                         Orders
                                     </a>

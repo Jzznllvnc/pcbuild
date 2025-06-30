@@ -11,7 +11,7 @@
             </div>
         <?php endif; ?>
 
-    <form action="/pcbuild/public/admin/products/create" method="POST" class="space-y-6">
+    <form action="/pcbuild/admin/products/create" method="POST" class="space-y-6">
         <div>
             <label for="name" class="block text-sm font-medium text-gray-700">Product Name <span class="text-red-500">*</span></label>
             <input type="text" name="name" id="name" required
@@ -70,7 +70,7 @@
         </div>
 
         <div class="flex justify-end space-x-4">
-            <a href="/pcbuild/public/admin/products" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md shadow-lg transition-colors">
+            <a href="/pcbuild/admin/products" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md shadow-lg transition-colors">
                 Cancel
             </a>
             <button type="submit"

@@ -24,7 +24,7 @@
             </div>
         <?php endif; ?>
 
-        <form action="/pcbuild/public/login" method="POST" class="space-y-6">
+        <form action="/pcbuild/login" method="POST" class="space-y-6">
             <div class="relative border border-gray-300 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-[--color-primary-orange] focus-within:border-[--color-primary-orange]">
                 <input type="text" name="identifier" id="identifier" required
                        class="peer w-full px-4 py-3 pt-6 text-lg bg-transparent outline-none focus:outline-none transition-all duration-200"
@@ -53,7 +53,7 @@
                 </span>
             </div>
             <div class="text-sm text-right">
-                <a href="/pcbuild/public/forgot-password" class="font-medium text-[--color-primary-orange] hover:text-[#e76c3e] hover:underline">Forgot password?</a>
+                <a href="/pcbuild/forgot-password" class="font-medium text-[--color-primary-orange] hover:text-[#e76c3e] hover:underline">Forgot password?</a>
             </div>
             <div>
                 <button type="submit"
@@ -67,7 +67,7 @@
 
         <div class="mt-8 text-center">
             <p class="text-md text-gray-700">Don't have an account?
-                <a href="/pcbuild/public/register" class="font-bold text-[--color-dark-blue] hover:text-[#1a2d3a] hover:underline">Register here</a>
+                <a href="/pcbuild/register" class="font-bold text-[--color-dark-blue] hover:text-[#1a2d3a] hover:underline">Register here</a>
             </p>
         </div>
     </div>

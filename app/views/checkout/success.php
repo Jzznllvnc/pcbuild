@@ -29,7 +29,7 @@
     <?php endif; ?>
 
     <div class="mt-8">
-        <a href="/pcbuild/public/products"
+        <a href="/pcbuild/products"
            class="inline-flex items-center bg-[--color-dark-blue] hover:bg-[#1a2d3a] text-white font-bold py-3 px-6 rounded-md shadow-lg transition-colors">
             Continue Shopping
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">

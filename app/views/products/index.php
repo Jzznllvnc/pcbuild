@@ -3,7 +3,7 @@
     <p class="text-center text-gray-700 mb-12 text-lg">Your <span class="text-[--color-primary-orange]">perfect build</span> starts here. Shop the latest CPUs, GPUs, and more!</p>
 
     <!-- Search and Filter Form -->
-    <form action="/pcbuild/public/products" method="GET" class="mb-8 flex flex-col sm:flex-row gap-4 items-center">
+    <form action="/pcbuild/products" method="GET" class="mb-8 flex flex-col sm:flex-row gap-4 items-center">
         <input type="text" name="search" placeholder="Search by name or description..."
                value="<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
                class="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[--color-primary-orange]">
@@ -25,14 +25,14 @@
     </form>
     <div class="mb-8 overflow-x-auto pb-4 scrollbar-hide">
         <div class="flex flex-nowrap space-x-3">
-            <a href="/pcbuild/public/products?search=<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
+            <a href="/pcbuild/products?search=<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
                class="flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium
                <?php echo empty($currentCategory) ? 'bg-[--color-dark-blue] text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'; ?>
                transition-colors duration-200 whitespace-nowrap">
                 All Products
             </a>
             <?php foreach ($categories as $cat): ?>
-                <a href="/pcbuild/public/products?category=<?php echo htmlspecialchars($cat); ?>&search=<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
+                <a href="/pcbuild/products?category=<?php echo htmlspecialchars($cat); ?>&search=<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
                    class="flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium
                    <?php echo ($currentCategory === $cat) ? 'bg-[--color-dark-blue] text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'; ?>
                    transition-colors duration-200 whitespace-nowrap">
@@ -60,7 +60,7 @@
                         </span>
                     </p>
                     <div class="flex space-x-2 mt-auto w-full justify-center">
-                        <a href="/pcbuild/public/products/<?php echo htmlspecialchars($product['id']); ?>"
+                        <a href="/pcbuild/products/<?php echo htmlspecialchars($product['id']); ?>"
                            class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-md transition-colors">
                             View Details
                         </a>
@@ -79,14 +79,14 @@
         <!-- Pagination Controls -->
         <div class="flex justify-center items-center space-x-2 mt-12">
             <?php if ($currentPage > 1): ?>
-                <a href="/pcbuild/public/products?page=<?php echo $currentPage - 1; ?>
+                <a href="/pcbuild/products?page=<?php echo $currentPage - 1; ?>
                     <?php echo $currentCategory ? '&category=' . htmlspecialchars($currentCategory) : ''; ?>
                     <?php echo $currentSearch ? '&search=' . htmlspecialchars($currentSearch) : ''; ?>"
                    class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">Previous</a>
             <?php endif; ?>
 
             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                <a href="/pcbuild/public/products?page=<?php echo $i; ?>
+                <a href="/pcbuild/products?page=<?php echo $i; ?>
                     <?php echo $currentCategory ? '&category=' . htmlspecialchars($currentCategory) : ''; ?>
                     <?php echo $currentSearch ? '&search=' . htmlspecialchars($currentSearch) : ''; ?>"
                    class="px-4 py-2 rounded-md
@@ -97,7 +97,7 @@
             <?php endfor; ?>
 
             <?php if ($currentPage < $totalPages): ?>
-                <a href="/pcbuild/public/products?page=<?php echo $currentPage + 1; ?>
+                <a href="/pcbuild/products?page=<?php echo $currentPage + 1; ?>
                     <?php echo $currentCategory ? '&category=' . htmlspecialchars($currentCategory) : ''; ?>
                     <?php echo $currentSearch ? '&search=' . htmlspecialchars($currentSearch) : ''; ?>"
                    class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">Next</a>

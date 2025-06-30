@@ -1,12 +1,9 @@
-# Redirect all requests to index.php unless they are for actual files or directories
-
 # Turn on URL rewriting
 RewriteEngine On
 
 # Set the base directory for the rewrite rules
-# This is important if your project is not in the root of htdocs
-# E.g., if you access it via http://localhost/pcbuild/
-RewriteBase /pcbuild/public/
+# If your project is in http://localhost/pcbuild/
+RewriteBase /pcbuild/
 
 # Rewrite conditions to prevent rewriting for existing files and directories
 RewriteCond %{REQUEST_FILENAME} !-f

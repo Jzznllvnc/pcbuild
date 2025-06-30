@@ -29,7 +29,7 @@ class UserController extends BaseController
         // Check if user is logged in
         if (!isset($_SESSION['user_id'])) {
             $_SESSION['error'] = 'You must be logged in to view your orders.';
-            header('Location: /pcbuild/public/login');
+            header('Location: /pcbuild/login');
             exit();
         }
 
@@ -59,7 +59,7 @@ class UserController extends BaseController
 
         if (!isset($_SESSION['user_id'])) {
             $_SESSION['error'] = 'You must be logged in to view your profile.';
-            header('Location: /pcbuild/public/login');
+            header('Location: /pcbuild/login');
             exit();
         }
 
@@ -68,7 +68,7 @@ class UserController extends BaseController
 
         if (!$user) {
             $_SESSION['error'] = 'User not found.';
-            header('Location: /pcbuild/public/home');
+            header('Location: /pcbuild/home');
             exit();
         }
 
@@ -97,13 +97,13 @@ class UserController extends BaseController
 
         if (!isset($_SESSION['user_id'])) {
             $_SESSION['error'] = 'You must be logged in to update your profile.';
-            header('Location: /pcbuild/public/login');
+            header('Location: /pcbuild/login');
             exit();
         }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $_SESSION['error'] = 'Invalid request method.';
-            header('Location: /pcbuild/public/profile');
+            header('Location: /pcbuild/profile');
             exit();
         }
 
@@ -113,7 +113,7 @@ class UserController extends BaseController
         // Basic validation
         if (empty($newUsername)) {
             $_SESSION['error'] = 'Username cannot be empty.';
-            header('Location: /pcbuild/public/profile');
+            header('Location: /pcbuild/profile');
             exit();
         }
 
@@ -121,7 +121,7 @@ class UserController extends BaseController
         $existingUser = $this->userModel->findByUsernameOrEmail($newUsername);
         if ($existingUser && $existingUser['id'] != $userId) {
             $_SESSION['error'] = 'Username already taken. Please choose a different one.';
-            header('Location: /pcbuild/public/profile');
+            header('Location: /pcbuild/profile');
             exit();
         }
 
@@ -130,14 +130,14 @@ class UserController extends BaseController
 
         if ($updated) {
             $_SESSION['username'] = $newUsername; // Update session username if changed
-            header('Location: /pcbuild/public/profile?success_msg=' . urlencode('Profile updated successfully!'));
+            header('Location: /pcbuild/profile?success_msg=' . urlencode('Profile updated successfully!'));
             exit();
         } else {
-            header('Location: /pcbuild/public/profile?error_msg=' . urlencode('Failed to update profile. Please try again.'));
+            header('Location: /pcbuild/profile?error_msg=' . urlencode('Failed to update profile. Please try again.'));
             exit();
         }
 
-        header('Location: /pcbuild/public/profile');
+        header('Location: /pcbuild/profile');
         exit();
     }
 
@@ -152,13 +152,13 @@ class UserController extends BaseController
 
         if (!isset($_SESSION['user_id'])) {
             $_SESSION['error'] = 'You must be logged in to update your phone number.';
-            header('Location: /pcbuild/public/login');
+            header('Location: /pcbuild/login');
             exit();
         }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $_SESSION['error'] = 'Invalid request method.';
-            header('Location: /pcbuild/public/profile');
+            header('Location: /pcbuild/profile');
             exit();
         }
 
@@ -168,7 +168,7 @@ class UserController extends BaseController
         // Specific validation for 10-digit Philippine numbers if not empty
         if (!empty($phoneNumber) && !preg_match('/^[0-9]{10}$/', $phoneNumber)) { // Changed to 10 digits
             $_SESSION['error'] = 'Please enter a valid 10-digit Philippine mobile number (e.g., 9123456789).';
-            header('Location: /pcbuild/public/profile');
+            header('Location: /pcbuild/profile');
             exit();
         }
 
@@ -178,14 +178,14 @@ class UserController extends BaseController
         $updated = $this->userModel->updatePhoneNumber($userId, $phoneNumberToStore);
 
         if ($updated) {
-            header('Location: /pcbuild/public/profile?success_msg=' . urlencode('Phone number updated successfully!'));
+            header('Location: /pcbuild/profile?success_msg=' . urlencode('Phone number updated successfully!'));
             exit();
         } else {
-            header('Location: /pcbuild/public/profile?error_msg=' . urlencode('Failed to update phone number. Please try again.'));
+            header('Location: /pcbuild/profile?error_msg=' . urlencode('Failed to update phone number. Please try again.'));
             exit();
         }
 
-        header('Location: /pcbuild/public/profile');
+        header('Location: /pcbuild/profile');
         exit();
     }
 

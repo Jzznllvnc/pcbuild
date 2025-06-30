@@ -93,13 +93,13 @@
                     <h2 class="text-2xl font-extrabold text-gray-900 mb-4 pt-4">Shipping Method</h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-8"> <label class="flex items-center cursor-pointer p-4 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 has-[:checked]:border-[--color-primary-orange] has-[:checked]:ring-2 has-[:checked]:ring-[--color-primary-orange]">
                             <input type="radio" name="shipping_method" value="Free Shipping" class="form-radio text-[--color-primary-orange] h-5 w-5 flex-shrink-0" checked>
-                            <span class="ml-4 text-lg font-medium text-gray-700">Free Shipping</span>
+                            <span class="ml-4 text-lg font-medium text-gray-700">Free Shipping (3-5 days)</span>
                             <span class="ml-auto text-gray-500">$0</span>
                         </label>
                         <label class="flex items-center cursor-pointer p-4 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 has-[:checked]:border-[--color-primary-orange] has-[:checked]:ring-2 has-[:checked]:ring-[--color-primary-orange]">
                             <input type="radio" name="shipping_method" value="Express Shipping" class="form-radio text-[--color-primary-orange] h-5 w-5 flex-shrink-0">
-                            <span class="ml-4 text-lg font-medium text-gray-700">Express Shipping</span>
-                            <span class="ml-auto text-gray-500">$9</span>
+                            <span class="ml-4 text-lg font-medium text-gray-700">Express Shipping<br>(Same-day delivery)</span>
+                            <span class="ml-auto text-gray-500">$1.50</span>
                         </label>
                     </div>
 
@@ -113,7 +113,7 @@
 
             <div id="payment-section" class="checkout-step absolute top-0 left-0 w-full h-full p-6 bg-white transition-transform duration-500 ease-in-out transform translate-x-full opacity-0">
                 <h2 class="text-2xl font-extrabold text-gray-900 mb-6">Payment Method</h2>
-                <form id="payment-form-final" action="/pcbuild/public/checkout/process" method="POST" class="space-y-6">
+                <form id="payment-form-final" action="/pcbuild/checkout/process" method="POST" class="space-y-6">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <label class="flex items-center cursor-pointer p-4 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 has-[:checked]:border-[--color-primary-orange] has-[:checked]:ring-2 has-[:checked]:ring-[--color-primary-orange]">
                             <input type="radio" name="payment_method" value="GCash" class="form-radio text-[--color-primary-orange] h-5 w-5 flex-shrink-0" required>
@@ -187,7 +187,7 @@
                     </div>
                     <div class="flex justify-between">
                         <span>Estimated taxes</span>
-                        <span>$5.00</span>
+                        <span>$0.25</span>
                     </div>
                 </div>
 
@@ -300,6 +300,19 @@
         const placeOrderButton = document.getElementById('place-order-button');
         const backToShippingButton = document.getElementById('back-to-shipping-button');
         const shippingMethodRadios = document.querySelectorAll('input[name="shipping_method"]');
+                // --- START NEW CODE TO ADD ---
+        if (shippingMethodRadios.length > 0) {
+            shippingMethodRadios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    // Re-run updateOrderSummary with the current cart data
+                    // currentCartData should be populated from the initial fetch/load of the cart
+                    if (typeof updateOrderSummary === 'function' && currentCartData) {
+                        updateOrderSummary(currentCartData);
+                    }
+                });
+            });
+        }
+        // --- END NEW CODE TO ADD ---
 
         const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
         const paymentMobileNumberGroup = document.getElementById('payment-mobile-number-group');
@@ -361,7 +374,7 @@
                 error: "Please enter a valid 11-digit Chinese mobile number."
             }
         };
-
+        
         // Function to dynamically set the height of the main content column
         function setMainContentColumnHeight() {
             requestAnimationFrame(() => {
@@ -441,12 +454,12 @@
 
             const selectedShippingMethod = document.querySelector('input[name="shipping_method"]:checked');
             if (selectedShippingMethod && selectedShippingMethod.value === 'Express Shipping') {
-                shippingCost = 9.00;
+                shippingCost = 1.50;
             } else {
                 shippingCost = 0.00;
             }
 
-            const estimatedTaxes = 5.00;
+            const estimatedTaxes = 0.25;
             total = subtotal + shippingCost + estimatedTaxes;
 
             checkoutCartSummary.innerHTML = summaryHtml;
@@ -480,7 +493,7 @@
         // Initial cart load based on login status
         // `isLoggedIn` is a global constant set in header.php
         if (isLoggedIn) {
-            performActionViaFetch('/pcbuild/public/cart/get', 'GET')
+            performActionViaFetch('/pcbuild/cart/get', 'GET')
                 .then(response => {
                     if (response.success && response.cart) {
                         updateOrderSummary(response.cart);
