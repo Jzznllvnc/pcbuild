@@ -184,7 +184,7 @@ if (session_status() == PHP_SESSION_NONE) {
                 top: 100%; /* Position below the header */
                 left: 0;
                 width: 100%;
-                background-color: var(--footer-bg-dark); /* Same as header */
+                background-color: rgba(16, 19, 24, 0.69); /* Match header background */
                 padding: 1rem 0;
                 box-shadow: 0 8px 10px -5px rgba(0, 0, 0, 0.2);
                 z-index: 40; /* Below header, above content */
