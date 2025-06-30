@@ -29,8 +29,8 @@
                 <div class="flex-grow md:w-1/4 lg:w-1/5">
                     <h4 class="text-lg font-semibold text-white mb-3">Stay Updated</h4>
                     <p class="text-sm mb-4">Subscribe to our newsletter for the latest products and deals.</p>
-                    <form action="#" method="POST" class="flex flex-col sm:flex-row gap-2">
-                        <input type="email" placeholder="Your email address" aria-label="Email for newsletter"
+                    <form id="newsletter-form" class="flex flex-col sm:flex-row gap-2">
+                        <input type="email" id="newsletter-email" name="user_email" placeholder="Your email address" aria-label="Email for newsletter" required
                                class="flex-grow px-4 py-2 rounded-md bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-[--color-primary-orange] focus:ring-1 focus:ring-[--color-primary-orange]">
                         <button type="submit"
                                 class="bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-2 px-4 rounded-md transition-colors shadow-md">
@@ -115,6 +115,19 @@
                     Cancel
                 </button>
             </div>
+        </div>
+    </div>
+
+    <div id="newsletter-success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] hidden opacity-0 transition-opacity duration-300 pointer-events-none">
+        <div class="bg-white p-8 rounded-lg shadow-2xl max-w-sm w-full mx-4 text-center transform scale-95 opacity-0 transition-all duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Thank You!</h3>
+            <p class="text-gray-700 mb-6">You've successfully subscribed to our newsletter for the latest updates!</p>
+            <button id="newsletter-modal-close-btn" class="bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-2 px-6 rounded-md transition-colors shadow-md">
+                Got It!
+            </button>
         </div>
     </div>
 

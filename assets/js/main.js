@@ -627,7 +627,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeLogoutConfirmation();
     // NEW: Initialize custom confirmation modals
     initializeConfirmationModals();
-    
+
     // NEW: Perform cart sync if flag is set (from AuthController after login/register)
     if (typeof performCartSync !== 'undefined' && performCartSync) {
         syncLocalCartToServer();
@@ -637,6 +637,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeNewOrderNotification();
 
     initializeDismissibleAlerts();
+
+    // Initialize newsletter subscription form
+    initializeNewsletterSubscription(); // [NEW] Call the new function
 });
 
 
@@ -869,7 +872,7 @@ function initializeAiChat() {
         if (initialAiGreeting) {
             initialAiGreeting.classList.remove('hidden'); // Ensure it's visible
         }
-        
+
         // Re-add the initial message to history for AI context for the *next* conversation
         const initialMessageTextForHistory = "Hello! I'm Kraft-E, your PC Build Assistant.\n\nAsk me anything about PC components, compatibility,\nor general build advice!"; //
         chatHistory.push({ role: "model", text: initialMessageTextForHistory }); // Push the clean text version
@@ -1077,7 +1080,7 @@ function initializeDismissibleAlerts() {
     dismissibleAlerts.forEach(alertDiv => {
         const dismissBtn = alertDiv.querySelector('.js-dismiss-btn');
 
-        alertDiv.classList.add('transition-opacity', 'duration-300', 'ease-in-out'); 
+        alertDiv.classList.add('transition-opacity', 'duration-300', 'ease-in-out');
         
         alertDiv.classList.remove('opacity-0');
         alertDiv.style.opacity = '1';
@@ -1091,7 +1094,7 @@ function initializeDismissibleAlerts() {
             }, 300);
         };
 
-        setTimeout(hideAndRemoveAlert, 5000); 
+        setTimeout(hideAndRemoveAlert, 5000);
 
         if (dismissBtn) {
             dismissBtn.addEventListener('click', hideAndRemoveAlert);
@@ -1268,4 +1271,82 @@ function initializeConfirmationModals() {
             );
         }
     });
+}
+
+// [NEW FUNCTION] Handle newsletter subscription form submission (dummy modal)
+function initializeNewsletterSubscription() {
+    const newsletterForm = document.getElementById('newsletter-form');
+    const newsletterEmailInput = document.getElementById('newsletter-email');
+    const newsletterSuccessModal = document.getElementById('newsletter-success-modal');
+    const newsletterModalCloseBtn = document.getElementById('newsletter-modal-close-btn');
+
+    if (newsletterForm && newsletterEmailInput && newsletterSuccessModal && newsletterModalCloseBtn) {
+        newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Prevent default form submission
+
+            const userEmail = newsletterEmailInput.value.trim();
+
+            if (!userEmail) {
+                alertMessage('error', 'Please enter your email address.');
+                return;
+            }
+
+            // Basic email validation regex
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(userEmail)) {
+                alertMessage('error', 'Please enter a valid email format.');
+                return;
+            }
+
+            // --- Dummy Submission Logic ---
+            // Disable form elements temporarily
+            newsletterEmailInput.disabled = true;
+            newsletterForm.querySelector('button[type="submit"]').disabled = true;
+            newsletterForm.querySelector('button[type="submit"]').textContent = 'Subscribing...';
+            newsletterForm.querySelector('button[type="submit"]').classList.add('opacity-50', 'cursor-not-allowed');
+
+            // Simulate an async operation (e.g., sending data to a server)
+            setTimeout(() => {
+                // Show the success modal with animation
+                newsletterSuccessModal.classList.remove('hidden', 'pointer-events-none');
+                setTimeout(() => {
+                    newsletterSuccessModal.classList.add('opacity-100');
+                    newsletterSuccessModal.querySelector('div').classList.remove('scale-95', 'opacity-0');
+                    newsletterSuccessModal.querySelector('div').classList.add('scale-100', 'opacity-100');
+                }, 10);
+
+                // Clear the input field
+                newsletterEmailInput.value = '';
+
+                // Re-enable form elements
+                newsletterEmailInput.disabled = false;
+                newsletterForm.querySelector('button[type="submit"]').disabled = false;
+                newsletterForm.querySelector('button[type="submit"]').textContent = 'Subscribe';
+                newsletterForm.querySelector('button[type="submit"]').classList.remove('opacity-50', 'cursor-not-allowed');
+            }, 1000); // Simulate 1 second delay
+
+        });
+
+        // Event listener to close the modal
+        newsletterModalCloseBtn.addEventListener('click', () => {
+            newsletterSuccessModal.classList.remove('opacity-100');
+            newsletterSuccessModal.querySelector('div').classList.remove('scale-100', 'opacity-100');
+            newsletterSuccessModal.querySelector('div').classList.add('scale-95', 'opacity-0');
+            newsletterSuccessModal.addEventListener('transitionend', () => {
+                newsletterSuccessModal.classList.add('hidden', 'pointer-events-none');
+            }, { once: true });
+        });
+
+        // Close modal if clicked outside of the content box
+        newsletterSuccessModal.addEventListener('click', (e) => {
+            if (e.target === newsletterSuccessModal) {
+                newsletterSuccessModal.classList.remove('opacity-100');
+                newsletterSuccessModal.querySelector('div').classList.remove('scale-100', 'opacity-100');
+                newsletterSuccessModal.querySelector('div').classList.add('scale-95', 'opacity-0');
+                newsletterSuccessModal.addEventListener('transitionend', () => {
+                    newsletterSuccessModal.classList.add('hidden', 'pointer-events-none');
+                }, { once: true });
+            }
+        });
+    }
 }
