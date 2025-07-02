@@ -11,7 +11,6 @@ class PasswordReset
 
     /**
      * Creates a new password reset token record.
-     *
      * @param int $userId The ID of the user.
      * @param string $token The unique reset token.
      * @param string $expiresAt The expiration timestamp for the token (YYYY-MM-DD HH:MM:SS).
@@ -20,7 +19,6 @@ class PasswordReset
     public function createToken($userId, $token, $expiresAt)
     {
         try {
-            // Delete any existing tokens for this user to ensure only one active token at a time
             $this->pdo->prepare("DELETE FROM password_resets WHERE user_id = :user_id")->execute([':user_id' => $userId]);
 
             $stmt = $this->pdo->prepare("INSERT INTO password_resets (user_id, token, expires_at) VALUES (:user_id, :token, :expires_at)");
@@ -37,7 +35,6 @@ class PasswordReset
 
     /**
      * Finds a password reset token and checks if it's valid (not expired).
-     *
      * @param string $token The token to search for.
      * @return array|false The token data (user_id, expires_at), or false if not found or expired.
      */
@@ -55,7 +52,6 @@ class PasswordReset
 
     /**
      * Deletes a password reset token.
-     *
      * @param string $token The token to delete.
      * @return bool True on success, false on failure.
      */

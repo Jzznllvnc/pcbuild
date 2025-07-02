@@ -12,7 +12,6 @@ class Product
 
     /**
      * Get a single product by its ID.
-     *
      * @param int $id The product ID.
      * @return array|false The product data as an associative array, or false if not found.
      */
@@ -26,7 +25,6 @@ class Product
 
     /**
      * Get all products with optional pagination, category, and search filters.
-     *
      * @param int $limit Number of products to return.
      * @param int $offset Offset for pagination.
      * @param string|null $category Optional category to filter by.
@@ -39,7 +37,6 @@ class Product
         $params = [];
         $whereClauses = [];
 
-        // Build parameters first
         if (!empty($category)) {
             $whereClauses[] = "category = :category";
             $params[':category'] = $category;
@@ -51,16 +48,13 @@ class Product
             $params[':search_description'] = '%' . $search . '%';
         }
 
-        // Only append WHERE clause if conditions exist
         if (!empty($whereClauses)) {
             $query .= " WHERE " . implode(" AND ", $whereClauses);
         }
 
-        $query .= " ORDER BY id ASC LIMIT :limit OFFSET :offset"; // Added ORDER BY id for consistent results
+        $query .= " ORDER BY id ASC LIMIT :limit OFFSET :offset";
 
         $stmt = $this->pdo->prepare($query);
-
-        // Bind parameters
         foreach ($params as $key => $val) {
             $stmt->bindValue($key, $val);
         }
@@ -74,7 +68,6 @@ class Product
 
     /**
      * Get products filtered by a specific category.
-     *
      * @param string $category The category to filter products by.
      * @return array A list of product data as associative arrays.
      */
@@ -88,7 +81,6 @@ class Product
 
     /**
      * Get the total number of products with optional category and search filters.
-     *
      * @param string|null $category Optional category to filter by.
      * @param string|null $search Optional search term for name or description.
      * @return int The total number of products.
@@ -99,7 +91,6 @@ class Product
         $params = [];
         $whereClauses = [];
 
-        // Build parameters first
         if (!empty($category)) {
             $whereClauses[] = "category = :category";
             $params[':category'] = $category;
@@ -111,7 +102,6 @@ class Product
             $params[':search_description'] = '%' . $search . '%';
         }
 
-        // Only append WHERE clause if conditions exist
         if (!empty($whereClauses)) {
             $query .= " WHERE " . implode(" AND ", $whereClauses);
         }
@@ -126,7 +116,6 @@ class Product
 
     /**
      * Creates a new product in the database.
-     *
      * @param string $name
      * @param string $description
      * @param float $price
@@ -160,7 +149,6 @@ class Product
 
     /**
      * Updates an existing product in the database.
-     *
      * @param int $id The product ID.
      * @param string $name
      * @param string $description
@@ -187,7 +175,7 @@ class Product
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
             $stmt->execute();
-            return $stmt->rowCount() > 0; // Returns true if at least one row was updated
+            return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
             error_log("Product Model Error: updateProduct failed: " . $e->getMessage());
             return false;
@@ -196,20 +184,17 @@ class Product
 
     /**
      * Deletes a product from the database.
-     * Added logic to check for references in `order_items` before deletion.
-     *
      * @param int $id The product ID.
      * @return bool|string True on successful deletion, false on general failure, 'referenced' if linked to orders.
      */
     public function deleteProduct($id)
     {
         try {
-            // Check if product is referenced in order_items
             $stmtCheck = $this->pdo->prepare("SELECT COUNT(*) FROM order_items WHERE product_id = :id");
             $stmtCheck->bindParam(':id', $id, PDO::PARAM_INT);
             $stmtCheck->execute();
             if ($stmtCheck->fetchColumn() > 0) {
-                return 'referenced'; // Product is part of existing orders, cannot delete
+                return 'referenced';
             }
 
             $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
@@ -217,7 +202,7 @@ class Product
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
             $stmt->execute();
-            return $stmt->rowCount() > 0; // True if deleted, false if not found
+            return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
             error_log("Product Model Error: deleteProduct failed: " . $e->getMessage());
             return false;
@@ -226,7 +211,6 @@ class Product
 
     /**
      * Calculates the total value of all products in stock (price * stock).
-     *
      * @return float The total inventory value.
      */
     public function getTotalInventoryValue()

@@ -11,23 +11,20 @@ class Order
 
     /**
      * Creates a new order in the database.
-     *
      * @param array $orderDetails Associative array containing all order details.
-     * Expected keys: user_id, total_amount, payment_method, shipping_method, shipping_cost,
-     * first_name, last_name, email, country_code, shipping_mobile_number, address, city, state, zip_code, notes, payment_mobile_number.
      * @return int|false The ID of the newly created order, or false on failure.
      */
     public function createOrder($orderDetails)
     {
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO orders (user_id, total_amount, payment_method, shipping_method, shipping_cost, first_name, last_name, email, country_code, shipping_mobile_number, address, city, state, zip_code, notes, payment_mobile_number) VALUES (:user_id, :total_amount, :payment_method, :shipping_method, :shipping_cost, :first_name, :last_name, :email, :country_code, :shipping_mobile_number, :address, :city, :state, :zip_code, :notes, :payment_mobile_number)");
+            $stmt = $this->pdo->prepare("INSERT INTO orders (user_id, total_amount, payment_method, shipping_method, shipping_cost, first_name, last_name, email, country_code, shipping_mobile_number, address, city, state, zip_code, notes, payment_mobile_number, order_date) VALUES (:user_id, :total_amount, :payment_method, :shipping_method, :shipping_cost, :first_name, :last_name, :email, :country_code, :shipping_mobile_number, :address, :city, :state, :zip_code, :notes, :payment_mobile_number, :order_date)");
 
             $stmt->execute([
                 ':user_id' => $orderDetails['user_id'],
                 ':total_amount' => $orderDetails['total_amount'],
                 ':payment_method' => $orderDetails['payment_method'],
-                ':shipping_method' => $orderDetails['shipping_info']['shipping_method'], // Access nested array
-                ':shipping_cost' => $orderDetails['shipping_info']['shipping_cost'],   // Access nested array
+                ':shipping_method' => $orderDetails['shipping_info']['shipping_method'],
+                ':shipping_cost' => $orderDetails['shipping_info']['shipping_cost'],
                 ':first_name' => $orderDetails['shipping_info']['first_name'],
                 ':last_name' => $orderDetails['shipping_info']['last_name'],
                 ':email' => $orderDetails['shipping_info']['email'],
@@ -38,7 +35,8 @@ class Order
                 ':state' => $orderDetails['shipping_info']['state'],
                 ':zip_code' => $orderDetails['shipping_info']['zip_code'],
                 ':notes' => $orderDetails['shipping_info']['notes'],
-                ':payment_mobile_number' => $orderDetails['shipping_info']['payment_mobile_number']
+                ':payment_mobile_number' => $orderDetails['shipping_info']['payment_mobile_number'],
+                ':order_date' => date('Y-m-d H:i:s')
             ]);
             return $this->pdo->lastInsertId();
         } catch (PDOException $e) {
@@ -49,7 +47,6 @@ class Order
 
     /**
      * Adds items to a specific order.
-     *
      * @param int $orderId
      * @param array $items An array of arrays, each with product_id, product_name, quantity, price_at_purchase.
      * @return bool True on success, false on failure.
@@ -63,10 +60,10 @@ class Order
             foreach ($items as $item) {
                 $stmt->execute([
                     ':order_id' => $orderId,
-                    ':product_id' => $item['id'], // Use 'id' from the cart item structure
-                    ':product_name' => $item['name'], // Use 'name' from the cart item structure
-                    ':quantity' => $item['quantity'],
-                    ':price_at_purchase' => $item['price'] // Use 'price' from the cart item structure
+                    ':product_id' => $item['id'],
+                    ':product_name' => $item['name'],
+                    ':quantity' => (int)$item['quantity'],
+                    ':price_at_purchase' => (float)$item['price']
                 ]);
             }
             return $this->pdo->commit();
@@ -79,7 +76,6 @@ class Order
 
     /**
      * Retrieves all orders for a given user ID, including their items.
-     *
      * @param int $userId The ID of the user.
      * @return array An array of orders, with each order containing its items.
      */
@@ -93,19 +89,18 @@ class Order
             $rawOrders = $stmtOrders->fetchAll(PDO::FETCH_ASSOC);
 
             foreach ($rawOrders as $order) {
-                // For each order, fetch its items
                 $order['items'] = $this->getOrderItemsByOrderId($order['id']);
                 $orders[] = $order;
             }
         } catch (PDOException $e) {
             error_log("Order Model Error: getOrdersByUserId failed: " . $e->getMessage());
+            return [];
         }
         return $orders;
     }
 
     /**
      * Retrieves all items for a given order ID.
-     *
      * @param int $orderId The ID of the order.
      * @return array An array of order items.
      */
@@ -118,13 +113,13 @@ class Order
             $items = $stmtItems->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log("Order Model Error: getOrderItemsByOrderId failed: " . $e->getMessage());
+            return [];
         }
         return $items;
     }
 
     /**
      * Retrieves a single order by its ID, including its items.
-     *
      * @param int $orderId The ID of the order to retrieve.
      * @return array|false The order data as an associative array, including its items, or false if not found.
      */
@@ -147,7 +142,6 @@ class Order
 
     /**
      * Get the total revenue from orders within a specified date range.
-     *
      * @param string $startDate The start date (e.g., 'YYYY-MM-DD HH:MM:SS').
      * @return float The total revenue.
      */
@@ -165,7 +159,6 @@ class Order
 
     /**
      * Get the total number of orders within a specified date range.
-     *
      * @param string $startDate The start date (e.g., 'YYYY-MM-DD HH:MM:SS').
      * @return int The total number of orders.
      */
@@ -183,7 +176,6 @@ class Order
 
     /**
      * Get the number of pending orders within a specified date range.
-     *
      * @param string $startDate The start date (e.g., 'YYYY-MM-DD HH:MM:SS').
      * @return int The number of pending orders.
      */
@@ -201,7 +193,6 @@ class Order
 
     /**
      * Get daily total revenue for the last N days.
-     *
      * @param int $days Number of past days to fetch data for.
      * @return array An associative array where keys are dates (YYYY-MM-DD) and values are total revenues.
      */
@@ -226,26 +217,23 @@ class Order
             $stmt->execute();
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            // Initialize all dates within the range with 0 revenue
             for ($i = $days - 1; $i >= 0; $i--) {
                 $date = date('Y-m-d', strtotime("-$i days"));
                 $dailyRevenue[$date] = 0.00;
             }
-
-            // Populate with actual revenue
             foreach ($results as $row) {
                 $dailyRevenue[$row['order_day']] = (float)$row['daily_revenue'];
             }
 
         } catch (PDOException $e) {
             error_log("Order Model Error: getDailyRevenue failed: " . $e->getMessage());
+            return [];
         }
         return $dailyRevenue;
     }
 
     /**
      * Get monthly total revenue for a given year.
-     *
      * @param int $year The year to fetch data for. Defaults to current year.
      * @return array An associative array where keys are month numbers (1-12) and values are total revenues.
      */
@@ -255,7 +243,7 @@ class Order
             $year = date('Y');
         }
 
-        $monthlyRevenue = array_fill(1, 12, 0.00); // Initialize all 12 months with 0 revenue
+        $monthlyRevenue = array_fill(1, 12, 0.00);
 
         try {
             $stmt = $this->pdo->prepare("
@@ -281,6 +269,7 @@ class Order
 
         } catch (PDOException $e) {
             error_log("Order Model Error: getMonthlyRevenue failed: " . $e->getMessage());
+            return [];
         }
         return $monthlyRevenue;
     }

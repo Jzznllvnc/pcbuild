@@ -43,7 +43,6 @@ class User
     {
         error_log("User Model: Attempting to find user with identifier: '{$identifier}'");
         try {
-            // Include phone_number in SELECT statement
             $stmt = $this->pdo->prepare("SELECT id, username, email, phone_number, password, created_at, last_login, is_admin, is_banned FROM users WHERE username = :username_param OR email = :email_param LIMIT 1");
             $stmt->execute([
                 ':username_param' => $identifier,
@@ -70,7 +69,6 @@ class User
     public function findByEmail($email)
     {
         try {
-            // Include phone_number in SELECT statement
             $stmt = $this->pdo->prepare("SELECT id, username, email, phone_number, password, is_admin, is_banned FROM users WHERE email = :email LIMIT 1");
             $stmt->execute([':email' => $email]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -91,7 +89,6 @@ class User
     {
         error_log("User Model: Attempting to create user: username='{$username}', email='{$email}'");
         try {
-            // No phone_number in INSERT as it's optional and added later
             $stmt = $this->pdo->prepare("INSERT INTO users (username, email, password, is_admin, is_banned) VALUES (:username, :email, :password, 0, 0)");
             $stmt->execute([
                 ':username' => $username,
@@ -121,12 +118,10 @@ class User
      */
     public function getAllUsers($searchTerm = '')
     {
-        // Include phone_number in SELECT statement
         $sql = "SELECT id, username, email, phone_number, created_at, last_login, is_admin, is_banned FROM users";
         $params = [];
 
         if (!empty($searchTerm)) {
-            // Use distinct named parameters when the same value is used multiple times
             $sql .= " WHERE LOWER(username) LIKE :searchTermUsername OR LOWER(email) LIKE :searchTermEmail";
             $params[':searchTermUsername'] = '%' . $searchTerm . '%';
             $params[':searchTermEmail'] = '%' . $searchTerm . '%';
@@ -281,7 +276,6 @@ class User
 
     /**
      * Get the total number of registered users.
-     *
      * @return int The total number of users.
      */
     public function getTotalUsersRegistered()

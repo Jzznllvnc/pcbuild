@@ -1,6 +1,6 @@
 <?php
 
-require_once BASE_PATH . 'app/models/Product.php'; // Required to fetch product details for cart display
+require_once BASE_PATH . 'app/models/Product.php';
 
 class CartItem
 {
@@ -10,7 +10,7 @@ class CartItem
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
-        $this->productModel = new Product($pdo); // Instantiate the Product model
+        $this->productModel = new Product($pdo);
     }
 
     /**
@@ -32,12 +32,10 @@ class CartItem
         $existingItem = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($existingItem) {
-            // Update existing item's quantity
-            $newQuantity = $existingItem['quantity'] + $quantity; // Add to existing quantity
+            $newQuantity = $existingItem['quantity'] + $quantity;
             $updateStmt = $this->pdo->prepare("UPDATE cart_items SET quantity = :quantity, updated_at = NOW() WHERE id = :id");
             return $updateStmt->execute(['quantity' => $newQuantity, 'id' => $existingItem['id']]);
         } else {
-            // Insert new item
             $insertStmt = $this->pdo->prepare("INSERT INTO cart_items (user_id, product_id, quantity) VALUES (:user_id, :product_id, :quantity)");
             return $insertStmt->execute(['user_id' => $userId, 'product_id' => $productId, 'quantity' => $quantity]);
         }
@@ -103,9 +101,9 @@ class CartItem
                     'id' => $product['id'],
                     'name' => $product['name'],
                     'price' => (float)$product['price'],
-                    'image' => $product['image_url'], // Assuming Product model returns image_url
+                    'image' => $product['image_url'],
                     'quantity' => (int)$item['quantity'],
-                    'stock' => (int)$product['stock'] // Correctly access the 'stock' key
+                    'stock' => (int)$product['stock']
                 ];
             }
         }
