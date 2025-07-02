@@ -1,2 +1,9 @@
-#gemini api
-app/controllers/AiChatController.php
+# Configuration
+/config/database.php
+.env
+
+# Uploads
+/app/views/products/images/
+
+# Sensitive files
+/app/controllers/AiChatController.php
