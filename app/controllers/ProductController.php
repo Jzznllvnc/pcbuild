@@ -17,16 +17,12 @@ class ProductController extends BaseController
     {
         // Pagination setup
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $productsPerPage = 6; // Number of products to display per page
+        $productsPerPage = 6;
         $offset = ($page - 1) * $productsPerPage;
 
         $category = $_GET['category'] ?? null;
         $search = $_GET['search'] ?? null;
-
-        // Fetch products with pagination, category, and search filters
         $products = $this->productModel->getProducts($productsPerPage, $offset, $category, $search);
-        
-        // Get total number of products for pagination
         $totalProducts = $this->productModel->getTotalProducts($category, $search);
         $totalPages = ceil($totalProducts / $productsPerPage);
 
@@ -47,8 +43,7 @@ class ProductController extends BaseController
         $product = $this->productModel->getProductById($id);
 
         if (!$product) {
-            // Handle product not found, e.g., redirect to 404 or product list
-            header('Location: /pcbuild/products');
+            header('Location: /products');
             exit();
         }
 

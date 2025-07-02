@@ -2,7 +2,7 @@
 
 require_once BASE_PATH . 'app/controllers/BaseController.php';
 require_once BASE_PATH . 'app/models/CartItem.php';
-require_once BASE_PATH . 'app/models/Product.php'; // Required for CartItem model's dependency
+require_once BASE_PATH . 'app/models/Product.php';
 
 class CartController extends BaseController
 {
@@ -16,30 +16,22 @@ class CartController extends BaseController
         $this->productModel = new Product($pdo);
     }
 
-    /**
-     * Displays the shopping cart page.
-     */
     public function index()
     {
-        // Start session if not already started
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
 
-        $isLoggedIn = isset($_SESSION['user_id']); // Check if user is logged in
+        $isLoggedIn = isset($_SESSION['user_id']);
 
         $data = [
             'title' => 'Your Shopping Cart',
-            'isLoggedIn' => $isLoggedIn // Pass login status to the view
-            // Cart items will be loaded dynamically by JavaScript
+            'isLoggedIn' => $isLoggedIn
         ];
 
         $this->view('cart/index', $data);
     }
 
-    /**
-     * API endpoint to get cart items for the current user.
-     */
     public function getCartApi()
     {
         if (session_status() == PHP_SESSION_NONE) {
@@ -56,10 +48,6 @@ class CartController extends BaseController
         $this->jsonResponse(['success' => true, 'cart' => $cartItems]);
     }
 
-    /**
-     * API endpoint to add or update an item in the cart.
-     * Expects POST data: product_id, quantity
-     */
     public function addOrUpdateCartItemApi()
     {
         if (session_status() == PHP_SESSION_NONE) {
@@ -111,10 +99,6 @@ class CartController extends BaseController
         }
     }
 
-    /**
-     * API endpoint to set the quantity of an item in the cart.
-     * Expects POST data: product_id, quantity (this is the absolute new quantity)
-     */
     public function setCartItemQuantityApi()
     {
         if (session_status() == PHP_SESSION_NONE) {
@@ -158,10 +142,6 @@ class CartController extends BaseController
         }
     }
 
-    /**
-     * API endpoint to remove an item from the cart.
-     * Expects POST data: product_id
-     */
     public function removeCartItemApi()
     {
         if (session_status() == PHP_SESSION_NONE) {
@@ -192,9 +172,6 @@ class CartController extends BaseController
         }
     }
 
-    /**
-     * API endpoint to clear all items from the cart.
-     */
     public function clearCartApi()
     {
         if (session_status() == PHP_SESSION_NONE) {
@@ -219,10 +196,6 @@ class CartController extends BaseController
         }
     }
 
-    /**
-     * API endpoint to sync local cart with database cart upon login/registration.
-     * Expects POST data: cart (JSON string of local cart items)
-     */
     public function syncCartApi()
     {
         if (session_status() == PHP_SESSION_NONE) {
@@ -244,7 +217,6 @@ class CartController extends BaseController
                 return;
             }
 
-            // Fetch current server cart items to handle merges (sum quantities)
             $serverCartItems = $this->cartItemModel->getCartItems($userId);
             $serverCartMap = [];
             foreach ($serverCartItems as $item) {
@@ -271,7 +243,6 @@ class CartController extends BaseController
 
                 if ($newTotalQuantity > $product['stock']) {
                     $errors[] = "Not enough stock for product '{$product['name']}'. Requested total: {$newTotalQuantity}, available: {$product['stock']}.";
-                    // Add only up to available stock if merge exceeds it
                     $quantityToAdd = $product['stock'] - ($serverCartMap[$productId] ?? 0);
                     if ($quantityToAdd > 0) {
                          $this->cartItemModel->addOrUpdateItem($userId, $productId, $quantityToAdd);
@@ -284,7 +255,6 @@ class CartController extends BaseController
             if (empty($errors)) {
                 $this->jsonResponse(['success' => true, 'message' => 'Cart synchronized successfully.']);
             } else {
-                // Return success but with warnings about items that could not be fully synced
                 $this->jsonResponse(['success' => true, 'message' => 'Cart synchronized with some issues.', 'warnings' => $errors]);
             }
 

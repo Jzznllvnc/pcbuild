@@ -12,10 +12,6 @@ class BuildController extends BaseController
         $this->productModel = new Product($pdo);
     }
 
-    /**
-     * Displays the PC build configuration page.
-     * Fetches components categorized for selection.
-     */
     public function index()
     {
         $categories = [
@@ -35,15 +31,9 @@ class BuildController extends BaseController
         $this->view('build/index', $data);
     }
 
-    /**
-     * Calculates and displays the build rating based on selected components.
-     * This method expects POST data with component IDs.
-     */
     public function getRating()
     {
-        header('Content-Type: application/json'); // Respond with JSON
-
-        // Get selected component IDs from POST request
+        header('Content-Type: application/json');
         $selectedComponentIds = $_POST['components'] ?? [];
 
         if (empty($selectedComponentIds)) {
@@ -70,78 +60,89 @@ class BuildController extends BaseController
         }
 
         // --- Build Rating Logic (Simplified for now) ---
-        // This is a basic rule-based system.
-        // You can make this much more complex and intelligent.
-        $ratingScore = 0; // Max 100
+        $ratingScore = 0;
         $ratingComments = [];
         $hasCPU = false;
         $hasGPU = false;
         $hasMotherboard = false;
         $hasRAM = false;
         $hasPSU = false;
-        $totalPowerConsumptionEstimate = 0; // Very rough estimate for now
+        $totalPowerConsumptionEstimate = 0;
 
-        $cpuTier = 0; // 1-low, 2-mid, 3-high
+        $cpuTier = 0;
         $gpuTier = 0;
 
         // Process each selected product
         foreach ($selectedProducts as $product) {
             switch ($product['category']) {
-                case 'CPU':
-                    $hasCPU = true;
-                    // Simple tiering based on name for demonstration
-                    if (str_contains($product['name'], 'i9') || str_contains($product['name'], 'Ryzen 9')) {
-                        $cpuTier = 3;
-                    } elseif (str_contains($product['name'], 'i7') || str_contains($product['name'], 'Ryzen 7') || str_contains($product['name'], 'i5') || str_contains($product['name'], 'Ryzen 5')) {
-                        $cpuTier = 2;
-                    } else {
-                        $cpuTier = 1;
-                    }
-                    // Estimate power usage
-                    $totalPowerConsumptionEstimate += 150; // Example
-                    break;
-                case 'GPU':
-                    $hasGPU = true;
-                    // Simple tiering based on name for demonstration
-                    if (str_contains($product['name'], '4090') || str_contains($product['name'], '4080') || str_contains($product['name'], '3090') || str_contains($product['name'], '3080') || str_contains($product['name'], 'RX 7900')) {
-                        $gpuTier = 3;
-                    } elseif (str_contains($product['name'], '4070') || str_contains($product['name'], '3070') || str_contains($product['name'], '3060') || str_contains($product['name'], 'RX 6700')) {
-                        $gpuTier = 2;
-                    } else {
-                        $gpuTier = 1;
-                    }
-                    // Estimate power usage
-                    $totalPowerConsumptionEstimate += 300; // Example
-                    break;
+            case 'CPU':
+                $hasCPU = true;
+                if (str_contains($product['name'], 'i9') || str_contains($product['name'], 'Ryzen 9')) {
+                    $cpuTier = 3;
+                    $ratingComments[] = "High-end CPU selected: {$product['name']}.";
+                } elseif (str_contains($product['name'], 'i7') || str_contains($product['name'], 'Ryzen 7') || str_contains($product['name'], 'i5') || str_contains($product['name'], 'Ryzen 5')) {
+                    $cpuTier = 2;
+                    $ratingComments[] = "Mid-range CPU selected: {$product['name']}.";
+                } else {
+                    $cpuTier = 1;
+                    $ratingComments[] = "Entry-level CPU selected: {$product['name']}.";
+                }
+                $totalPowerConsumptionEstimate += 150;
+                break;
+            case 'GPU':
+                $hasGPU = true;
+                if (str_contains($product['name'], '4090') || str_contains($product['name'], '4080') || str_contains($product['name'], '3090') || str_contains($product['name'], '3080') || str_contains($product['name'], 'RX 7900')) {
+                    $gpuTier = 3;
+                    $ratingComments[] = "High-end GPU selected: {$product['name']}.";
+                } elseif (str_contains($product['name'], '4070') || str_contains($product['name'], '3070') || str_contains($product['name'], '3060') || str_contains($product['name'], 'RX 6700')) {
+                    $gpuTier = 2;
+                    $ratingComments[] = "Mid-range GPU selected: {$product['name']}.";
+                } else {
+                    $gpuTier = 1;
+                    $ratingComments[] = "Entry-level GPU selected: {$product['name']}.";
+                }
+                $totalPowerConsumptionEstimate += 300;
+                break;
                 case 'Motherboard':
                     $hasMotherboard = true;
                     break;
-                case 'RAM':
-                    $hasRAM = true;
-                    // Check RAM quantity/speed for bonus points
-                    if (str_contains($product['name'], '32GB') || str_contains($product['name'], '64GB')) {
-                        $ratingScore += 5;
+            case 'RAM':
+                $hasRAM = true;
+                if (str_contains($product['name'], '32GB') || str_contains($product['name'], '64GB')) {
+                    $ratingScore += 5;
+                    $ratingComments[] = "High RAM capacity selected: {$product['name']}.";
+                }
+                if (str_contains($product['name'], '6000MHz') || str_contains($product['name'], 'DDR5')) {
+                    $ratingScore += 5;
+                    $ratingComments[] = "High-speed or DDR5 RAM selected: {$product['name']}.";
+                }
+                break;
+            case 'PSU':
+                $hasPSU = true;
+                $psuWattage = 0;
+                if (preg_match('/(\d+)\s*W/', $product['name'], $matches)) {
+                    $psuWattage = (int)$matches[1];
+                }
+
+                if ($psuWattage > 0) {
+                    if ($psuWattage >= $totalPowerConsumptionEstimate * 1.2) {
+                        $ratingScore += 10;
+                        $ratingComments[] = "Power supply seems adequate for estimated power draw ({$psuWattage}W vs ~{$totalPowerConsumptionEstimate}W).";
+                    } else {
+                        $ratingComments[] = "Warning: Power supply (estimated {$psuWattage}W) might be insufficient for estimated power draw (~{$totalPowerConsumptionEstimate}W). Consider a higher wattage PSU.";
+                        $ratingScore -= 10;
                     }
-                    if (str_contains($product['name'], '6000MHz') || str_contains($product['name'], 'DDR5')) {
-                        $ratingScore += 5;
+                    } else {
+                        $ratingComments[] = "Warning: Could not determine wattage for selected PSU. Ensure the name contains a number followed by 'W' (e.g., '750W').";
+                        $ratingScore -= 5;
                     }
                     break;
-                case 'PSU':
-                    $hasPSU = true;
-                    $psuWattage = (int)filter_var($product['name'], FILTER_SANITIZE_NUMBER_INT); // Extract numbers from PSU name
-                    if ($psuWattage > 0) {
-                        if ($psuWattage >= $totalPowerConsumptionEstimate * 1.2) { // PSU 20% more than estimate
-                            $ratingScore += 10;
-                            $ratingComments[] = "Power supply seems adequate for estimated power draw ({$psuWattage}W vs ~{$totalPowerConsumptionEstimate}W).";
-                        } else {
-                            $ratingComments[] = "Warning: Power supply (estimated {$psuWattage}W) might be insufficient for estimated power draw (~{$totalPowerConsumptionEstimate}W). Consider a higher wattage PSU.";
-                            $ratingScore -= 10;
-                        }
-                    }
-                    break;
-                case 'Storage':
-                case 'Case':
-                    // These generally don't affect performance rating directly, but are necessary
+            case 'Motherboard':
+                $hasMotherboard = true;
+                $ratingComments[] = "Motherboard selected: {$product['name']}.";
+                break;
+            case 'Storage':
+            case 'Case':
                     break;
             }
         }
@@ -152,8 +153,6 @@ class BuildController extends BaseController
         if ($hasMotherboard) $ratingScore += 10; else $ratingComments[] = "Missing Motherboard.";
         if ($hasRAM) $ratingScore += 10; else $ratingComments[] = "Missing RAM.";
         if ($hasPSU) $ratingScore += 10; else $ratingComments[] = "Missing Power Supply.";
-
-        // Basic compatibility check (CPU/GPU synergy)
         if ($cpuTier === 1 && $gpuTier === 3) {
             $ratingComments[] = "Potential Bottleneck: High-end GPU with a low-end CPU. Consider upgrading the CPU.";
             $ratingScore -= 15;
@@ -167,8 +166,6 @@ class BuildController extends BaseController
 
         // Ensure rating is within 0-100 range
         $ratingScore = max(0, min(100, $ratingScore));
-
-        // Generate a qualitative description based on the score
         $qualitativeRating = "Your build looks good!";
         if ($ratingScore < 30) {
             $qualitativeRating = "This build has significant issues. Please review missing or incompatible components.";
@@ -180,14 +177,13 @@ class BuildController extends BaseController
             $qualitativeRating = "Excellent build! Well-balanced and powerful.";
         }
 
-        // Prepare response
         $response = [
             'success' => true,
             'rating' => $ratingScore,
             'qualitative_rating' => $qualitativeRating,
             'comments' => $ratingComments,
             'total_price' => $totalPrice,
-            'selected_products' => $selectedProducts // For debugging or display
+            'selected_products' => $selectedProducts
         ];
 
         echo json_encode($response);

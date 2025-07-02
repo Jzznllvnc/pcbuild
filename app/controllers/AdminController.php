@@ -18,52 +18,38 @@ class AdminController extends BaseController
         $this->userModel = new User($pdo);
         $this->orderModel = new Order($pdo);
 
-        // Ensure only admins can access these pages
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
         if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
             $_SESSION['error'] = 'Access denied. You must be an administrator to access this section.';
-            header('Location: /pcbuild/login'); // Redirect non-admins to login
+            header('Location: /login');
             exit();
         }
     }
 
-    /**
-     * Displays the main admin dashboard.
-     */
     public function dashboard()
     {
-        // Calculate dates for "last 30 days" for summary cards
         $thirtyDaysAgo = date('Y-m-d H:i:s', strtotime('-30 days'));
 
         // Fetch Dashboard Data for top cards
         $newOrders = $this->orderModel->getTotalOrders($thirtyDaysAgo);
         $totalIncome = $this->orderModel->getTotalRevenue($thirtyDaysAgo);
         $totalCustomers = $this->userModel->getTotalUsersRegistered();
-        // Assuming "Pending Delivery" from the screenshot corresponds to current pending orders, not just new users
         $pendingDelivery = $this->orderModel->getPendingOrders($thirtyDaysAgo);
-
-        // Dynamically get total product value for "Total Expense"
         $totalExpense = $this->productModel->getTotalInventoryValue();
-
-        // Placeholder for "New User" as they require more complex data or separate tables
-        $newUser = $totalCustomers; // Using total customers for now as a general user metric
-
-        // Fetch monthly revenue data for Yearly Stats and Sales/Revenue charts
+        $newUser = $totalCustomers;
         $currentYear = date('Y');
         $monthlyRevenueData = $this->orderModel->getMonthlyRevenue($currentYear);
         $monthlyLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         $monthlyDataValues = array_values($monthlyRevenueData);
-
-        // Calculate total for yearly stats (sum of all months)
         $yearlyStatsTotal = array_sum($monthlyDataValues);
 
         $data = [
             'title' => 'Admin Dashboard',
             'newOrders' => $newOrders,
             'totalIncome' => $totalIncome,
-            'totalExpense' => $totalExpense, // Now dynamically calculated
+            'totalExpense' => $totalExpense,
             'newUser' => $newUser,
             'yearlyStatsTotal' => $yearlyStatsTotal,
             'monthlyLabels' => json_encode($monthlyLabels),
@@ -72,41 +58,26 @@ class AdminController extends BaseController
         $this->view('admin/dashboard', $data);
     }
 
-    /**
-     * Lists all products for admin management.
-     */
-    public function products() // Method renamed from listProducts to products
+    public function products()
     {
-        // Ensure session messages are cleared before being potentially displayed on this page
-        // This prevents "Welcome back" from showing on this list
         unset($_SESSION['success']);
         unset($_SESSION['error']);
         
-        $category = $_GET['category'] ?? null; // Get category from URL query parameter
-        $search = $_GET['search'] ?? null; // Get search term from URL query parameter
-
-        // Fetch products based on category and search filters
-        // Using arbitrary high limit for admin page since pagination isn't implemented here yet.
+        $category = $_GET['category'] ?? null;
+        $search = $_GET['search'] ?? null;
         $products = $this->productModel->getProducts(10000, 0, $category, $search);
 
         $data = [
             'title' => 'Manage Products',
             'products' => $products,
-            'currentCategory' => $category, // Pass current category to the view
-            'currentSearch' => $search, // Pass current search term to the view
-            //'success' => $_SESSION['success'] ?? null,
-            //'error' => $_SESSION['error'] ?? null
+            'currentCategory' => $category,
+            'currentSearch' => $search,
         ];
-        //unset($_SESSION['success']);
-        //unset($_SESSION['error']);
 
         $this->view('admin/products/index', $data);
     }
 
-    /**
-     * Displays the form to create a new product.
-     */
-    public function createProductForm() // Renamed for clarity (GET request)
+    public function createProductForm()
     {
         $data = [
             'title' => 'Add New Product',
@@ -116,14 +87,11 @@ class AdminController extends BaseController
         $this->view('admin/products/create', $data);
     }
 
-    /**
-     * Handles the submission of the new product form.
-     */
-    public function createProduct() // This handles the POST request
+    public function createProduct()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $_SESSION['error'] = 'Invalid request.';
-            header('Location: /pcbuild/admin/products/create');
+            header('Location: /admin/products/create');
             exit();
         }
 
@@ -131,25 +99,30 @@ class AdminController extends BaseController
             'name' => trim($_POST['name'] ?? ''),
             'description' => trim($_POST['description'] ?? ''),
             'price' => (float)($_POST['price'] ?? 0),
-            'image_url' => trim($_POST['image_url'] ?? ''),
+            'image_url' => '',
             'category' => trim($_POST['category'] ?? ''),
             'stock' => (int)($_POST['stock'] ?? 0),
-            'additional_details' => trim($_POST['additional_details'] ?? '') // New field
+            'additional_details' => trim($_POST['additional_details'] ?? '')
         ];
 
         // Basic validation
         if (empty($data['name']) || empty($data['price']) || $data['price'] <= 0 || empty($data['category'])) {
             $_SESSION['error'] = 'Name, price (must be positive), and category are required.';
-            header('Location: /pcbuild/admin/products/create');
+            header('Location: /admin/products/create');
             exit();
         }
-        if (!empty($data['image_url']) && !filter_var($data['image_url'], FILTER_VALIDATE_URL)) {
-             $_SESSION['error'] = 'Invalid image URL provided.';
-             header('Location: /pcbuild/admin/products/create');
-             exit();
+        if (isset($_FILES['image_upload']) && $_FILES['image_upload']['error'] === UPLOAD_ERR_OK) {
+            $uploadResult = $this->handleImageUpload($_FILES['image_upload']);
+            if ($uploadResult['success']) {
+                $data['image_url'] = $uploadResult['file_path'];
+            } else {
+                $_SESSION['error'] = $uploadResult['error_message'];
+                header('Location: /admin/products/create');
+                exit();
+            }
+        } else {
+            $data['image_url'] = 'https://placehold.co/300x300/e2e8f0/475569?text=No+Image';
         }
-
-
         $productId = $this->productModel->createProduct(
             $data['name'],
             $data['description'],
@@ -157,16 +130,16 @@ class AdminController extends BaseController
             $data['image_url'],
             $data['category'],
             $data['stock'],
-            $data['additional_details'] // Pass new field
+            $data['additional_details']
         );
 
 
         if ($productId) {
-            header('Location: /pcbuild/admin/products?success_msg=' . urlencode('Product "' . htmlspecialchars($data['name']) . '" added successfully!'));
+            header('Location: /admin/products?success_msg=' . urlencode('Product "' . htmlspecialchars($data['name']) . '" added successfully!'));
             exit();
         } else {
             $_SESSION['error'] = 'Failed to add product. Please try again.';
-            header('Location: /pcbuild/admin/products/create');
+            header('Location: /admin/products/create');
             exit();
         }
     }
@@ -175,12 +148,12 @@ class AdminController extends BaseController
      * Displays the form to edit an existing product.
      * @param int $id Product ID.
      */
-    public function editProductForm($id) // Renamed for clarity (GET request)
+    public function editProductForm($id)
     {
         $product = $this->productModel->getProductById($id);
         if (!$product) {
             $_SESSION['error'] = 'Product not found.';
-            header('Location: /pcbuild/admin/products');
+            header('Location: /admin/products');
             exit();
         }
 
@@ -197,11 +170,11 @@ class AdminController extends BaseController
      * Handles the submission of the edit product form.
      * @param int $id Product ID.
      */
-    public function updateProduct($id) // This handles the POST request
+    public function updateProduct($id)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $_SESSION['error'] = 'Invalid request.';
-            header('Location: /pcbuild/admin/products/edit/' . $id);
+            header('Location: /admin/products/edit/' . $id);
             exit();
         }
 
@@ -209,24 +182,43 @@ class AdminController extends BaseController
             'name' => trim($_POST['name'] ?? ''),
             'description' => trim($_POST['description'] ?? ''),
             'price' => (float)($_POST['price'] ?? 0),
-            'image_url' => trim($_POST['image_url'] ?? ''),
+            'image_url' => null,
             'category' => trim($_POST['category'] ?? ''),
             'stock' => (int)($_POST['stock'] ?? 0),
-            'additional_details' => trim($_POST['additional_details'] ?? '') // New field
+            'additional_details' => trim($_POST['additional_details'] ?? '')
         ];
 
         // Basic validation
         if (empty($data['name']) || empty($data['price']) || $data['price'] <= 0 || empty($data['category'])) {
             $_SESSION['error'] = 'Name, price (must be positive), and category are required.';
-            header('Location: /pcbuild/admin/products/edit/' . $id);
+            header('Location: /admin/products/edit/' . $id);
             exit();
         }
-        if (!empty($data['image_url']) && !filter_var($data['image_url'], FILTER_VALIDATE_URL)) {
-             $_SESSION['error'] = 'Invalid image URL provided.';
-             header('Location: /pcbuild/admin/products/edit/' . $id);
-             exit();
+        
+        $product = $this->productModel->getProductById($id);
+        if (!$product) {
+            $_SESSION['error'] = 'Product not found during update.';
+            header('Location: /admin/products');
+            exit();
         }
+        $data['image_url'] = $product['image_url'];
 
+        if (isset($_FILES['image_upload']) && $_FILES['image_upload']['error'] === UPLOAD_ERR_OK) {
+            $uploadResult = $this->handleImageUpload($_FILES['image_upload']);
+            if ($uploadResult['success']) {
+                if (!empty($product['image_url']) && strpos($product['image_url'], 'https://placehold.co/') === false) {
+                    $oldImagePath = BASE_PATH . str_replace('/pcbuild', '', $product['image_url']);
+                    if (file_exists($oldImagePath)) {
+                        unlink($oldImagePath);
+                    }
+                }
+                $data['image_url'] = $uploadResult['file_path'];
+            } else {
+                $_SESSION['error'] = $uploadResult['error_message'];
+                header('Location: /admin/products/edit/' . $id);
+                exit();
+            }
+        }
         $updated = $this->productModel->updateProduct(
             $id,
             $data['name'],
@@ -235,15 +227,15 @@ class AdminController extends BaseController
             $data['image_url'],
             $data['category'],
             $data['stock'],
-            $data['additional_details'] // Pass new field
+            $data['additional_details']
         );
 
         if ($updated) {
-            header('Location: /pcbuild/admin/products?success_msg=' . urlencode('Product "' . htmlspecialchars($data['name']) . '" updated successfully!'));
+            header('Location: /admin/products?success_msg=' . urlencode('Product "' . htmlspecialchars($data['name']) . '" updated successfully!'));
             exit();
         } else {
             $_SESSION['error'] = 'Failed to update product. Please try again or check if changes were made.';
-            header('Location: /pcbuild/admin/products/edit/' . $id);
+            header('Location: /admin/products/edit/' . $id);
             exit();
         }
     }
@@ -254,56 +246,98 @@ class AdminController extends BaseController
      */
     public function deleteProduct($id)
     {
-        // Set header to return JSON response
         header('Content-Type: application/json');
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo json_encode(['error' => 'Invalid request method for deletion.']);
-            http_response_code(400); // Bad Request
+            http_response_code(400);
             exit();
         }
 
         // Check if user is logged in and is admin
-        // This is a redundant check if the constructor already handles it, but good for specific action
         if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
             echo json_encode(['error' => 'Authentication required or not an admin.']);
-            http_response_code(403); // Forbidden
+            http_response_code(403);
             return;
+        }
+        $product = $this->productModel->getProductById($id);
+        if (!$product) {
+            echo json_encode(['error' => 'Product not found.']);
+            http_response_code(404); // Not Found
+            return;
+        }
+        if (!empty($product['image_url']) && strpos($product['image_url'], 'https://placehold.co/') === false) {
+            $imagePath = BASE_PATH . str_replace('/pcbuild', '', $product['image_url']);
+            if (file_exists($imagePath)) {
+                $deletedFile = @unlink($imagePath); 
+                if (!$deletedFile) {
+                }
+            }
         }
 
         $deleted = $this->productModel->deleteProduct($id);
 
         if ($deleted === 'referenced') {
-            $_SESSION['error'] = 'Cannot delete product: It is linked to existing orders.'; // Set an error message
-            header('Location: /pcbuild/admin/products'); // Redirect back to product list
+            $_SESSION['error'] = 'Cannot delete product: It is linked to existing orders.';
+            header('Location: /admin/products');
             exit();
         } elseif ($deleted) {
-            // On success, redirect with a success message in the URL
-            header('Location: /pcbuild/admin/products?success_msg=' . urlencode('Product deleted successfully!'));
+            header('Location: /admin/products?success_msg=' . urlencode('Product deleted successfully!'));
             exit();
         } else {
-            $_SESSION['error'] = 'Failed to delete product. It might not exist or a database error occurred.'; // Set an error message
-            header('Location: /pcbuild/admin/products'); // Redirect back to product list
+            $_SESSION['error'] = 'Failed to delete product. It might not exist or a database error occurred.';
+            header('Location: /admin/products');
             exit();
         }
     }
 
+    /**
+     * Helper function to handle image uploads.
+     * @param array
+     * @return array
+     */
+    private function handleImageUpload($file)
+    {
+        $targetDir = BASE_PATH . 'app/views/products/images/';
+        if (!is_dir($targetDir)) {
+            mkdir($targetDir, 0777, true);
+        }
+
+        $fileName = basename($file["name"]);
+        $imageFileType = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $uniqueFileName = uniqid('product_', true) . '.' . $imageFileType;
+        $targetFilePath = $targetDir . $uniqueFileName;
+        $relativePathForDb = '/app/views/products/images/' . $uniqueFileName;
+
+        $maxFileSize = 2 * 1024 * 1024;
+        $allowedTypes = ['jpg', 'png', 'jpeg', 'gif', 'webp'];
+
+        if ($file["size"] > $maxFileSize) {
+            return ['success' => false, 'error_message' => 'Sorry, your file is too large (max 2MB).'];
+        }
+
+        if (!in_array($imageFileType, $allowedTypes)) {
+            return ['success' => false, 'error_message' => 'Sorry, only JPG, JPEG, PNG, GIF, & WEBP files are allowed.'];
+        }
+
+        if (move_uploaded_file($file["tmp_name"], $targetFilePath)) {
+            return ['success' => true, 'file_path' => $relativePathForDb];
+        } else {
+            return ['success' => false, 'error_message' => 'Sorry, there was an error uploading your file.'];
+        }
+    }
 
     // User Management Methods
-
     /**
      * Displays the list of users.
      * @param string|null $search_term Optional term to search by username or email.
      */
-    public function manageUsers($search_term = null) // Added $search_term parameter
+    public function manageUsers($search_term = null)
     {
-
-        // Ensure session messages are cleared before being potentially displayed on this page
-        // This prevents "Welcome back" from showing on this list
         unset($_SESSION['success']);
         unset($_SESSION['error']);
 
-        $searchTerm = $_GET['search'] ?? $search_term ?? ''; // Prioritize GET, then path param
+        $searchTerm = $_GET['search'] ?? $search_term ?? '';
         $searchTerm = trim($searchTerm);
 
         $users = $this->userModel->getAllUsers($searchTerm);
@@ -311,11 +345,7 @@ class AdminController extends BaseController
         $data = [
             'title' => 'Manage Users',
             'users' => $users,
-            //'error' => $_SESSION['error'] ?? null,
-            //'success' => $_SESSION['success'] ?? null,
         ];
-        //unset($_SESSION['error']);
-        //unset($_SESSION['success']);
 
         $this->view('admin/users/index', $data);
     }
@@ -419,7 +449,7 @@ class AdminController extends BaseController
         $user = $this->userModel->findById($userId);
         if (!$user) {
             $_SESSION['error'] = 'User not found.';
-            header('Location: /pcbuild/admin/users');
+            header('Location: /admin/users');
             exit();
         }
 

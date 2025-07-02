@@ -29,7 +29,7 @@ class CheckoutController extends BaseController
         // Check if user is logged in
         if (!isset($_SESSION['user_id'])) {
             $_SESSION['error'] = 'You must be logged in to proceed to checkout.';
-            header('Location: /pcbuild/login');
+            header('Location: /login');
             exit();
         }
 
@@ -65,13 +65,13 @@ class CheckoutController extends BaseController
         // Check if user is logged in
         if (!isset($_SESSION['user_id'])) {
             $_SESSION['error'] = 'You must be logged in to complete a purchase.';
-            header('Location: /pcbuild/login');
+            header('Location: /login');
             exit();
         }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $_SESSION['error'] = 'Invalid request method for checkout process.';
-            header('Location: /pcbuild/checkout'); // Redirect to cart or appropriate page
+            header('Location: /checkout'); // Redirect to cart or appropriate page
             exit();
         }
 
@@ -153,7 +153,7 @@ class CheckoutController extends BaseController
         // If there are any validation errors, redirect back with message
         if (!empty($errors)) {
             $_SESSION['error'] = implode('<br>', $errors); // Join all errors for display
-            header('Location: /pcbuild/checkout'); // Redirect back to checkout index
+            header('Location: /checkout'); // Redirect back to checkout index
             exit();
         }
 
@@ -199,7 +199,7 @@ class CheckoutController extends BaseController
                     // mark the order as problematic or even delete the main order entry.
                     error_log("CheckoutController: Failed to add order items for Order ID: {$orderId}");
                     $_SESSION['error'] = 'Your order was placed, but there was an issue saving cart items. Please contact support.';
-                    header('Location: /pcbuild/checkout');
+                    header('Location: /checkout');
                     exit();
                 }
 
@@ -207,17 +207,17 @@ class CheckoutController extends BaseController
                 $_SESSION['new_order_notification'] = true;
 
                 $_SESSION['last_order_id'] = $orderId; // Store order ID for success page
-                header('Location: /pcbuild/checkout/success');
+                header('Location: /checkout/success');
                 exit();
             } else {
                 $_SESSION['error'] = 'There was an issue saving your order. Please try again.';
-                header('Location: /pcbuild/checkout');
+                header('Location: /checkout');
                 exit();
             }
         } else {
             // Simulated payment failed
             $_SESSION['error'] = 'Payment failed. Please try again or choose a different method.';
-            header('Location: /pcbuild/checkout');
+            header('Location: /checkout');
             exit();
         }
     }

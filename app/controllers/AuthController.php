@@ -1,6 +1,5 @@
 <?php
 
-// Make sure to include the BaseController and the User model
 require_once BASE_PATH . 'app/controllers/BaseController.php';
 require_once BASE_PATH . 'app/models/User.php';
 
@@ -10,50 +9,40 @@ class AuthController extends BaseController
 
     /**
      * Constructor for AuthController.
-     * Initializes the User model with the PDO connection.
      * @param PDO $pdo The PDO database connection object.
      */
     public function __construct(PDO $pdo)
     {
-        parent::__construct($pdo); // Call the parent constructor to set $this->pdo
-        $this->userModel = new User($pdo); // Instantiate the User model
+        parent::__construct($pdo);
+        $this->userModel = new User($pdo);
     }
 
-    /**
-     * Displays the login form.
-     */
     public function showLogin()
     {
-        // Start session if not already started (needed for flash messages)
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
 
         $data = [
             'title' => 'Login to Your Account',
-            'error' => $_SESSION['error'] ?? null, // Get error messages from session
-            'success' => $_SESSION['success'] ?? null, // Get success messages from session
+            'error' => $_SESSION['error'] ?? null,
+            'success' => $_SESSION['success'] ?? null,
         ];
 
-        // Clear session messages after displaying them
         unset($_SESSION['error']);
         unset($_SESSION['success']);
 
         $this->view('auth/login', $data);
     }
 
-    /**
-     * Handles login form submission.
-     */
     public function login()
     {
-        // Start session if not already started
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $identifier = trim($_POST['identifier'] ?? ''); // username or email
+            $identifier = trim($_POST['identifier'] ?? '');
             $password = $_POST['password'] ?? '';
 
             error_log("Auth Controller: Login attempt for identifier: '{$identifier}'");
@@ -61,62 +50,52 @@ class AuthController extends BaseController
             if (empty($identifier) || empty($password)) {
                 $_SESSION['error'] = 'Please enter both username/email and password.';
                 error_log("Auth Controller: Empty identifier or password.");
-                header('Location: /pcbuild/login');
+                header('Location: /login');
                 exit();
             }
 
             $user = $this->userModel->findByUsernameOrEmail($identifier);
-
-            // Check if user exists and password is correct, AND if the user is not banned
             if ($user && password_verify($password, $user['password'])) {
                 if ($user['is_banned']) {
                     $_SESSION['error'] = 'Your account has been banned. Please contact support.';
                     error_log("Auth Controller: Login failed: Banned user '{$identifier}' attempted to log in.");
-                    header('Location: /pcbuild/login');
+                    header('Location: /login');
                     exit();
                 }
 
                 // Login successful
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
-                $_SESSION['is_admin'] = (bool)$user['is_admin']; // Store admin status
+                $_SESSION['is_admin'] = (bool)$user['is_admin'];
                 $_SESSION['success'] = 'Welcome back, ' . htmlspecialchars($user['username']) . '!';
-
-                // Add this line to signal cart sync on next page load
                 $_SESSION['sync_cart_on_load'] = true;
 
                 // Update last login timestamp
                 $this->userModel->updateLastLogin($user['id']);
 
                 error_log("Auth Controller: Login successful for user: " . $user['username'] . " (Admin: " . ($user['is_admin'] ? 'Yes' : 'No') . ")");
-                
-                // Redirect based on admin status
+
                 if ($_SESSION['is_admin']) {
-                    header('Location: /pcbuild/admin/dashboard');
+                    header('Location: /admin/dashboard');
                 } else {
-                    header('Location: /pcbuild/home'); // Redirect to dashboard or home
+                    header('Location: /home');
                 }
                 exit();
             } else {
                 // Login failed
                 $_SESSION['error'] = 'Invalid username/email or password.';
                 error_log("Auth Controller: Login failed for identifier: '{$identifier}' - User not found or password mismatch.");
-                header('Location: /pcbuild/login');
+                header('Location: /login');
                 exit();
             }
         } else {
-            // If accessed directly via GET, redirect to show login form
-            header('Location: /pcbuild/login');
+            header('Location: /login');
             exit();
         }
     }
 
-    /**
-     * Displays the registration form.
-     */
     public function showRegister()
     {
-        // Start session if not already started
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
@@ -132,12 +111,8 @@ class AuthController extends BaseController
         $this->view('auth/register', $data);
     }
 
-    /**
-     * Handles registration form submission.
-     */
     public function register()
     {
-        // Start session if not already started
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
@@ -154,42 +129,41 @@ class AuthController extends BaseController
             if (empty($username) || empty($email) || empty($password) || empty($confirmPassword)) {
                 $_SESSION['error'] = 'All fields are required.';
                 error_log("Auth Controller: Registration failed: Missing fields.");
-                header('Location: /pcbuild/register');
+                header('Location: /register');
                 exit();
             }
 
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $_SESSION['error'] = 'Invalid email format.';
                 error_log("Auth Controller: Registration failed: Invalid email format.");
-                header('Location: /pcbuild/register');
+                header('Location: /register');
                 exit();
             }
 
             if ($password !== $confirmPassword) {
                 $_SESSION['error'] = 'Passwords do not match.';
                 error_log("Auth Controller: Registration failed: Passwords do not match.");
-                header('Location: /pcbuild/register');
+                header('Location: /register');
                 exit();
             }
 
-            if (strlen($password) < 6) { // Minimum password length
+            if (strlen($password) < 6) {
                 $_SESSION['error'] = 'Password must be at least 6 characters long.';
                 error_log("Auth Controller: Registration failed: Password too short.");
-                header('Location: /pcbuild/register');
+                header('Location: /register');
                 exit();
             }
 
-            // Check if username or email already exists
             if ($this->userModel->findByUsernameOrEmail($username)) {
                 $_SESSION['error'] = 'Username already exists. Please choose a different one.';
                 error_log("Auth Controller: Registration failed: Username '{$username}' already exists.");
-                header('Location: /pcbuild/register');
+                header('Location: /register');
                 exit();
             }
              if ($this->userModel->findByUsernameOrEmail($email)) {
                 $_SESSION['error'] = 'Email already exists. Please choose a different one.';
                 error_log("Auth Controller: Registration failed: Email '{$email}' already exists.");
-                header('Location: /pcbuild/register');
+                header('Location: /register');
                 exit();
             }
 
@@ -202,43 +176,31 @@ class AuthController extends BaseController
             $userId = $this->userModel->createUser($username, $email, $passwordHash);
 
             if ($userId) {
-                // Add this line to signal cart sync on next page load
-                // $_SESSION['sync_cart_on_load'] = true;
-
                 $_SESSION['success'] = 'Account created successfully! Please log in.';
                 error_log("Auth Controller: User registration successful. User ID: {$userId}");
-                header('Location: /pcbuild/login');
+                header('Location: /login');
                 exit();
             } else {
                 $_SESSION['error'] = 'Registration failed. Please try again.';
                 error_log("Auth Controller: User registration failed, createUser returned false.");
-                header('Location: /pcbuild/register');
+                header('Location: /register');
                 exit();
             }
-
         } else {
-            header('Location: /pcbuild/register'); // If accessed directly via GET
+            header('Location: /register');
             exit();
         }
     }
 
-    /**
-     * Handles user logout.
-     */
     public function logout()
     {
-        // Start session if not already started
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
 
         error_log("Auth Controller: User logging out.");
-
-        // Unset all of the session variables.
         $_SESSION = [];
 
-        // If it's desired to kill the session, also delete the session cookie.
-        // Note: This will destroy the session, and not just the session data!
         if (ini_get("session.use_cookies")) {
             $params = session_get_cookie_params();
             setcookie(session_name(), '', time() - 42000,
@@ -246,35 +208,29 @@ class AuthController extends BaseController
                 $params["secure"], $params["httponly"]
             );
         }
-
-        // Finally, destroy the session.
         session_destroy();
 
         error_log("Auth Controller: Session destroyed, redirecting to home.");
-        header('Location: /pcbuild/home'); // Redirect to homepage or login page
+        header('Location: /home'); 
         exit();
     }
 
-    /**
-     * Displays the forgot password form with a generated captcha code.
-     */
     public function showForgotPassword()
     {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
 
-        // Generate a random code for the user to type
-        $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Exclude I, O, 0, 1 for clarity
+        $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
         $captcha_code = '';
         for ($i = 0; $i < 6; $i++) {
             $captcha_code .= $characters[rand(0, strlen($characters) - 1)];
         }
-        $_SESSION['captcha_code'] = $captcha_code; // Store in session for verification
+        $_SESSION['captcha_code'] = $captcha_code;
 
         $data = [
             'title' => 'Reset Your Password',
-            'captcha_code' => $captcha_code, // Pass to the view
+            'captcha_code' => $captcha_code,
             'error' => $_SESSION['error'] ?? null,
             'success' => $_SESSION['success'] ?? null,
         ];
@@ -284,10 +240,6 @@ class AuthController extends BaseController
         $this->view('auth/forgot_password', $data);
     }
 
-    /**
-     * Handles the submission of the forgot password form (code verification).
-     * If the code is correct and user is found, redirects to the reset password page.
-     */
     public function processForgotPasswordRequest()
     {
         if (session_status() == PHP_SESSION_NONE) {
@@ -299,60 +251,50 @@ class AuthController extends BaseController
             $captcha_input = trim($_POST['captcha_input'] ?? '');
             $stored_captcha_code = $_SESSION['captcha_code'] ?? null;
 
-            // 1. Validate inputs and captcha
             if (empty($identifier) || empty($captcha_input)) {
                 $_SESSION['error'] = 'All fields are required.';
-                header('Location: /pcbuild/forgot-password');
+                header('Location: /forgot-password');
                 exit();
             }
 
             // Case-insensitive comparison for captcha
             if (strtoupper($captcha_input) !== strtoupper($stored_captcha_code)) {
                 $_SESSION['error'] = 'Incorrect code. Please try again.';
-                // Regenerate captcha on error for security
                 unset($_SESSION['captcha_code']);
-                header('Location: /pcbuild/forgot-password');
+                header('Location: /forgot-password');
                 exit();
             }
 
-            // 2. Find the user by username or email
             $user = $this->userModel->findByUsernameOrEmail($identifier);
 
             if ($user) {
-                // Captcha correct and user found, store user ID in session for password reset
                 $_SESSION['password_reset_user_id'] = $user['id'];
-                unset($_SESSION['captcha_code']); // Clear captcha once used
+                unset($_SESSION['captcha_code']);
 
                 $_SESSION['success'] = 'Code verified. Please set your new password.';
-                header('Location: /pcbuild/reset-password');
+                header('Location: /reset-password');
                 exit();
             } else {
-                // User not found, but to prevent enumeration, act as if code was wrong or just generic error
                 $_SESSION['error'] = 'Invalid username/email or incorrect code. Please try again.';
                 unset($_SESSION['captcha_code']);
-                header('Location: /pcbuild/forgot-password');
+                header('Location: /forgot-password');
                 exit();
             }
         } else {
-            header('Location: /pcbuild/forgot-password');
+            header('Location: /forgot-password');
             exit();
         }
     }
 
-    /**
-     * Displays the password reset form.
-     * Accessible only if user ID is in session (from successful code verification).
-     */
     public function showResetPassword()
     {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
 
-        // Check if a user ID is set in the session, meaning they've passed the code verification
         if (!isset($_SESSION['password_reset_user_id'])) {
             $_SESSION['error'] = 'Access denied. Please start the password reset process from the "Forgot Password" page.';
-            header('Location: /pcbuild/forgot-password');
+            header('Location: /forgot-password');
             exit();
         }
 
@@ -360,8 +302,7 @@ class AuthController extends BaseController
             'title' => 'Set New Password',
             'error' => $_SESSION['error'] ?? null,
             'success' => $_SESSION['success'] ?? null,
-            // Flag to indicate if there was an initial error preventing form display (e.g., direct access)
-            'error_code_mismatch' => false // Initialize this, will be set true if direct access to reset-password
+            'error_code_mismatch' => false
         ];
         
         // If accessed directly without session variable, set an error
@@ -376,20 +317,15 @@ class AuthController extends BaseController
         $this->view('auth/reset_password', $data);
     }
 
-    /**
-     * Handles the submission of the password reset form.
-     * Updates the user's password and clears the session variable.
-     */
     public function resetPassword()
     {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
 
-        // Ensure user ID is present in session
         if (!isset($_SESSION['password_reset_user_id'])) {
             $_SESSION['error'] = 'Access denied. Please start the password reset process from the "Forgot Password" page.';
-            header('Location: /pcbuild/forgot-password');
+            header('Location: /forgot-password');
             exit();
         }
 
@@ -401,19 +337,19 @@ class AuthController extends BaseController
             // 1. Validate input
             if (empty($newPassword) || empty($confirmNewPassword)) {
                 $_SESSION['error'] = 'All fields are required.';
-                header('Location: /pcbuild/reset-password');
+                header('Location: /reset-password');
                 exit();
             }
 
             if ($newPassword !== $confirmNewPassword) {
                 $_SESSION['error'] = 'New passwords do not match.';
-                header('Location: /pcbuild/reset-password');
+                header('Location: /reset-password');
                 exit();
             }
 
             if (strlen($newPassword) < 6) {
                 $_SESSION['error'] = 'Password must be at least 6 characters long.';
-                header('Location: /pcbuild/reset-password');
+                header('Location: /reset-password');
                 exit();
             }
 
@@ -422,19 +358,17 @@ class AuthController extends BaseController
             $updated = $this->userModel->updatePassword($userId, $hashedPassword);
 
             if ($updated) {
-                // Password updated successfully, clear the session variable
                 unset($_SESSION['password_reset_user_id']);
                 $_SESSION['success'] = 'Your password has been reset successfully. You can now log in with your new password.';
-                header('Location: /pcbuild/login');
+                header('Location: /login');
                 exit();
             } else {
                 $_SESSION['error'] = 'Failed to reset password. Please try again.';
-                header('Location: /pcbuild/reset-password');
+                header('Location: /reset-password');
                 exit();
             }
         } else {
-            // If accessed directly via GET, redirect to the show method
-            header('Location: /pcbuild/reset-password');
+            header('Location: /reset-password');
             exit();
         }
     }
