@@ -1,6 +1,5 @@
 # Configuration
 /config/database.php
-.env
 
 # Uploads
 /app/views/products/images/
