@@ -1,66 +1,41 @@
-// Function to initialize or retrieve the cart from localStorage (for guests)
 function getCart() {
     const cart = localStorage.getItem('pcbuild_cart');
     return cart ? JSON.parse(cart) : [];
 }
-
-// Function to save the cart to localStorage
 function saveCart(cart) {
     localStorage.setItem('pcbuild_cart', JSON.stringify(cart));
-    updateCartCount(); // Update the cart count in the header whenever cart changes
+    updateCartCount();
 }
 
-// Function to manage new order notification display and clearing
 function initializeNewOrderNotification() {
     const orderHistoryLink = document.getElementById('order-history-link');
     const newOrderNotificationSpan = document.getElementById('new-order-notification');
 
     if (!orderHistoryLink || !newOrderNotificationSpan) {
-        // Elements not found (e.g., user not logged in, or on a page without the header)
         return;
     }
-
-    // Check the global constant from header.php
     if (typeof hasNewOrderNotification !== 'undefined' && hasNewOrderNotification) {
-        newOrderNotificationSpan.classList.remove('hidden'); // Show the notification
+        newOrderNotificationSpan.classList.remove('hidden');
     } else {
-        newOrderNotificationSpan.classList.add('hidden'); // Ensure it's hidden if no new notification
-    }
-
-    // Add event listener to clear notification on click
-    orderHistoryLink.addEventListener('click', (e) => {
-        // Hide the notification immediately on click
         newOrderNotificationSpan.classList.add('hidden');
-
-        // Send AJAX request to clear the session flag on the server
-        // Use performActionViaFetch which is already available in main.js
-        performActionViaFetch('/pcbuild/user/clear-order-notification', 'POST', {})
-            .then(response => {
-                if (response.success) {
-                    // console.log('New order notification cleared on server.');
-                } else {
-                    // console.error('Failed to clear new order notification on server:', response.error);
-                }
-            })
-            .catch(error => {
-                // console.error('Fetch error clearing new order notification:', error);
-            });
-        // Note: The default link navigation will still occur, taking the user to the dashboard.
+    }
+    orderHistoryLink.addEventListener('click', (e) => {
+        newOrderNotificationSpan.classList.add('hidden');
+        performActionViaFetch('/pcbuild/user/clear-order-notification', 'POST', {});
     });
 }
 
 /**
- * Helper function to perform fetch requests for cart actions.
- * @param {string} url The URL to send the request to.
- * @param {string} method The HTTP method (e.g., 'POST', 'GET').
- * @param {object} body An object containing the data to send.
- * @returns {Promise<object>} A promise that resolves with the JSON response.
+ * @param {string} url
+ * @param {string} method
+ * @param {object} body
+ * @returns {Promise<object>}
  */
 async function performActionViaFetch(url, method, body = {}) {
     const options = {
         method: method,
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded', // Standard form submission type
+            'Content-Type': 'application/x-www-form-urlencoded',
         },
     };
 
@@ -80,31 +55,26 @@ async function performActionViaFetch(url, method, body = {}) {
         }
         return await response.json();
     } catch (error) {
-        // console.error('Fetch operation failed:', error);
         throw error;
     }
 }
 
-// Function to add a product to the cart (handles both local and server-side)
 function addToCart(productId, productName, productPrice, productImage, quantity = 1) {
-    if (isLoggedIn) { // isLoggedIn is defined in header.php
-        // Server-side cart logic
+    if (isLoggedIn) { 
         performActionViaFetch('/pcbuild/cart/add', 'POST', {
             product_id: productId,
             quantity: quantity
         }).then(response => {
             if (response.success) {
                 alertMessage('success', `${productName} added to cart!`);
-                updateCartCount(); // Update count from server
+                updateCartCount();
             } else {
                 alertMessage('error', response.error || 'Failed to add to cart.');
             }
         }).catch(error => {
-            // console.error('Add to cart fetch error:', error);
             alertMessage('error', 'An error occurred while adding to cart.');
         });
     } else {
-        // LocalStorage cart logic
         let cart = getCart();
         const existingItemIndex = cart.findIndex(item => String(item.id) === String(productId));
 
@@ -114,7 +84,7 @@ function addToCart(productId, productName, productPrice, productImage, quantity 
             cart.push({
                 id: productId,
                 name: productName,
-                price: parseFloat(productPrice), // Ensure price is a number
+                price: parseFloat(productPrice),
                 image: productImage,
                 quantity: quantity
             });
@@ -124,17 +94,14 @@ function addToCart(productId, productName, productPrice, productImage, quantity 
     }
 }
 
-// Function to update item quantity in cart (handles both local and server-side)
 function updateCartItemQuantity(productId, newQuantity) {
     if (isLoggedIn) {
-        // Server-side cart logic
         performActionViaFetch('/pcbuild/cart/update-quantity', 'POST', {
             product_id: productId,
             quantity: newQuantity
         }).then(response => {
             if (response.success) {
                 alertMessage('success', response.message);
-                // Re-render cart on cart page or just update count
                 if (window.location.pathname.includes('/cart')) {
                     renderCartItems();
                 }
@@ -143,16 +110,14 @@ function updateCartItemQuantity(productId, newQuantity) {
                 alertMessage('error', response.error || 'Failed to update quantity.');
             }
         }).catch(error => {
-            // console.error('Update quantity fetch error:', error);
             alertMessage('error', 'An error occurred while updating quantity.');
         });
     } else {
-        // LocalStorage cart logic
         let cart = getCart();
         const itemIndex = cart.findIndex(item => String(item.id) === String(productId));
 
         if (itemIndex > -1) {
-            const quantityToSet = Math.max(0, newQuantity); // Allow 0 to enable removal logic below
+            const quantityToSet = Math.max(0, newQuantity);
 
             if (quantityToSet > 0) {
                 cart[itemIndex].quantity = quantityToSet;
@@ -167,10 +132,8 @@ function updateCartItemQuantity(productId, newQuantity) {
     }
 }
 
-// Function to remove a product from the cart (handles both local and server-side)
 function removeFromCart(productId) {
     if (isLoggedIn) {
-        // Server-side cart logic
         performActionViaFetch('/pcbuild/cart/remove', 'POST', {
             product_id: productId
         }).then(response => {
@@ -184,11 +147,9 @@ function removeFromCart(productId) {
                 alertMessage('error', response.error || 'Failed to remove item.');
             }
         }).catch(error => {
-            // console.error('Remove from cart fetch error:', error);
             alertMessage('error', 'An error occurred while removing item.');
         });
     } else {
-        // LocalStorage cart logic
         let cart = getCart();
         cart = cart.filter(item => String(item.id) !== String(productId));
         saveCart(cart);
@@ -199,10 +160,8 @@ function removeFromCart(productId) {
     }
 }
 
-// Function to clear the entire cart (handles both local and server-side)
 function clearCart() {
     if (isLoggedIn) {
-        // Server-side cart logic
         performActionViaFetch('/pcbuild/cart/clear', 'POST', {})
             .then(response => {
                 if (response.success) {
@@ -216,11 +175,9 @@ function clearCart() {
                 }
             })
             .catch(error => {
-                // console.error('Clear cart fetch error:', error);
                 alertMessage('error', 'An error occurred while clearing cart.');
             });
     } else {
-        // LocalStorage cart logic
         localStorage.setItem('pcbuild_cart', JSON.stringify([]));
         updateCartCount();
         if (window.location.pathname.includes('/cart')) {
@@ -248,8 +205,7 @@ function updateCartCount() {
                 }
             })
             .catch(error => {
-                // console.error('Failed to fetch server cart count:', error);
-                cartCountElement.textContent = ''; // Fallback to empty if API fails
+                cartCountElement.textContent = '';
                 cartCountElement.classList.add('hidden');
             });
     } else {
@@ -260,10 +216,6 @@ function updateCartCount() {
     }
 }
 
-/**
- * Synchronizes items from localStorage cart to the server-side database cart.
- * This function should be called after a successful login or registration.
- */
 async function syncLocalCartToServer() {
     const localCart = getCart();
     if (localCart.length > 0) {
@@ -272,23 +224,14 @@ async function syncLocalCartToServer() {
                 cart: JSON.stringify(localCart)
             });
             if (response.success) {
-                // alertMessage('success', response.message);
-                localStorage.removeItem('pcbuild_cart'); // Clear local cart after successful sync
-                updateCartCount(); // Refresh cart count from server
-                // If there were warnings, you might want to log them or display them more prominently
-                if (response.warnings && response.warnings.length > 0) {
-                    // alertMessage('warning', 'Some items could not be synced due to stock issues.');
-                }
-            } else {
-                // alertMessage('error', response.error || 'Cart sync failed.');
+                localStorage.removeItem('pcbuild_cart');
+                updateCartCount();
             }
         } catch (error) {
-            // console.error('Cart sync error:', error);
             alertMessage('error', 'An error occurred during cart synchronization.');
         }
     }
 }
-
 
 // Global variables for the modal and current product
 let currentProduct = null;
@@ -297,25 +240,21 @@ const modalProductName = document.getElementById('modal-product-name');
 const modalProductPrice = document.getElementById('modal-product-price');
 const modalProductImage = document.getElementById('modal-product-image');
 const modalProductStock = document.getElementById('modal-product-stock');
-
-// New: Quantity display element for modal
 const modalQuantityDisplay = document.getElementById('modal-quantity-display');
-// New: Hidden input to store actual quantity value for the modal
 const modalQuantityInputHidden = document.getElementById('quantity-input');
 const modalQuantityError = document.getElementById('quantity-error');
-
 const addToCartModalBtn = document.getElementById('add-to-cart-modal-btn');
 const cancelQuantityBtn = document.getElementById('cancel-quantity');
 
 /**
  * Sets up quantity increment/decrement controls for a given quantity display and hidden input.
- * @param {HTMLElement} container The parent element containing the buttons and display.
- * @param {string} displayId The ID of the span/div displaying the quantity.
- * @param {string} hiddenInputId The ID of the hidden input storing the quantity value.
- * @param {string} minusBtnId The ID of the minus button.
- * @param {string} plusBtnId The ID of the plus button.
- * @param {string} errorId The ID of the error message element.
- * @param {number} maxStock The maximum allowed quantity (product stock).
+ * @param {HTMLElement} container
+ * @param {string} displayId
+ * @param {string} hiddenInputId
+ * @param {string} minusBtnId
+ * @param {string} plusBtnId
+ * @param {string} errorId
+ * @param {number} maxStock
  */
 function setupQuantityControls(container, displayId, hiddenInputId, minusBtnId, plusBtnId, errorId, maxStock) {
     const quantityDisplay = container.querySelector(`#${displayId}`);
@@ -325,25 +264,20 @@ function setupQuantityControls(container, displayId, hiddenInputId, minusBtnId, 
     const errorElement = container.querySelector(`#${errorId}`);
 
     if (!quantityDisplay || !quantityHiddenInput || !minusBtn || !plusBtn || !errorElement) {
-        // console.error("Missing quantity control elements for:", container.id);
         return;
     }
 
     let currentQuantity = parseInt(quantityHiddenInput.value) || 1;
     quantityDisplay.textContent = currentQuantity;
-    errorElement.classList.add('hidden'); // Hide errors initially
+    errorElement.classList.add('hidden');
 
     const updateQuantity = (newQuantity) => {
-        // Ensure quantity is at least 1
         newQuantity = Math.max(1, newQuantity);
-        // Ensure quantity does not exceed stock
         newQuantity = Math.min(newQuantity, maxStock);
 
         currentQuantity = newQuantity;
         quantityDisplay.textContent = currentQuantity;
-        quantityHiddenInput.value = currentQuantity; // Update hidden input
-
-        // Hide error message if quantity is valid
+        quantityHiddenInput.value = currentQuantity;
         if (errorElement) {
              errorElement.classList.add('hidden');
         }
@@ -358,9 +292,7 @@ function setupQuantityControls(container, displayId, hiddenInputId, minusBtnId, 
         plusBtn.classList.toggle('cursor-not-allowed', currentQuantity >= maxStock);
     };
 
-    // Initial state based on maxStock
-    updateQuantity(currentQuantity); // Call once to set initial state and button disable status
-
+    updateQuantity(currentQuantity);
     minusBtn.onclick = () => updateQuantity(currentQuantity - 1);
     plusBtn.onclick = () => updateQuantity(currentQuantity + 1);
 
@@ -370,26 +302,21 @@ function setupQuantityControls(container, displayId, hiddenInputId, minusBtnId, 
         plusBtn.disabled = true;
         minusBtn.classList.add('opacity-50', 'cursor-not-allowed');
         plusBtn.classList.add('opacity-50', 'cursor-not-allowed');
-        quantityDisplay.textContent = 0; // Display 0 if out of stock
-        quantityHiddenInput.value = 0; // Store 0 in hidden input
+        quantityDisplay.textContent = 0;
+        quantityHiddenInput.value = 0;
     }
 }
 
-
-// Function to open the quantity selection modal
 function openQuantityModal(product) {
-    currentProduct = product; // Store the product globally for access when adding to cart
+    currentProduct = product;
 
     modalProductImage.src = product.image_url || 'https://placehold.co/128x128/e2e8f0/475569?text=No+Image';
     modalProductName.textContent = product.name;
     modalProductPrice.textContent = `$${parseFloat(product.price).toFixed(2)}`;
     modalProductStock.textContent = `Available Stock: ${product.stock}`;
-
-    // Initialize quantity to 1 for the modal, then set up controls
     modalQuantityInputHidden.value = 1;
     setupQuantityControls(quantityModal.querySelector('.bg-white'), 'modal-quantity-display', 'quantity-input', 'modal-quantity-minus', 'modal-quantity-plus', 'quantity-error', product.stock);
 
-    // Update stock text color
     if (product.stock <= 0) {
         modalProductStock.classList.remove('text-green-600');
         modalProductStock.classList.add('text-red-600');
@@ -411,7 +338,6 @@ function openQuantityModal(product) {
     }, 10);
 }
 
-// Function to close the quantity selection modal
 function closeQuantityModal() {
     quantityModal.classList.remove('opacity-100');
     quantityModal.querySelector('div').classList.remove('scale-100', 'opacity-100');
@@ -419,11 +345,10 @@ function closeQuantityModal() {
     quantityModal.addEventListener('transitionend', () => {
         quantityModal.classList.add('hidden', 'pointer-events-none');
     }, { once: true });
-    currentProduct = null; // Clear current product data
-    modalQuantityError.classList.add('hidden'); // Hide any errors on close
+    currentProduct = null;
+    modalQuantityError.classList.add('hidden');
 }
 
-// Event listener for adding to cart from the modal (products/index.php)
 if (addToCartModalBtn) {
     addToCartModalBtn.addEventListener('click', () => {
         const quantity = parseInt(modalQuantityInputHidden.value);
@@ -433,27 +358,22 @@ if (addToCartModalBtn) {
             modalQuantityError.classList.remove('hidden');
             return;
         }
-
         if (quantity > currentProduct.stock) {
             modalQuantityError.textContent = `You can only add up to ${currentProduct.stock} units.`;
             modalQuantityError.classList.remove('hidden');
             return;
         }
-
-        // If validation passes, add to cart and close modal
         addToCart(currentProduct.id, currentProduct.name, currentProduct.price, currentProduct.image_url, quantity);
         closeQuantityModal();
     });
 }
 
-// Event listener for canceling quantity selection
 if (cancelQuantityBtn) {
     cancelQuantityBtn.addEventListener('click', () => {
         closeQuantityModal();
     });
 }
 
-// Close modal if clicked outside of the content box
 if (quantityModal) {
     quantityModal.addEventListener('click', (e) => {
         if (e.target === quantityModal) {
@@ -462,7 +382,7 @@ if (quantityModal) {
     });
 }
 
-// New: Event listener for adding to cart on the product show page (products/show.php)
+// Event listener for adding to cart on the product show page (products/show.php)
 document.addEventListener('DOMContentLoaded', () => {
     const addToCartPageBtn = document.getElementById('add-to-cart-page-btn');
     if (addToCartPageBtn) {
@@ -471,14 +391,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const productPrice = addToCartPageBtn.dataset.productPrice;
         const productImage = addToCartPageBtn.dataset.productImage;
         const productStock = parseInt(addToCartPageBtn.dataset.productStock);
-
-        // Setup quantity controls for the show page
         const showPageQuantityContainer = document.querySelector('.flex.items-center.justify-start.space-x-3.mb-6');
         if (showPageQuantityContainer) {
             setupQuantityControls(showPageQuantityContainer, 'page-quantity-display', 'page-quantity-value', 'page-quantity-minus', 'page-quantity-plus', 'page-quantity-error', productStock);
         }
 
-        // Handle disabled state based on stock
         const stockDisplay = document.getElementById('product-stock-display');
         if (productStock <= 0) {
             addToCartPageBtn.disabled = true;
@@ -517,241 +434,196 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-
 // Custom alert message function (replaces alert())
 function alertMessage(type, message) {
     const alertBox = document.createElement('div');
-    // Changed positioning to top-center, using flexbox for centering
     alertBox.className = `fixed top-4 left-1/2 -translate-x-1/2 p-4 rounded-md shadow-lg text-white z-50 transition-all duration-300 transform -translate-y-full opacity-0`;
 
     if (type === 'success') {
-        alertBox.classList.add('bg-green-500'); // Keep green for success alerts
+        alertBox.classList.add('bg-green-500');
     } else if (type === 'error') {
-        alertBox.classList.add('bg-red-500'); // Keep red for error alerts
+        alertBox.classList.add('bg-red-500');
     } else {
         alertBox.classList.add('bg-gray-700');
     }
 
     alertBox.textContent = message;
     document.body.appendChild(alertBox);
-
-    // Animate in (slide down from top)
+    
     setTimeout(() => {
         alertBox.classList.remove('-translate-y-full', 'opacity-0');
         alertBox.classList.add('translate-y-0', 'opacity-100');
     }, 100);
-
-    // Animate out and remove (slide up to top)
     setTimeout(() => {
         alertBox.classList.remove('translate-y-0', 'opacity-100');
         alertBox.classList.add('-translate-y-full', 'opacity-0');
         alertBox.addEventListener('transitionend', () => alertBox.remove());
-    }, 3000); // Message disappears after 3 seconds
+    }, 3000);
 }
 
-
-// Function to initialize password visibility toggles
 function initializePasswordToggle() {
     document.querySelectorAll('.toggle-password-visibility').forEach(toggleBtn => {
         const targetId = toggleBtn.dataset.target;
         const passwordInput = document.getElementById(targetId);
-        const eyeShow = toggleBtn.querySelector('.eye-show-password'); // Open eye icon
-        const eyeHide = toggleBtn.querySelector('.eye-hide-password'); // Crossed-out eye icon
+        const eyeShow = toggleBtn.querySelector('.eye-show-password');
+        const eyeHide = toggleBtn.querySelector('.eye-hide-password');
 
-        // Function to update icon visibility based on input type
         const updateIconVisibility = () => {
             if (passwordInput.type === 'password') {
-                // Password is hidden (asterisks) -> show open eye
                 eyeShow.classList.remove('hidden');
                 eyeHide.classList.add('hidden');
             } else {
-                // Password is shown (plain text) -> show crossed-out eye
                 eyeShow.classList.add('hidden');
                 eyeHide.classList.remove('hidden');
             }
         };
 
-        // Initial state: hide the toggle button if input is empty
         if (passwordInput.value === '') {
             toggleBtn.classList.add('hidden');
         } else {
             toggleBtn.classList.remove('hidden');
-            // If there's content, ensure correct icon based on current password type
             updateIconVisibility();
         }
 
-        // Add event listener for toggling visibility on click
         toggleBtn.addEventListener('click', () => {
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
             } else {
                 passwordInput.type = 'password';
             }
-            updateIconVisibility(); // Update icons after type change
-            passwordInput.focus(); // Keep focus on the input field
+            updateIconVisibility();
+            passwordInput.focus();
         });
-
-        // Add event listener to show/hide toggle based on input content AND update icon
         passwordInput.addEventListener('input', () => {
             if (passwordInput.value === '') {
                 toggleBtn.classList.add('hidden');
             } else {
                 toggleBtn.classList.remove('hidden');
-                // When user types, the password is initially hidden, so show the open eye icon
                 if (passwordInput.type === 'password') {
                     eyeShow.classList.remove('hidden');
                     eyeHide.classList.add('hidden');
                 }
             }
         });
-
-        // Also handle focus/blur if needed, though 'input' covers most cases
         passwordInput.addEventListener('focus', () => {
             if (passwordInput.value !== '') {
                 toggleBtn.classList.remove('hidden');
-                updateIconVisibility(); // Ensure correct icon on focus if already typed
+                updateIconVisibility();
             }
         });
     });
 }
 
-
-// Initialize cart count on page load
 document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
-    // Initialize AI chat components on DOMContentLoaded
     initializeAiChat();
-    // Initialize password toggle functionality
     initializePasswordToggle();
-    // Initialize logout confirmation modal
     initializeLogoutConfirmation();
-    // NEW: Initialize custom confirmation modals
     initializeConfirmationModals();
-
-    // NEW: Perform cart sync if flag is set (from AuthController after login/register)
     if (typeof performCartSync !== 'undefined' && performCartSync) {
         syncLocalCartToServer();
     }
 
-    // NEW: Initialize new order notification
+    // Initialize new order notification
     initializeNewOrderNotification();
-
     initializeDismissibleAlerts();
-
-    // Initialize newsletter subscription form
-    initializeNewsletterSubscription(); // [NEW] Call the new function
+    initializeNewsletterSubscription();
 });
-
-
-// The following functions are for the cart page specifically
-// They will only run if the element #cart-items-container exists
 
 function renderCartItems() {
     const cartItemsContainer = document.getElementById('cart-items-container');
     const emptyCartState = document.getElementById('empty-cart-state');
-    if (!cartItemsContainer || !emptyCartState) return; // Exit if not on cart page
-
+    if (!cartItemsContainer || !emptyCartState) return;
     const checkoutSection = document.getElementById('checkout-section');
     let subtotal = 0;
 
-    // Determine cart source based on login status
     if (isLoggedIn) {
-        // Fetch cart from server
         performActionViaFetch('/pcbuild/cart/get', 'GET')
             .then(response => {
                 if (response.success && response.cart) {
                     displayCartContent(response.cart);
                 } else {
-                    cartItemsContainer.innerHTML = ''; // Clear loading text
-                    cartItemsContainer.classList.add('hidden'); // Hide the container itself
-                    emptyCartState.classList.remove('hidden'); // Show empty cart message
+                    cartItemsContainer.innerHTML = '';
+                    cartItemsContainer.classList.add('hidden');
+                    emptyCartState.classList.remove('hidden');
                     checkoutSection.classList.add('hidden');
-                    updateCheckoutButtonState(0, false); // Disable checkout button
+                    updateCheckoutButtonState(0, false);
                 }
             })
             .catch(error => {
-                cartItemsContainer.innerHTML = ''; // Clear loading text
-                cartItemsContainer.classList.add('hidden'); // Hide the container itself
-                emptyCartState.classList.remove('hidden'); // Show empty cart message
+                cartItemsContainer.innerHTML = '';
+                cartItemsContainer.classList.add('hidden');
+                emptyCartState.classList.remove('hidden');
                 checkoutSection.classList.add('hidden');
-                updateCheckoutButtonState(0, false); // Disable checkout button
+                updateCheckoutButtonState(0, false);
             });
     } else {
-        // Use local storage cart
         const cart = getCart();
         displayCartContent(cart);
     }
-
-    // Helper function to display cart content in the DOM
     function displayCartContent(cart) {
         let cartHtml = '';
         subtotal = 0;
 
         if (cart.length === 0) {
-            cartItemsContainer.innerHTML = ''; // Clear any existing content
-            cartItemsContainer.classList.add('hidden'); // Hide the container itself
-            emptyCartState.classList.remove('hidden'); // Show empty cart message
+            cartItemsContainer.innerHTML = '';
+            cartItemsContainer.classList.add('hidden');
+            emptyCartState.classList.remove('hidden');
             checkoutSection.classList.add('hidden');
-            updateCheckoutButtonState(0, false); // Disable checkout button
+            updateCheckoutButtonState(0, false);
         } else {
-            emptyCartState.classList.add('hidden'); // Hide empty cart message
-            cartItemsContainer.classList.remove('hidden'); // Ensure container is visible
+            emptyCartState.classList.add('hidden');
+            cartItemsContainer.classList.remove('hidden');
             cart.forEach(item => {
                 const itemTotal = item.price * item.quantity;
                 subtotal += itemTotal;
 
-                // Determine if the minus button should be disabled (item.stock property is passed from CartItem model)
                 const isMinusDisabled = item.quantity <= 1 ? 'disabled' : '';
                 const minusButtonClasses = item.quantity <= 1 ? 'opacity-50 cursor-not-allowed' : '';
-
-                // You might need to adjust quantity increment based on stock here too
-                // For cart page, typically you can update to max available stock
                 const isPlusDisabled = item.quantity >= item.stock ? 'disabled' : '';
                 const plusButtonClasses = item.quantity >= item.stock ? 'opacity-50 cursor-not-allowed' : '';
 
-                cartHtml += `
-                    <div class="flex items-center border-b border-gray-200 py-4">
-                        <img src="${item.image || '/assets/images/placeholder.png'}" alt="${item.name}" class="w-20 h-20 object-contain rounded-md mr-4">
-                        <div class="flex-grow">
-                            <h3 class="text-lg font-semibold text-gray-800">${item.name}</h3>
-                            <p class="text-gray-600 text-sm">$${item.price.toFixed(2)}</p>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <button class="quantity-btn p-1 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors ${minusButtonClasses}"
-                                    onclick="updateCartItemQuantity(${item.id}, ${item.quantity - 1})"
-                                    ${isMinusDisabled}>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
-                                </svg>
-                            </button>
-                            <span class="text-lg font-semibold text-gray-900 w-12 text-center">${item.quantity}</span>
-                            <button class="quantity-btn p-1 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors ${plusButtonClasses}"
-                                    onclick="updateCartItemQuantity(${item.id}, ${item.quantity + 1})"
-                                    ${isPlusDisabled}>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m0 0H6" />
-                                </svg>
-                            </button>
-                            <span class="text-lg font-semibold text-gray-800 ml-2">$${itemTotal.toFixed(2)}</span>
-                            <button onclick="removeFromCart(${item.id})" class="ml-4 text-red-600 hover:text-red-800">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                            </button>
-                        </div>
+            cartHtml += `
+                <div class="flex flex-wrap items-center border-b border-gray-200 py-4 min-w-0">
+                    <img src="${item.image || '/assets/images/placeholder.png'}" alt="${item.name}" class="w-20 h-20 object-contain rounded-md mr-4 flex-shrink-0">
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-sm sm:text-lg font-semibold text-gray-800 break-words">${item.name}</h3>
+                        <p class="text-gray-600 text-sm">$${item.price.toFixed(2)}</p>
                     </div>
-                `;
+                    <div class="flex items-center space-x-2 ml-auto whitespace-nowrap">
+                        <button class="quantity-btn p-1 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors ${minusButtonClasses}"
+                                onclick="updateCartItemQuantity(${item.id}, ${item.quantity - 1})"
+                                ${isMinusDisabled}>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
+                            </svg>
+                        </button>
+                        <span class="text-lg font-semibold text-gray-900 w-12 text-center">${item.quantity}</span>
+                        <button class="quantity-btn p-1 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors ${plusButtonClasses}"
+                                onclick="updateCartItemQuantity(${item.id}, ${item.quantity + 1})"
+                                ${isPlusDisabled}>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m0 0H6" />
+                            </svg>
+                        </button>
+                        <span class="text-lg font-semibold text-gray-800 ml-2">$${itemTotal.toFixed(2)}</span>
+                        <button onclick="removeFromCart(${item.id})" class="ml-4 text-red-600 hover:text-red-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
             });
             checkoutSection.classList.remove('hidden');
-            updateCheckoutButtonState(cart.length, isLoggedIn); // Update checkout button state
+            updateCheckoutButtonState(cart.length, isLoggedIn);
         }
 
         cartItemsContainer.innerHTML = cartHtml;
         document.getElementById('cart-subtotal').textContent = subtotal.toFixed(2);
     }
 }
-
-// Helper function to update the state of the "Proceed to Checkout" button
 function updateCheckoutButtonState(cartItemCount, isUserLoggedIn) {
     const checkoutButton = document.getElementById('proceed-to-checkout-button');
     if (!checkoutButton) return;
@@ -767,7 +639,6 @@ function updateCheckoutButtonState(cartItemCount, isUserLoggedIn) {
     } else {
         checkoutButton.disabled = false;
         checkoutButton.classList.remove('opacity-50', 'cursor-not-allowed');
-        // Restore original HTML if it was changed
         checkoutButton.innerHTML = `
             Proceed to Checkout
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
@@ -778,11 +649,10 @@ function updateCheckoutButtonState(cartItemCount, isUserLoggedIn) {
     }
 }
 
-
 // --- AI Chat Pop-up Logic (Centralized and Initialized) ---
 let chatHistory = [];
 let chatMessages, userInput, sendButton, chatInputForm, initialAiGreeting;
-let initialChatHtmlContent = ''; // [NEW] Global variable to store the original HTML of the initial chat view
+let initialChatHtmlContent = '';
 
 function initializeAiChat() {
     const aiChatFab = document.getElementById('ai-chat-fab');
@@ -799,38 +669,27 @@ function initializeAiChat() {
 
             if (response.ok) {
                 chatContentPlaceholder.innerHTML = htmlContent;
-
-                // Now that content is loaded, get references to its elements
                 chatMessages = document.getElementById('chat-messages');
                 userInput = document.getElementById('user-input');
                 sendButton = document.getElementById('send-button');
                 chatInputForm = document.getElementById('chat-input-form');
-                initialAiGreeting = document.getElementById('initial-ai-greeting'); // Get reference to the greeting div
-
-                // [NEW] Store the initial HTML content of chatMessages
-                // This includes the initialAiGreeting div itself.
+                initialAiGreeting = document.getElementById('initial-ai-greeting');
                 initialChatHtmlContent = chatMessages.innerHTML;
-
-                // If history exists, hide the initial greeting and re-render messages from history.
                 if (chatHistory.length > 0) {
                     if (initialAiGreeting) {
-                        initialAiGreeting.classList.add('hidden'); // Hide the greeting
+                        initialAiGreeting.classList.add('hidden');
                     }
-                    chatMessages.innerHTML = ''; // Clear initial content to append historical messages
+                    chatMessages.innerHTML = '';
                     chatHistory.forEach(msg => appendMessage(msg.role, msg.text));
                 } else {
-                    // If chat history is empty, ensure the initial greeting is visible initially
                     if (initialAiGreeting) {
                         initialAiGreeting.classList.remove('hidden');
                     }
-                    // Add the initial message to history for AI context for the *first* conversation if not already there
                     const initialMessageTextForHistory = "Hello! I'm Kraft-E, your PC Build Assistant.\n\nAsk me anything about PC components, compatibility,\nor general build advice!"; //
-                    if (chatHistory.length === 0) { // Only push if history is genuinely empty
+                    if (chatHistory.length === 0) {
                         chatHistory.push({ role: "model", text: initialMessageTextForHistory });
                     }
                 }
-
-                // Attach event listeners for chat functionality
                 if (chatInputForm) {
                     chatInputForm.addEventListener('submit', (e) => {
                         e.preventDefault();
@@ -858,32 +717,27 @@ function initializeAiChat() {
         }
     }
 
-    // [NEW] Function to reset the chat to its initial state
+    // Function to reset the chat to its initial state
     function resetChat() {
-        chatHistory = []; // Clear chat history
-
-        // Restore the initial HTML content, which includes the greeting
+        chatHistory = [];
         if (chatMessages && initialChatHtmlContent) {
             chatMessages.innerHTML = initialChatHtmlContent;
         }
-
-        // Re-get reference to initialAiGreeting as it might have been re-created by innerHTML
         initialAiGreeting = document.getElementById('initial-ai-greeting');
         if (initialAiGreeting) {
-            initialAiGreeting.classList.remove('hidden'); // Ensure it's visible
+            initialAiGreeting.classList.remove('hidden');
         }
 
-        // Re-add the initial message to history for AI context for the *next* conversation
         const initialMessageTextForHistory = "Hello! I'm Kraft-E, your PC Build Assistant.\n\nAsk me anything about PC components, compatibility,\nor general build advice!"; //
-        chatHistory.push({ role: "model", text: initialMessageTextForHistory }); // Push the clean text version
+        chatHistory.push({ role: "model", text: initialMessageTextForHistory });
 
         if (userInput) {
-            userInput.value = ''; // Clear input field
+            userInput.value = '';
             userInput.focus();
         }
 
         if (chatMessages) {
-            chatMessages.scrollTop = 0; // Scroll to top
+            chatMessages.scrollTop = 0;
         }
     }
 
@@ -910,7 +764,7 @@ function initializeAiChat() {
     }
 
     if (newChatButton) {
-        newChatButton.addEventListener('click', resetChat); // Attach reset function to the button
+        newChatButton.addEventListener('click', resetChat);
     }
 
     document.addEventListener('click', (event) => {
@@ -960,10 +814,9 @@ async function sendMessage() {
     const prompt = userInput.value.trim();
     if (prompt === '') return;
 
-    // Hide the initial AI greeting when the user sends their first message
     if (initialAiGreeting && !initialAiGreeting.classList.contains('hidden')) {
-        initialAiGreeting.classList.add('hidden'); // Hide the greeting
-        chatMessages.innerHTML = ''; // Clear ALL messages (including the now-hidden greeting)
+        initialAiGreeting.classList.add('hidden');
+        chatMessages.innerHTML = '';
     }
 
     appendMessage('user', prompt);
@@ -1013,8 +866,6 @@ function showLogoutConfirmation() {
             logoutModal.querySelector('div').classList.remove('scale-95', 'opacity-0');
             logoutModal.querySelector('div').classList.add('scale-100', 'opacity-100');
         }, 10);
-    } else {
-        // console.error('Logout modal element not found!');
     }
 }
 
@@ -1073,7 +924,6 @@ function initializeLogoutConfirmation() {
     }
 }
 
-// Function to initialize auto-hide and dismiss functionality for static PHP-rendered alerts
 function initializeDismissibleAlerts() {
     const dismissibleAlerts = document.querySelectorAll('.js-dismissible-alert');
 
@@ -1273,7 +1123,7 @@ function initializeConfirmationModals() {
     });
 }
 
-// [NEW FUNCTION] Handle newsletter subscription form submission (dummy modal)
+// Handle newsletter subscription form submission (dummy modal)
 function initializeNewsletterSubscription() {
     const newsletterForm = document.getElementById('newsletter-form');
     const newsletterEmailInput = document.getElementById('newsletter-email');
@@ -1282,7 +1132,7 @@ function initializeNewsletterSubscription() {
 
     if (newsletterForm && newsletterEmailInput && newsletterSuccessModal && newsletterModalCloseBtn) {
         newsletterForm.addEventListener('submit', (e) => {
-            e.preventDefault(); // Prevent default form submission
+            e.preventDefault();
 
             const userEmail = newsletterEmailInput.value.trim();
 
@@ -1291,7 +1141,6 @@ function initializeNewsletterSubscription() {
                 return;
             }
 
-            // Basic email validation regex
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(userEmail)) {
                 alertMessage('error', 'Please enter a valid email format.');
@@ -1299,15 +1148,12 @@ function initializeNewsletterSubscription() {
             }
 
             // --- Dummy Submission Logic ---
-            // Disable form elements temporarily
             newsletterEmailInput.disabled = true;
             newsletterForm.querySelector('button[type="submit"]').disabled = true;
             newsletterForm.querySelector('button[type="submit"]').textContent = 'Subscribing...';
             newsletterForm.querySelector('button[type="submit"]').classList.add('opacity-50', 'cursor-not-allowed');
 
-            // Simulate an async operation (e.g., sending data to a server)
             setTimeout(() => {
-                // Show the success modal with animation
                 newsletterSuccessModal.classList.remove('hidden', 'pointer-events-none');
                 setTimeout(() => {
                     newsletterSuccessModal.classList.add('opacity-100');
@@ -1315,19 +1161,15 @@ function initializeNewsletterSubscription() {
                     newsletterSuccessModal.querySelector('div').classList.add('scale-100', 'opacity-100');
                 }, 10);
 
-                // Clear the input field
                 newsletterEmailInput.value = '';
-
-                // Re-enable form elements
                 newsletterEmailInput.disabled = false;
                 newsletterForm.querySelector('button[type="submit"]').disabled = false;
                 newsletterForm.querySelector('button[type="submit"]').textContent = 'Subscribe';
                 newsletterForm.querySelector('button[type="submit"]').classList.remove('opacity-50', 'cursor-not-allowed');
-            }, 1000); // Simulate 1 second delay
+            }, 1000);
 
         });
 
-        // Event listener to close the modal
         newsletterModalCloseBtn.addEventListener('click', () => {
             newsletterSuccessModal.classList.remove('opacity-100');
             newsletterSuccessModal.querySelector('div').classList.remove('scale-100', 'opacity-100');
@@ -1337,7 +1179,6 @@ function initializeNewsletterSubscription() {
             }, { once: true });
         });
 
-        // Close modal if clicked outside of the content box
         newsletterSuccessModal.addEventListener('click', (e) => {
             if (e.target === newsletterSuccessModal) {
                 newsletterSuccessModal.classList.remove('opacity-100');
