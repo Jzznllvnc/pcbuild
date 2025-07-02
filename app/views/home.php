@@ -1,7 +1,7 @@
 <div class="relative">
     <div class="absolute inset-0 overflow-hidden" style="z-index: 0;">
         <div class="w-full h-full bg-cover bg-center animate-bg-zoom"
-             style="background-image: url('/pcbuild/app/views/products/images/landing.jpg');">
+             style="background-image: url('/app/views/products/images/landing.jpg');">
         </div>
         <div class="absolute inset-0 bg-black opacity-40"></div>
     </div>
@@ -246,37 +246,32 @@
         animation: fadeInDown 1s ease-out forwards;
     }
     .animate-fade-in-up {
-        animation: fadeInUp 1s ease-out forwards 0.3s; /* Delayed start */
-        opacity: 0; /* Hide until animation starts */
+        animation: fadeInUp 1s ease-out forwards 0.3s;
+        opacity: 0;
     }
     .animate-scale-in {
-        animation: scaleIn 1s ease-out forwards 0.6s; /* Delayed start */
-        opacity: 0; /* Hide until animation starts */
+        animation: scaleIn 1s ease-out forwards 0.6s;
+        opacity: 0;
     }
-
-    /* Styles for background image zoom */
     @keyframes bg-zoom {
         0% { transform: scale(1); }
-        100% { transform: scale(1.1); } /* Zooms in to 110% of original size */
+        100% { transform: scale(1.1); }
     }
     .animate-bg-zoom {
-        animation: bg-zoom 20s ease-in-out infinite alternate; /* Slower, smoother, alternates direction */
+        animation: bg-zoom 20s ease-in-out infinite alternate;
     }
-
-    /* Styles for sliding brands carousel */
     @keyframes slide-brands {
         0% {
             transform: translateX(0%);
         }
         100% {
-            transform: translateX(-50%); /* This will move it by exactly half its content, creating a perfect loop */
+            transform: translateX(-50%);
         }
     }
 
     .animate-slide-brands {
-        animation: slide-brands 90s linear infinite; /* Increased time for smoother, slower loop */
-        /* Ensure the container is wide enough to hold all duplicated content side-by-side */
-        width: max-content; /* This allows the flex container to be as wide as its content */
+        animation: slide-brands 90s linear infinite;
+        width: max-content;
     }
 
     /* Pause animation on hover */
@@ -300,7 +295,7 @@
         z-index: 0;
     }
 
-    /* NEW ANIMATIONS FOR CRAFTING PROCESS SECTION */
+    /* ANIMATIONS FOR CRAFTING PROCESS SECTION */
 
     /* Initial states for text animation */
     .animate-on-scroll-left-in {
@@ -313,8 +308,6 @@
         opacity: 0;
         transition: transform 1s ease-out, opacity 1s ease-out;
     }
-
-    /* Active states for text animation (when 'in-view' class is added) */
     #build-your-dream-pc.in-view {
         transform: translateX(0);
         opacity: 1;
@@ -322,56 +315,44 @@
     #in-3-simple-steps.in-view {
         transform: translateX(0);
         opacity: 1;
-        transition-delay: 0.5s; /* Delay for the right element to merge */
+        transition-delay: 0.5s;
     }
 
     /* Initial states for card animation */
     .card-blur-initial {
-        filter: blur(8px); /* Initial blur effect */
+        filter: blur(8px);
         opacity: 0;
-        transition: filter 0.8s ease-out, opacity 0.8s ease-out; /* Transition for blur and opacity */
+        transition: filter 0.8s ease-out, opacity 0.8s ease-out;
     }
     .card-animate-on-scroll.in-view {
-        filter: blur(0); /* Remove blur when in view */
+        filter: blur(0);
         opacity: 1;
     }
 
     /* Styles for feature cards (base look) */
     .feature-card-hover {
-        /* Glassy dark background color */
-        background-color:rgba(55, 57, 58, 0.07); /* A dark desaturated green/teal */
-        backdrop-filter: none; /* Ensure no actual blur on the card itself */
+        background-color:rgba(55, 57, 58, 0.07);
+        backdrop-filter: none;
         -webkit-backdrop-filter: none;
-
-        /* Initial border and shadow */
-        border: 2px solid rgba(255, 255, 255, 0.19); /* Very subtle light border for depth */
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Default subtle shadow */
-
-        /* Ensure smooth transitions for transform and box-shadow */
+        border: 2px solid rgba(255, 255, 255, 0.19);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s ease-out;
-
-        /* Override default text colors for content within the card */
-        color: #ffffff !important; /* Force all text inside to white */
-
+        color: #ffffff !important;
         /* Spotlight effect properties */
-        position: relative; /* Needed for pseudo-element positioning */
-        overflow: hidden; /* Crucial to contain the spotlight within the card */
-        --x: 50%; /* Default x position for spotlight */
-        --y: 50%; /* Default y position for spotlight */
+        position: relative;
+        overflow: hidden;
+        --x: 50%;
+        --y: 50%;
     }
-
-    /* Target h3, p, and icon div specifically within feature cards to ensure white color */
     .feature-card-hover h3 {
         color: #ffffff !important;
     }
     .feature-card-hover p {
         color: #ffffff !important;
     }
-    .feature-card-hover .text-5xl { /* This targets the emoji/icon container */
-        color: #ffffff !important; /* Forces the icon color to white */
+    .feature-card-hover .text-5xl {
+        color: #ffffff !important;
     }
-
-    /* Pseudo-element for the spotlight glow */
     .feature-card-hover::before {
         content: '';
         position: absolute;
@@ -381,42 +362,39 @@
         height: 100%;
         background: radial-gradient(
             circle at var(--x) var(--y),
-            rgba(255, 126, 62, 0.4) 0%, /* Brighter center of spotlight */
-            transparent 70% /* Fades out to transparent */
+            rgba(255, 126, 62, 0.4) 0%,
+            transparent 70%
         );
-        opacity: 0; /* Hidden by default */
-        transition: opacity 0.3s ease-out; /* Smooth fade in/out */
-        pointer-events: none; /* Allows clicks to pass through to the card content */
+        opacity: 0;
+        transition: opacity 0.3s ease-out;
+        pointer-events: none;
     }
-
     /* Hover effect for feature cards */
     .feature-card-hover:hover {
-        transform: translateY(-5px); /* Slight lift */
-        box-shadow: 0 0 25px rgba(255, 126, 62, 0.8), /* Stronger orange glow */
-                    0 0 40px rgba(255, 126, 62, 0.4), /* Wider, softer secondary glow */
-                    0 5px 15px rgba(0, 0, 0, 0.1); /* Subtle darker shadow for depth */
-        border-color: var(--color-primary-orange); /* Orange border on hover for accent */
+        transform: translateY(-5px);
+        box-shadow: 0 0 25px rgba(255, 126, 62, 0.8),
+                    0 0 40px rgba(255, 126, 62, 0.4),
+                    0 5px 15px rgba(0, 0, 0, 0.1);
+        border-color: var(--color-primary-orange);
     }
-
-    /* Show spotlight on hover */
     .feature-card-hover:hover::before {
-        opacity: 1; /* Make spotlight visible on hover */
+        opacity: 1;
     }
 </style>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
 
-        // NEW: Intersection Observer for "BUILD YOUR DREAM PC IN 3 SIMPLE STEPS" text animation
+        // "BUILD YOUR DREAM PC IN 3 SIMPLE STEPS" text animation
         const textAnimationContainer = document.getElementById('crafting-process-section');
         const buildYourDreamPc = document.getElementById('build-your-dream-pc');
         const in3SimpleSteps = document.getElementById('in-3-simple-steps');
 
         if (textAnimationContainer && buildYourDreamPc && in3SimpleSteps) {
             const textObserverOptions = {
-                root: null, // viewport as the root
+                root: null,
                 rootMargin: '0px',
-                threshold: 0.2 // Trigger when 20% of the section is visible for text
+                threshold: 0.2
             };
 
             const textObserverCallback = (entries, observer) => {
@@ -424,7 +402,7 @@
                     if (entry.isIntersecting) {
                         buildYourDreamPc.classList.add('in-view');
                         in3SimpleSteps.classList.add('in-view');
-                        observer.unobserve(entry.target); // Stop observing once animated
+                        observer.unobserve(entry.target);
                     }
                 });
             };
@@ -433,28 +411,28 @@
             textObserver.observe(textAnimationContainer);
         }
 
-        // NEW: Separate Intersection Observer for the 3 boxes animation
+        // Separate Intersection Observer for the 3 boxes animation
         const craftingStepsContainer = document.getElementById('crafting-steps-container');
         const animatedCards = document.querySelectorAll('#crafting-steps-container .card-animate-on-scroll');
 
         if (craftingStepsContainer && animatedCards.length > 0) {
             const cardsObserverOptions = {
-                root: null, // viewport as the root
+                root: null,
                 rootMargin: '0px',
-                threshold: 0.7 // Trigger when 70% of the steps container is visible
+                threshold: 0.25
             };
 
             const cardsObserverCallback = (entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        const initialDelay = 700; // Overall delay for cards to start after text
+                        const initialDelay = 700;
                         animatedCards.forEach((card, index) => {
-                            const staggerDelay = index * 200; // 200ms delay between each card
+                            const staggerDelay = index * 200;
                             setTimeout(() => {
                                 card.classList.add('in-view');
                             }, initialDelay + staggerDelay);
                         });
-                        observer.unobserve(entry.target); // Stop observing once animated
+                        observer.unobserve(entry.target);
                     }
                 });
             };
@@ -463,21 +441,14 @@
             cardsObserver.observe(craftingStepsContainer);
         }
 
-        // NEW: Spotlight Effect JavaScript for feature cards
+        // Spotlight Effect JavaScript for feature cards
         const featureCards = document.querySelectorAll('.feature-card-hover');
 
         featureCards.forEach(card => {
             card.addEventListener('mousemove', e => {
-                // Get the bounding box of the card
                 const rect = card.getBoundingClientRect();
-
-                // Calculate mouse position relative to the card
-                // e.clientX/Y is mouse position relative to viewport
-                // rect.left/top is card position relative to viewport
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
-
-                // Update CSS custom properties on the specific card
                 card.style.setProperty('--x', `${x}px`);
                 card.style.setProperty('--y', `${y}px`);
             });

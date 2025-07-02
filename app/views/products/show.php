@@ -67,7 +67,7 @@
                         <?php echo ($product['stock'] <= 0) ? 'disabled' : ''; ?>>
                     Add to Cart
                 </button>
-                <a href="/pcbuild/products"
+                <a href="/products"
                    class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-md transition-colors shadow-md text-center">
                     Back to Products
                 </a>

@@ -9,7 +9,7 @@
         <img src="/assets/images/emptycart.png" alt="Empty Cart" class="mx-auto w-48 h-48 object-contain mb-6">
         <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Your Cart is <span class="text-[--color-primary-orange]">Empty!</span></h2>
         <p class="text-gray-600 mb-8">Must add items on the cart before you proceed to check out.</p>
-        <a href="/pcbuild/products" class="inline-block bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-3 px-8 rounded-full
+        <a href="/products" class="inline-block bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-3 px-8 rounded-full
          shadow-lg transition-all duration-300 transform hover:scale-105">
             Browse Products
         </a>
@@ -20,25 +20,25 @@
             <span>Subtotal:</span>
             <span>$<span id="cart-subtotal">0.00</span></span>
         </div>
-        <div class="flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4">
+        <div class="flex flex-col items-center gap-4 sm:flex-row sm:justify-end sm:items-stretch sm:gap-4">
             <button onclick="clearCart()"
-                    class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-md transition-colors shadow-lg">
+                class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-md transition-colors shadow-lg w-full max-w-xs sm:w-auto sm:max-w-none">
                 Clear Cart
             </button>
-            <?php if ($isLoggedIn): /* Check if user is logged in */ ?>
-                <a href="/pcbuild/checkout"
-                   id="proceed-to-checkout-button"
-                   class="inline-flex justify-center items-center bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-3 px-6 rounded-md transition-colors shadow-lg">
+            <?php if ($isLoggedIn): ?>
+                <a href="/checkout"
+                id="proceed-to-checkout-button"
+                class="inline-flex justify-center items-center bg-[--color-primary-orange] hover:bg-[#e76c3e] text-white font-bold py-3 px-6 rounded-md transition-colors shadow-lg w-full max-w-xs sm:w-auto sm:max-w-none">
                     Proceed to Checkout
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M10.293 15.707a1 1 0 010-1.414L14.586 10l-4.293-4.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                         <path fill-rule="evenodd" d="M4.293 15.707a1 1 0 010-1.414L8.586 10l-4.293-4.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                     </svg>
                 </a>
-            <?php else: /* If not logged in */ ?>
+            <?php else: ?>
                 <button type="button" disabled
-                        id="proceed-to-checkout-button"
-                        class="inline-flex justify-center items-center bg-gray-400 text-white font-bold py-3 px-6 rounded-md shadow-lg cursor-not-allowed">
+                    id="proceed-to-checkout-button"
+                    class="inline-flex justify-center items-center bg-gray-400 text-white font-bold py-3 px-6 rounded-md shadow-lg cursor-not-allowed w-full max-w-xs sm:w-auto sm:max-w-none">
                     You must be logged in to checkout
                 </button>
             <?php endif; ?>
@@ -48,12 +48,8 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Only call renderCartItems if the container exists, ensuring it's the cart page
         if (document.getElementById('cart-items-container')) {
-            renderCartItems(); // This function in main.js now handles fetching based on login status
+            renderCartItems();
         }
-        // The logic for enabling/disabling the checkout button based on cart emptiness and login status
-        // is now fully encapsulated within the renderCartItems -> updateCheckoutButtonState functions in main.js.
-        // So, the old explicit update here is removed.
     });
 </script>

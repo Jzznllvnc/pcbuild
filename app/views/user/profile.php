@@ -18,7 +18,7 @@
 
         <div class="lg:col-span-2 bg-gray-50 p-6 rounded-lg shadow-md">
             <h3 class="2xl font-bold text-gray-900 mb-6">General Information</h3>
-            <form action="/pcbuild/profile/update-general" method="POST" class="space-y-6">
+            <form action="/profile/update-general" method="POST" class="space-y-6">
                 <div>
                     <label for="username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
                     <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" required
@@ -48,7 +48,7 @@
                     <p class="mt-1 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm text-gray-900 sm:text-sm">
                         ••••••••
                     </p>
-                    <a href="/pcbuild/forgot-password"
+                    <a href="/forgot-password"
                        class="mt-4 profile-button-fixed-width bg-[--color-dark-blue] hover:bg-[#1a2d3a] text-white font-bold py-2 px-6 rounded-md shadow-lg transition-colors text-sm text-center">
                         Change Password
                     </a>
@@ -56,7 +56,7 @@
 
                 <div class="flex flex-col items-start">
                     <label for="phone_number" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                    <form action="/pcbuild/profile/update-phone" method="POST" class="space-y-4 w-full">
+                    <form action="/profile/update-phone" method="POST" class="space-y-4 w-full">
                         <input type="text" id="phone_number" name="phone_number"
                                value="<?php echo htmlspecialchars($user['phone_number'] ?? ''); ?>"
                                class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[--color-primary-orange] focus:border-[--color-primary-orange] sm:text-sm"
@@ -83,9 +83,6 @@
         } else if (errorMsg) {
             alertMessage('error', decodeURIComponent(errorMsg));
         }
-
-        // Optional: Remove the query parameters from the URL to clean it up
-        // and prevent messages from reappearing on refresh.
         if (successMsg || errorMsg) {
             urlParams.delete('success_msg');
             urlParams.delete('error_msg');
@@ -96,8 +93,6 @@
 </script>
 
 <style>
-    /* Add any specific styles for this page if needed */
-    /* For instance, the fadeIn animation for alerts */
     @keyframes fadeIn {
         from { opacity: 0; transform: scale(0.95); }
         to { opacity: 1; transform: scale(1); }
@@ -105,26 +100,18 @@
     .animate-fadeIn {
         animation: fadeIn 0.5s forwards;
     }
-
-    /* Custom styles for profile buttons */
     .profile-button-fixed-width {
-        max-width: 200px; /* Limits the maximum width */
-        width: fit-content; /* Makes the button as wide as its content by default */
-        min-width: 150px; /* Ensures a minimum width for consistency */
-        /* Flexbox will handle left alignment (justify-start/items-start) */
+        max-width: 200px;
+        width: fit-content;
+        min-width: 150px;
     }
-
-    /* Ensure flex items are aligned to start globally for buttons */
-    /* These rules ensure the buttons are pushed to the left when inside a flex container */
-    .flex.justify-start > .profile-button-fixed-width, /* For Update Username button */
-    .flex-col.items-start > .profile-button-fixed-width, /* For Change Password button */
-    .flex-col.items-start form > .profile-button-fixed-width /* For Update Number button */
+    .flex.justify-start > .profile-button-fixed-width,
+    .flex-col.items-start > .profile-button-fixed-width,
+    .flex-col.items-start form > .profile-button-fixed-width
     {
         margin-left: 0;
-        margin-right: auto; /* Push to the left */
+        margin-right: auto;
     }
-
-    /* text-center for the Change Password link's text */
     .profile-button-fixed-width.text-center {
         text-align: center;
     }

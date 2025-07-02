@@ -5,12 +5,11 @@
 
     <form id="build-form">
         <?php
-        // More unique and visually distinct SVG icons for each category
         $componentIcons = [
             'CPU' => '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cpu"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><path d="M15 2v2m-6 0V2m0 20v-2m6 0v2M2 9h2m20 0h-2M2 15h2m20 0h-2"></path></svg>',
-            'GPU' => '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-hard-drive"><line x1="22" y1="12" x2="2" y2="12"></line><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path><line x1="6" y1="16" x2="6.01" y2="16"></line><line x1="10" y1="16" x2="10.01" y2="16"></line></svg>', // Re-purposed hard-drive for GPU (data processing)
+            'GPU' => '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-hard-drive"><line x1="22" y1="12" x2="2" y2="12"></line><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path><line x1="6" y1="16" x2="6.01" y2="16"></line><line x1="10" y1="16" x2="10.01" y2="16"></line></svg>',
             'Motherboard' => '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>',
-            'RAM' => '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-server"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>', // Server rack for RAM modules
+            'RAM' => '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-server"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>',
             'Storage' => '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M2 12A9 3 0 0 0 11 15V20A9 3 0 0 1 2 17Z"></path><path d="M22 12A9 3 0 0 1 13 15V20A9 3 0 0 0 22 17Z"></path></svg>',
             'PSU' => '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-zap"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>',
             'Case' => '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-box"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>',
@@ -69,57 +68,54 @@
         <p id="qualitative-rating" class="text-center text-[--color-dark-blue] text-xl font-semibold mb-6"></p>
 
         <h3 class="text-xl font-bold text-gray-800 mb-3">Comments & Recommendations:</h3>
-        <ul id="rating-comments" class="list-disc list-inside text-gray-700 space-y-2 pl-4">
-        </ul>
+        <p id="rating-comments" class="text-gray-700 text-base mt-2"></p>
         <p class="text-center text-gray-500 text-sm mt-8">This rating is a general guide and based on simplified logic. For detailed compatibility, always cross-reference component specifications.</p>
     </div>
 </div>
 
 <script>
-    // Map of selected component IDs and their details
     const selectedBuildComponents = {};
 
-    // Update the estimated total price and selected component summaries
     function updateBuildSummary() {
         let total = 0;
         document.querySelectorAll('#build-form select').forEach(selectElement => {
             const selectedOption = selectElement.options[selectElement.selectedIndex];
             const price = parseFloat(selectedOption.dataset.price || 0);
             const name = selectedOption.dataset.name || '';
-            const category = selectElement.id; // e.g., 'cpu', 'gpu'
+            const category = selectElement.id;
 
             const summaryDiv = document.getElementById(`${category}-summary`);
             if (selectedOption.value) {
                 total += price;
                 summaryDiv.textContent = `Selected: ${name} ($${price.toFixed(2)})`;
-                selectedBuildComponents[category] = selectedOption.value; // Store ID
+                selectedBuildComponents[category] = selectedOption.value;
             } else {
                 summaryDiv.textContent = '';
-                delete selectedBuildComponents[category]; // Remove from selected
+                delete selectedBuildComponents[category];
             }
         });
         document.getElementById('estimated-total-price').textContent = total.toFixed(2);
     }
 
-    // NEW FUNCTION: Clears all selected components in the build form
+    // Clears all selected components in the build form
     function clearBuildSelections() {
         document.querySelectorAll('#build-form select').forEach(selectElement => {
-            selectElement.value = ''; // Set to the default empty option
+            selectElement.value = '';
         });
-        // Clear the selected components map
+
         for (const key in selectedBuildComponents) {
             delete selectedBuildComponents[key];
         }
-        updateBuildSummary(); // Recalculate total price and clear summaries
-        document.getElementById('build-rating-results').classList.add('hidden'); // Hide rating results
-        alertMessage('success', 'Build selections cleared!'); // Show a toast notification
+        updateBuildSummary();
+        document.getElementById('build-rating-results').classList.add('hidden');
+        alertMessage('success', 'Build selections cleared!');
     }
 
     // Handle form submission to get the rating
     document.getElementById('build-form').addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const sendButton = e.submitter; // The button that was clicked
+        const sendButton = e.submitter;
         sendButton.disabled = true;
         sendButton.textContent = 'Getting Rating...';
         sendButton.classList.add('opacity-50', 'cursor-not-allowed');
@@ -129,13 +125,11 @@
         const qualitativeRatingP = document.getElementById('qualitative-rating');
         const ratingCommentsUl = document.getElementById('rating-comments');
 
-        // Reset previous results
         ratingResultsDiv.classList.add('hidden');
         ratingCommentsUl.innerHTML = '';
         ratingScoreSpan.textContent = '--';
         qualitativeRatingP.textContent = '';
 
-        // Check if any components are selected
         if (Object.keys(selectedBuildComponents).length === 0) {
             alertMessage('error', 'Please select at least one component to get a rating.');
             sendButton.disabled = false;
@@ -143,17 +137,15 @@
             sendButton.classList.remove('opacity-50', 'cursor-not-allowed');
             return;
         }
-
-        // Prepare data for the API call
         const formData = new FormData();
         Object.values(selectedBuildComponents).forEach(id => {
-            formData.append('components[]', id); // Append each selected ID
+            formData.append('components[]', id);
         });
 
         try {
-            const response = await fetch('/pcbuild/build-rate/get', {
+            const response = await fetch('/build-rate/get', {
                 method: 'POST',
-                body: formData, // Use FormData for traditional POST data
+                body: formData,
             });
 
             const data = await response.json();
@@ -162,17 +154,11 @@
                 ratingScoreSpan.textContent = data.rating;
                 qualitativeRatingP.textContent = data.qualitative_rating;
 
-                if (data.comments.length > 0) {
-                    data.comments.forEach(comment => {
-                        const li = document.createElement('li');
-                        li.textContent = comment;
-                        ratingCommentsUl.appendChild(li);
-                    });
-                } else {
-                    const li = document.createElement('li');
-                    li.textContent = "No specific comments or recommendations for this build.";
-                    ratingCommentsUl.appendChild(li);
-                }
+            if (data.comments.length > 0) {
+                ratingCommentsUl.textContent = data.comments.join(' ');
+            } else {
+                ratingCommentsUl.textContent = "No specific comments or recommendations for this build.";
+            }
 
                 ratingResultsDiv.classList.remove('hidden');
             } else {
@@ -188,35 +174,28 @@
             sendButton.classList.remove('opacity-50', 'cursor-not-allowed');
         }
     });
-
-    // Initial update when page loads
     document.addEventListener('DOMContentLoaded', updateBuildSummary);
 </script>
 
 <style>
-    /* Custom select arrow */
     select {
         -webkit-appearance: none;
         -moz-appearance: none;
         appearance: none;
-        background-image: none; /* Remove default arrow */
+        background-image: none;
     }
-
-    /* Style the custom arrow wrapper */
     .relative select + .pointer-events-none svg {
         position: absolute;
         right: 1rem;
         top: 50%;
         transform: translateY(-50%);
     }
-
-    /* Additional styles for the revamped look */
     .component-card {
-        border: 2px solid var(--color-light-bg); /* Add a border that can change on focus */
+        border: 2px solid var(--color-light-bg);
         transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     }
     .component-card:focus-within {
-        border-color: var(--color-primary-orange); /* Highlight on focus */
-        box-shadow: 0 0 0 3px rgba(254, 119, 67, 0.3); /* Ring effect */
+        border-color: var(--color-primary-orange);
+        box-shadow: 0 0 0 3px rgba(254, 119, 67, 0.3);
     }
 </style>

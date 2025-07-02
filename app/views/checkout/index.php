@@ -45,8 +45,8 @@
                         </div>
                         <div>
                             <label for="mobile_number" class="block text-sm font-medium text-gray-700 mb-2">Phone number<span class="text-red-500">*</span></label>
-                            <div class="flex mt-1">
-                                <select id="country_code" name="country_code" class="px-3 py-2 border border-gray-300 rounded-l-md shadow-sm focus:outline-none focus:ring-[--color-primary-orange] focus:border-[--color-primary-orange] sm:text-sm">
+                            <div class="flex flex-col sm:flex-row mt-1">
+                                <select id="country_code" name="country_code" class="w-fit px-3 py-2 border border-gray-300 rounded-md sm:rounded-l-md sm:rounded-r-none shadow-sm focus:outline-none focus:ring-[--color-primary-orange] focus:border-[--color-primary-orange] sm:text-sm mb-2 sm:mb-0">
                                     <option value="+63" data-placeholder="e.g., 9123456789">PH +63</option>
                                     <option value="+1" data-placeholder="e.g., 201-555-0123">US +1</option>
                                     <option value="+44" data-placeholder="e.g., 7911 123456">UK +44</option>
@@ -55,7 +55,7 @@
                                     <option value="+86" data-placeholder="e.g., 138-0013-8000">CN +86</option>
                                     </select>
                                 <input type="tel" id="mobile_number" name="mobile_number" placeholder="e.g., 9123456789" required
-                                       class="flex-grow px-4 py-2 border border-gray-300 rounded-r-md shadow-sm focus:outline-none focus:ring-[--color-primary-orange] focus:border-[--color-primary-orange] sm:text-sm"
+                                       class="flex-grow px-4 py-2 border border-gray-300 rounded-md sm:rounded-r-md sm:rounded-l-none shadow-sm focus:outline-none focus:ring-[--color-primary-orange] focus:border-[--color-primary-orange] sm:text-sm"
                                        value="<?php echo htmlspecialchars($user['phone_number'] ?? ''); ?>"> </div>
                         </div>
                     </div>
@@ -113,7 +113,7 @@
 
             <div id="payment-section" class="checkout-step absolute top-0 left-0 w-full h-full p-6 bg-white transition-transform duration-500 ease-in-out transform translate-x-full opacity-0">
                 <h2 class="text-2xl font-extrabold text-gray-900 mb-6">Payment Method</h2>
-                <form id="payment-form-final" action="/pcbuild/checkout/process" method="POST" class="space-y-6">
+                <form id="payment-form-final" action="/checkout/process" method="POST" class="space-y-6">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <label class="flex items-center cursor-pointer p-4 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 has-[:checked]:border-[--color-primary-orange] has-[:checked]:ring-2 has-[:checked]:ring-[--color-primary-orange]">
                             <input type="radio" name="payment_method" value="GCash" class="form-radio text-[--color-primary-orange] h-5 w-5 flex-shrink-0" required>
@@ -206,11 +206,10 @@
 </div>
 
 <style>
-    /* Ensure the parent container for steps has relative positioning */
     #main-content-column {
         position: relative;
-        overflow: hidden; /* Keep overflow hidden to clip sliding sections */
-        min-height: 475px; /* Added this directly to keep a baseline height */
+        overflow: hidden;
+        min-height: 475px;
     }
     .checkout-step {
         position: absolute;
@@ -220,37 +219,28 @@
         padding: 1.5rem;
         transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
         box-sizing: border-box;
-        height: auto; /* Allow content to define natural height */
+        height: auto;
         min-height: fit-content;
     }
-
-    /* Active state for shipping section and payment section should be relative */
     #shipping-section.active, #payment-section.active {
-        position: relative; /* Bring active section back into document flow for height calculation */
+        position: relative;
         transform: translateX(0);
         opacity: 1;
         visibility: visible;
     }
-    
-    /* Non-active sections should be absolutely positioned, hidden, and have minimal height */
     #shipping-section.slide-out,
     #payment-section.translate-x-full {
         position: absolute;
         visibility: hidden;
         opacity: 0;
-        height: 1px; /* Collapse content height when hidden */
+        height: 1px;
         overflow: hidden;
     }
-
-
-    /* Initial state for payment section (hidden to the right) */
     #payment-section {
         transform: translateX(100%);
         opacity: 0;
         visibility: hidden;
     }
-
-    /* State when shipping section slides out */
     #shipping-section.slide-out {
         transform: translateX(-100%);
         opacity: 0;
@@ -258,28 +248,21 @@
     }
 
     /* Specific styling for the Your Cart summary content */
-    #checkout-cart-summary {
-        /* This will be set by JS dynamically for 3 items and add scroll if > 3 */
-    }
 
     /* Custom Scrollbar Styles for WebKit browsers (Chrome, Safari, Edge) */
     #checkout-cart-summary::-webkit-scrollbar {
-        width: 8px; /* Width of the scrollbar */
+        width: 8px;
     }
-
     #checkout-cart-summary::-webkit-scrollbar-track {
-        background: #f1f1f1; /* Color of the scrollbar track */
+        background: #f1f1f1;
         border-radius: 10px;
     }
-
     #checkout-cart-summary::-webkit-scrollbar-thumb {
-        background: var(--color-primary-orange); /* Color of the scrollbar thumb */
+        background: var(--color-primary-orange);
         border-radius: 10px;
-        /* margin-left for the thumb itself is not standard. Instead, we can add padding to the container. */
     }
-
     #checkout-cart-summary::-webkit-scrollbar-thumb:hover {
-        background: #e76c3e; /* Color of the scrollbar thumb on hover */
+        background: #e76c3e;
     }
 </style>
 
@@ -300,40 +283,34 @@
         const placeOrderButton = document.getElementById('place-order-button');
         const backToShippingButton = document.getElementById('back-to-shipping-button');
         const shippingMethodRadios = document.querySelectorAll('input[name="shipping_method"]');
-                // --- START NEW CODE TO ADD ---
+        
         if (shippingMethodRadios.length > 0) {
             shippingMethodRadios.forEach(radio => {
                 radio.addEventListener('change', () => {
-                    // Re-run updateOrderSummary with the current cart data
-                    // currentCartData should be populated from the initial fetch/load of the cart
                     if (typeof updateOrderSummary === 'function' && currentCartData) {
                         updateOrderSummary(currentCartData);
                     }
                 });
             });
         }
-        // --- END NEW CODE TO ADD ---
 
         const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
         const paymentMobileNumberGroup = document.getElementById('payment-mobile-number-group');
         const paymentMobileNumberDisplayInput = document.getElementById('p_mobile_number_display');
         const paymentMobileNumberError = document.getElementById('payment-mobile-number-error');
-
         const stepShipping = document.getElementById('step-shipping');
         const stepPayment = document.getElementById('step-payment');
-
         const taxRate = 0.00;
 
         let subtotal = 0;
         let shippingCost = 0;
         let total = 0;
-        let currentCartData = []; // Store the actual cart items here
+        let currentCartData = [];
 
-        // Phone Number Formats for Shipping Page
         const countryPhoneFormats = {
             "+63": {
-                placeholder: "e.g., 9123456789", // Only remaining 10 digits
-                regex: /^9\d{9}$/, // For the 10 digits after +63
+                placeholder: "e.g., 9123456789",
+                regex: /^9\d{9}$/,
                 minLength: 10,
                 maxLength: 10,
                 error: "Please enter a valid 10-digit Philippine mobile number for shipping (e.g., 9123456789)."
@@ -374,26 +351,23 @@
                 error: "Please enter a valid 11-digit Chinese mobile number."
             }
         };
-        
-        // Function to dynamically set the height of the main content column
+
         function setMainContentColumnHeight() {
             requestAnimationFrame(() => {
                 const activeSection = shippingSection.classList.contains('active') ? shippingSection : paymentSection;
-                // Temporarily make it visible if it's hidden to get accurate scrollHeight
                 const originalVisibility = activeSection.style.visibility;
                 const originalPosition = activeSection.style.position;
                 const originalTransform = activeSection.style.transform;
                 const originalOpacity = activeSection.style.opacity;
 
                 activeSection.style.visibility = 'visible';
-                activeSection.style.position = 'relative'; // Ensure it's in flow for scrollHeight
-                activeSection.style.transform = 'translateX(0)'; // Reset transform for measurement
+                activeSection.style.position = 'relative';
+                activeSection.style.transform = 'translateX(0)';
                 activeSection.style.opacity = '1';
 
                 const targetHeight = activeSection.scrollHeight;
-                mainContentColumn.style.minHeight = `${targetHeight + 20}px`; // Use minHeight
+                mainContentColumn.style.minHeight = `${targetHeight + 20}px`;
 
-                // Revert section's temporary styles if it was hidden
                 activeSection.style.visibility = originalVisibility;
                 activeSection.style.position = originalPosition;
                 activeSection.style.transform = originalTransform;
@@ -401,7 +375,6 @@
             });
         }
 
-        // Function to control visibility of action buttons based on active section
         function updateActionButtonsVisibility() {
             if (shippingSection.classList.contains('active')) {
                 continueToPaymentButtonOutsideSummary.style.display = 'block';
@@ -415,7 +388,7 @@
         }
 
         function updateOrderSummary(cartItems) {
-            currentCartData = cartItems; // Store the fetched cart items
+            currentCartData = cartItems;
             subtotal = 0;
             let summaryHtml = '';
 
@@ -490,25 +463,22 @@
             }
         }
 
-        // Initial cart load based on login status
-        // `isLoggedIn` is a global constant set in header.php
         if (isLoggedIn) {
-            performActionViaFetch('/pcbuild/cart/get', 'GET')
+            performActionViaFetch('/cart/get', 'GET')
                 .then(response => {
                     if (response.success && response.cart) {
                         updateOrderSummary(response.cart);
                     } else {
-                        updateOrderSummary([]); // Pass an empty array if cart not fetched
+                        updateOrderSummary([]);
                         alertMessage('error', response.error || 'Failed to load cart for checkout.');
                     }
                 })
                 .catch(error => {
                     console.error('Error fetching cart for checkout:', error);
-                    updateOrderSummary([]); // Pass an empty array on fetch error
+                    updateOrderSummary([]);
                     alertMessage('error', 'An error occurred while loading your cart.');
                 });
         } else {
-            // For guests, still rely on localStorage
             updateOrderSummary(getCart()); // getCart is from main.js
         }
 
@@ -569,7 +539,6 @@
                 shippingMobileNumber.classList.remove('border-red-500', 'focus:border-red-500');
             }
 
-            // Populate hidden fields in the payment form with shipping data
             document.getElementById('h_first_name').value = document.getElementById('first_name').value;
             document.getElementById('h_last_name').value = document.getElementById('last_name').value;
             document.getElementById('h_email').value = document.getElementById('email').value;
@@ -582,10 +551,9 @@
             document.getElementById('h_notes').value = document.getElementById('notes').value;
             document.getElementById('h_shipping_method').value = document.querySelector('input[name="shipping_method"]:checked').value;
             document.getElementById('h_shipping_cost').value = shippingCost.toFixed(2);
-            document.getElementById('h_cart_items_json').value = JSON.stringify(currentCartData); // Use currentCartData
+            document.getElementById('h_cart_items_json').value = JSON.stringify(currentCartData);
             document.getElementById('h_total_amount').value = total.toFixed(2);
 
-            // Animate transition
             shippingSection.classList.remove('active');
             shippingSection.classList.add('slide-out');
 
@@ -593,13 +561,11 @@
             paymentSection.classList.add('active');
             paymentSection.classList.remove('translate-x-full', 'opacity-0');
 
-            // Set visibility after a slight delay to allow transform to start
             setTimeout(() => {
                 paymentSection.style.visibility = 'visible';
-                setMainContentColumnHeight(); // Adjust height (min-height) for parent content
-                updateOrderSummary(currentCartData); // Pass currentCartData explicitly
+                setMainContentColumnHeight();
+                updateOrderSummary(currentCartData);
 
-                // Directly control button visibility here for robustness
                 backToShippingButton.style.display = 'block';
                 placeOrderButton.style.display = 'block';
                 continueToPaymentButtonOutsideSummary.style.display = 'none';
@@ -624,16 +590,13 @@
 
             shippingSection.classList.add('active');
             shippingSection.classList.remove('slide-out');
-            shippingSection.style.visibility = 'visible'; // Ensure shipping is visible
-
-            // Trigger reflow/re-render to ensure height calculation is correct
+            shippingSection.style.visibility = 'visible';
             shippingSection.offsetWidth;
 
             setTimeout(() => {
-                setMainContentColumnHeight(); // Adjust height (min-height) for parent content
-                updateOrderSummary(currentCartData); // Pass currentCartData explicitly
+                setMainContentColumnHeight();
+                updateOrderSummary(currentCartData);
 
-                // Directly control button visibility here for robustness
                 backToShippingButton.style.display = 'none';
                 placeOrderButton.style.display = 'none';
                 continueToPaymentButtonOutsideSummary.style.display = 'block';
@@ -713,17 +676,14 @@
                     paymentMobileNumberError.classList.add('hidden');
                 }
             }
-            // If all validation passes, the form will submit
         });
 
         // Initial setup on page load
         shippingSection.classList.add('active');
         paymentSection.classList.add('translate-x-full', 'opacity-0');
-        paymentSection.style.visibility = 'hidden'; // Ensure hidden initially
+        paymentSection.style.visibility = 'hidden';
 
-        // Set initial height and button visibility
-        updateActionButtonsVisibility(); // Initial call to set correct button visibility
-
-        togglePaymentMobileNumberInput(); // Initialize payment mobile number visibility
+        updateActionButtonsVisibility();
+        togglePaymentMobileNumberInput();
     });
 </script>

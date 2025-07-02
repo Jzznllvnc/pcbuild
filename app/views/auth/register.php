@@ -24,7 +24,7 @@
             </div>
         <?php endif; ?>
 
-        <form action="/pcbuild/register" method="POST" class="space-y-6">
+        <form action="/register" method="POST" class="space-y-6">
             <div class="relative border border-gray-300 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-[--color-primary-orange] focus-within:border-[--color-primary-orange]">
                 <input type="text" name="username" id="username" required
                        class="peer w-full px-4 py-3 pt-6 text-lg bg-transparent outline-none focus:outline-none transition-all duration-200"
@@ -46,7 +46,7 @@
                 </label>
             </div>
             <div class="relative border border-gray-300 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-[--color-primary-orange] focus-within:border-[--color-primary-orange]">
-                <input type="password" name="password" id="password" required
+                <input type="password" name="password" id="password" required autocomplete="off"
                        class="peer w-full px-4 py-3 pt-6 text-lg bg-transparent outline-none focus:outline-none transition-all duration-200 pr-10"
                        placeholder=" ">
                 <label for="password" class="absolute left-4 top-1 text-sm text-gray-500 transition-all duration-200 pointer-events-none
@@ -63,7 +63,7 @@
                 </span>
             </div>
             <div class="relative border border-gray-300 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-[--color-primary-orange] focus-within:border-[--color-primary-orange]">
-                <input type="password" name="confirm_password" id="confirm_password" required
+                <input type="password" name="confirm_password" id="confirm_password" required autocomplete="off"
                        class="peer w-full px-4 py-3 pt-6 text-lg bg-transparent outline-none focus:outline-none transition-all duration-200 pr-10"
                        placeholder=" ">
                 <label for="confirm_password" class="absolute left-4 top-1 text-sm text-gray-500 transition-all duration-200 pointer-events-none
@@ -91,7 +91,7 @@
 
         <div class="mt-8 text-center">
             <p class="text-md text-gray-700">Already have an account?
-                <a href="/pcbuild/login" class="font-bold text-[--color-primary-orange] hover:text-[#e76c3e] hover:underline">Login here</a>
+                <a href="/login" class="font-bold text-[--color-primary-orange] hover:text-[#e76c3e] hover:underline">Login here</a>
             </p>
         </div>
     </div>

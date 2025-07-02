@@ -7,11 +7,9 @@
         </div>
     <?php else: ?>
         <div class="space-y-8">
-            <?php 
-            // Calculate the starting order number for display (latest order will be #1)
+            <?php
             $orderCountForDisplay = count($orders); 
-
-            foreach ($orders as $order): // $orders is already sorted by date DESC (latest first)
+            foreach ($orders as $order):
             ?>
                 <div class="bg-white rounded-lg shadow-xl overflow-hidden">
                     <div class="p-6 bg-gray-50 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center">
@@ -49,7 +47,7 @@
                     <?php endif; ?>
                 </div>
             <?php 
-            $orderCountForDisplay--; // Decrement the counter for the next (older) order
+            $orderCountForDisplay--;
             endforeach; 
             ?>
         </div>

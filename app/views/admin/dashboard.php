@@ -91,7 +91,7 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <a href="/pcbuild/admin/products" class="flex-1 p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 hover:shadow-lg transition-all duration-200 flex flex-col items-center justify-center text-center">
+            <a href="/admin/products" class="flex-1 p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 hover:shadow-lg transition-all duration-200 flex flex-col items-center justify-center text-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-[--color-dark-blue] mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
@@ -99,7 +99,7 @@
                 <p class="text-gray-600 mt-2">Add, edit, or delete products.</p>
             </a>
             
-            <a href="/pcbuild/admin/users" class="flex-1 p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 hover:shadow-lg transition-all duration-200 flex flex-col items-center justify-center text-center">
+            <a href="/admin/users" class="flex-1 p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 hover:shadow-lg transition-all duration-200 flex flex-col items-center justify-center text-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
@@ -142,8 +142,8 @@
                 datasets: [{
                     label: 'Total Revenue',
                     data: monthlyDataValues,
-                    backgroundColor: 'rgba(74, 144, 226, 0.2)', // Light blue fill
-                    borderColor: '#4A90E2', // Blue line color
+                    backgroundColor: 'rgba(74, 144, 226, 0.2)',
+                    borderColor: '#4A90E2',
                     borderWidth: 2,
                     pointRadius: 3,
                     pointBackgroundColor: '#4A90E2',
@@ -151,7 +151,7 @@
                     pointHoverRadius: 5,
                     pointHoverBackgroundColor: '#4A90E2',
                     pointHoverBorderColor: '#fff',
-                    tension: 0.4, // Smooth curve
+                    tension: 0.4,
                     fill: true
                 }]
             },
@@ -160,7 +160,7 @@
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: false, // Hide legend for cleaner look
+                        display: false,
                     },
                     tooltip: {
                         backgroundColor: 'rgba(0, 0, 0, 0.7)',
@@ -185,7 +185,7 @@
                         grid: {
                             display: true,
                             drawBorder: false,
-                            color: 'rgba(200, 200, 200, 0.2)' // Lighter grid lines
+                            color: 'rgba(200, 200, 200, 0.2)'
                         },
                         ticks: {
                             color: '#666',
@@ -193,13 +193,13 @@
                                 size: 10
                             },
                              callback: function(value) {
-                                return '$' + (value / 1000).toFixed(0) + 'k'; // Format as $Xk
+                                return '$' + (value / 1000).toFixed(0) + 'k';
                             }
                         }
                     },
                     x: {
                         grid: {
-                            display: false, // Hide vertical grid lines
+                            display: false,
                             drawBorder: false
                         },
                         ticks: {

@@ -22,7 +22,7 @@
         <?php endif; ?>
 
     <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
-        <form action="/pcbuild/admin/users" method="GET" class="flex-grow flex gap-2 max-w-lg">
+        <form action="/admin/users" method="GET" class="flex-grow flex gap-2 max-w-lg">
             <input type="text" name="search" placeholder="Search by username or email..."
                    value="<?php echo htmlspecialchars($searchTerm ?? ''); ?>"
                    class="flex-grow px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[--color-primary-orange]">
@@ -30,12 +30,12 @@
                 Search
             </button>
             <?php if (!empty($searchTerm)): ?>
-                <a href="/pcbuild/admin/users" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md shadow-lg transition-colors">
+                <a href="/admin/users" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md shadow-lg transition-colors">
                     Clear
                 </a>
             <?php endif; ?>
         </form>
-        <a href="/pcbuild/admin" class="text-[--color-primary-orange] hover:text-[#e76c3e] font-medium flex items-center">
+        <a href="/admin" class="text-[--color-primary-orange] hover:text-[#e76c3e] font-medium flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -59,12 +59,8 @@
                         <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                             Email
                         </th>
-                        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Signup Date
-                        </th>
-                        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Last Login
-                        </th>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden md:table-cell">Signup Date</th>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden md:table-cell">Last Login</th>
                         <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                             Admin Status
                         </th>
@@ -88,12 +84,8 @@
                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap"><?php echo htmlspecialchars($user['email']); ?></p>
                             </td>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap"><?php echo htmlspecialchars(date('Y-m-d H:i:s', strtotime($user['created_at']))); ?></p>
-                            </td>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap"><?php echo $user['last_login'] ? htmlspecialchars(date('Y-m-d H:i:s', strtotime($user['last_login']))) : 'N/A'; ?></p>
-                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm hidden md:table-cell"><p class="text-gray-900 whitespace-no-wrap"><?php echo htmlspecialchars(date('Y-m-d H:i:s', strtotime($user['created_at']))); ?></p></td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm hidden md:table-cell"><p class="text-gray-900 whitespace-no-wrap"><?php echo $user['last_login'] ? htmlspecialchars(date('Y-m-d H:i:s', strtotime($user['last_login']))) : 'N/A'; ?></p></td>
                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
                                     <?php if ($user['is_admin']): ?>
@@ -138,7 +130,7 @@
                                         Delete
                                     </button>
                                     
-                                    <a href="/pcbuild/admin/users/orders/<?php echo htmlspecialchars($user['id']); ?>"
+                                    <a href="/admin/users/orders/<?php echo htmlspecialchars($user['id']); ?>"
                                        class="text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded-md transition-colors">
                                         Orders
                                     </a>

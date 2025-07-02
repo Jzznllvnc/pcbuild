@@ -3,7 +3,7 @@
     <p class="text-center text-gray-700 mb-12 text-lg">Your <span class="text-[--color-primary-orange]">perfect build</span> starts here. Shop the latest CPUs, GPUs, and more!</p>
 
     <!-- Search and Filter Form -->
-    <form action="/pcbuild/products" method="GET" class="mb-8 flex flex-col sm:flex-row gap-4 items-center">
+    <form action="/products" method="GET" class="mb-8 flex flex-col sm:flex-row gap-4 items-center">
         <input type="text" name="search" placeholder="Search by name or description..."
                value="<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
                class="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[--color-primary-orange]">
@@ -25,14 +25,14 @@
     </form>
     <div class="mb-8 overflow-x-auto pb-4 scrollbar-hide">
         <div class="flex flex-nowrap space-x-3">
-            <a href="/pcbuild/products?search=<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
+            <a href="/products?search=<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
                class="flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium
                <?php echo empty($currentCategory) ? 'bg-[--color-dark-blue] text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'; ?>
                transition-colors duration-200 whitespace-nowrap">
                 All Products
             </a>
             <?php foreach ($categories as $cat): ?>
-                <a href="/pcbuild/products?category=<?php echo htmlspecialchars($cat); ?>&search=<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
+                <a href="/products?category=<?php echo htmlspecialchars($cat); ?>&search=<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
                    class="flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium
                    <?php echo ($currentCategory === $cat) ? 'bg-[--color-dark-blue] text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'; ?>
                    transition-colors duration-200 whitespace-nowrap">
@@ -60,11 +60,10 @@
                         </span>
                     </p>
                     <div class="flex space-x-2 mt-auto w-full justify-center">
-                        <a href="/pcbuild/products/<?php echo htmlspecialchars($product['id']); ?>"
+                        <a href="/products/<?php echo htmlspecialchars($product['id']); ?>"
                            class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-md transition-colors">
                             View Details
                         </a>
-                        <!-- New: Data attributes to pass product info to JS for modal -->
                         <button onclick="openQuantityModal(<?php echo htmlspecialchars(json_encode($product)); ?>)"
                                 class="flex-1 bg-[--color-dark-blue] hover:bg-[#1a2d3a] text-white font-bold py-2 px-4 rounded-md transition-colors
                                 <?php echo ($product['stock'] <= 0) ? 'opacity-50 cursor-not-allowed' : ''; ?>"
@@ -79,14 +78,14 @@
         <!-- Pagination Controls -->
         <div class="flex justify-center items-center space-x-2 mt-12">
             <?php if ($currentPage > 1): ?>
-                <a href="/pcbuild/products?page=<?php echo $currentPage - 1; ?>
+                <a href="/products?page=<?php echo $currentPage - 1; ?>
                     <?php echo $currentCategory ? '&category=' . htmlspecialchars($currentCategory) : ''; ?>
                     <?php echo $currentSearch ? '&search=' . htmlspecialchars($currentSearch) : ''; ?>"
                    class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">Previous</a>
             <?php endif; ?>
 
             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                <a href="/pcbuild/products?page=<?php echo $i; ?>
+                <a href="/products?page=<?php echo $i; ?>
                     <?php echo $currentCategory ? '&category=' . htmlspecialchars($currentCategory) : ''; ?>
                     <?php echo $currentSearch ? '&search=' . htmlspecialchars($currentSearch) : ''; ?>"
                    class="px-4 py-2 rounded-md
@@ -97,7 +96,7 @@
             <?php endfor; ?>
 
             <?php if ($currentPage < $totalPages): ?>
-                <a href="/pcbuild/products?page=<?php echo $currentPage + 1; ?>
+                <a href="/products?page=<?php echo $currentPage + 1; ?>
                     <?php echo $currentCategory ? '&category=' . htmlspecialchars($currentCategory) : ''; ?>
                     <?php echo $currentSearch ? '&search=' . htmlspecialchars($currentSearch) : ''; ?>"
                    class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">Next</a>
@@ -128,7 +127,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m0 0H6" />
                 </svg>
             </button>
-            <input type="hidden" id="quantity-input" value="1"> <!-- Hidden input to store actual value for JS -->
+            <input type="hidden" id="quantity-input" value="1">
             <p id="quantity-error" class="text-red-500 text-xs italic mt-2 hidden absolute bottom-12"></p>
         </div>
         <div class="flex justify-end space-x-3">

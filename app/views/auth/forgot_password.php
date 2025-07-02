@@ -27,7 +27,7 @@
             </div>
         <?php endif; ?>
 
-        <form action="/pcbuild/forgot-password" method="POST" class="space-y-6">
+        <form action="/forgot-password" method="POST" class="space-y-6">
             <div class="relative border border-gray-300 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-[--color-primary-orange] focus-within:border-[--color-primary-orange]">
                 <input type="text" name="identifier" id="identifier" required
                        class="peer w-full px-4 py-3 pt-6 text-lg bg-transparent outline-none focus:outline-none transition-all duration-200"
@@ -70,7 +70,7 @@
 
         <div class="mt-8 text-center">
             <p class="text-md text-gray-700">Remembered your password?
-                <a href="/pcbuild/login" class="font-bold text-[--color-dark-blue] hover:text-[#1a2d3a] hover:underline">Login here</a>
+                <a href="/login" class="font-bold text-[--color-dark-blue] hover:text-[#1a2d3a] hover:underline">Login here</a>
             </p>
         </div>
     </div>
@@ -79,33 +79,23 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const captchaDisplay = document.getElementById('captcha-code-display');
-    const captchaText = captchaDisplay.textContent.trim(); // Get the plain text code
-    captchaDisplay.innerHTML = ''; // Clear original content to rebuild with spans
-
-    // Define a set of colors to randomly apply
-    const colors = ['#FE7743', '#273F4F', '#475569']; // Primary orange, Dark blue, Gray
+    const captchaText = captchaDisplay.textContent.trim();
+    captchaDisplay.innerHTML = '';
+    const colors = ['#FE7743', '#273F4F', '#475569'];
     
     for (let i = 0; i < captchaText.length; i++) {
         const charSpan = document.createElement('span');
         charSpan.textContent = captchaText[i];
-        charSpan.style.display = 'inline-block'; // Necessary for transform to work on inline elements
+        charSpan.style.display = 'inline-block';
         
         // Apply random rotation (-5deg to +5deg)
-        charSpan.style.transform = `rotate(${Math.random() * 10 - 5}deg)`; 
-        
-        // Apply random right margin (0px to 3px)
-        charSpan.style.marginRight = `${Math.random() * 3}px`; 
-        
-        // Apply random color from the predefined list
+        charSpan.style.transform = `rotate(${Math.random() * 10 - 5}deg)`;
+        charSpan.style.marginRight = `${Math.random() * 3}px`;
         charSpan.style.color = colors[Math.floor(Math.random() * colors.length)];
-        
-        // Apply random font size (from 30px to 40px) to make it even more varied
         charSpan.style.fontSize = `${30 + Math.random() * 10}px`; 
         
         captchaDisplay.appendChild(charSpan);
     }
-
-    // Re-attach the click to refresh functionality to the new elements
     captchaDisplay.onclick = function() {
         location.reload();
     };

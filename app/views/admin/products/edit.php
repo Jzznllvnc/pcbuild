@@ -11,7 +11,7 @@
             </div>
         <?php endif; ?>
 
-    <form action="/pcbuild/admin/products/edit/<?php echo htmlspecialchars($product['id']); ?>" method="POST" class="space-y-6">
+    <form action="/admin/products/edit/<?php echo htmlspecialchars($product['id']); ?>" method="POST" class="space-y-6" enctype="multipart/form-data">
         <div>
             <label for="name" class="block text-sm font-medium text-gray-700">Product Name <span class="text-red-500">*</span></label>
             <input type="text" name="name" id="name" required
@@ -37,12 +37,20 @@
                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[--color-primary-orange] focus:border-[--color-primary-orange] sm:text-sm">
         </div>
         <div>
-            <label for="image_url" class="block text-sm font-medium text-gray-700">Image URL</label>
-            <input type="url" name="image_url" id="image_url"
-                   value="<?php echo htmlspecialchars($product['image_url'] ?? ''); ?>"
-                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[--color-primary-orange] focus:border-[--color-primary-orange] sm:text-sm">
+            <label for="image_upload" class="block text-sm font-medium text-gray-700">Upload New Image (Optional)</label>
+            <input type="file" name="image_upload" id="image_upload" accept="image/*"
+                   class="mt-1 block w-full text-sm text-gray-500
+                   file:mr-4 file:py-2 file:px-4
+                   file:rounded-md file:border-0
+                   file:text-sm file:font-semibold
+                   file:bg-[--color-dark-blue] file:text-white
+                   hover:file:bg-[#1a2d3a]"/>
+            <p class="mt-1 text-sm text-gray-500">Upload a new image to replace the current one. Only image files (jpg, png, gif, webp) are allowed. Max 2MB.</p>
             <?php if (!empty($product['image_url'])): ?>
-                <img src="<?php echo htmlspecialchars($product['image_url']); ?>" alt="Current Product Image" class="mt-2 w-24 h-24 object-contain rounded-md border border-gray-200">
+                <div class="mt-2">
+                    <label class="block text-sm font-medium text-gray-700">Current Image:</label>
+                    <img id="current_product_image_display" src="<?php echo htmlspecialchars($product['image_url']); ?>" alt="Current Product Image" class="mt-2 w-24 h-24 object-contain rounded-md border border-gray-200">
+                    </div>
             <?php endif; ?>
         </div>
         <div>
@@ -67,7 +75,7 @@
         </div>
 
         <div class="flex justify-end space-x-4">
-            <a href="/pcbuild/admin/products" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md shadow-lg transition-colors">
+            <a href="/admin/products" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md shadow-lg transition-colors">
                 Cancel
             </a>
             <button type="submit"
@@ -77,3 +85,23 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const imageUploadInput = document.getElementById('image_upload');
+        const currentImageDisplay = document.getElementById('current_product_image_display');
+
+        if (imageUploadInput && currentImageDisplay) {
+            imageUploadInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        currentImageDisplay.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    });
+</script>

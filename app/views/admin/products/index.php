@@ -8,16 +8,16 @@
         </div>
     <?php endif; ?>
 
-    <div class="flex justify-between items-center mb-6">
-        <a href="/pcbuild/admin/products/create" class="bg-[--color-dark-blue] hover:bg-[#1a2d3a] text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors">
+    <div class="flex flex-col sm:flex-row justify-between items-center mb-6 flex-wrap gap-4">
+        <a href="/admin/products/create" class="bg-[--color-dark-blue] hover:bg-[#1a2d3a] text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors w-fit sm:w-auto text-center">
             Add New Product
         </a>
-        <a href="/pcbuild/admin" class="text-[--color-primary-orange] hover:text-[#e76c3e] font-medium">
+        <a href="/admin" class="text-[--color-primary-orange] hover:text-[#e76c3e] font-medium w-fit sm:w-auto text-center">
             &larr; Back to Admin Dashboard
         </a>
     </div>
 
-    <form action="/pcbuild/admin/products" method="GET" class="mb-8 flex flex-col sm:flex-row gap-4 items-center">
+    <form action="/admin/products" method="GET" class="mb-8 flex flex-col sm:flex-row gap-4 items-center">
         <input type="text" name="search" placeholder="Search by name or description..."
                value="<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
                class="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[--color-primary-orange]">
@@ -26,7 +26,7 @@
             Search
         </button>
         <?php if (!empty($currentSearch) || !empty($currentCategory)): ?>
-            <a href="/pcbuild/admin/products" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-md transition-colors shadow-md">
+            <a href="/admin/products" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-md transition-colors shadow-md">
                 Clear Filters
             </a>
         <?php endif; ?>
@@ -37,14 +37,14 @@
             <?php
             $categories = ['CPU', 'GPU', 'Motherboard', 'RAM', 'Storage', 'PSU', 'Case', 'Cooler', 'Keyboard', 'Monitor', 'Mouse'];
             ?>
-            <a href="/pcbuild/admin/products?search=<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
+            <a href="/admin/products?search=<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
                class="flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium
                <?php echo empty($currentCategory) ? 'bg-[--color-dark-blue] text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'; ?>
                transition-colors duration-200 whitespace-nowrap">
                 All Products
             </a>
             <?php foreach ($categories as $cat): ?>
-                <a href="/pcbuild/admin/products?category=<?php echo urlencode($cat); ?>&search=<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
+                <a href="/admin/products?category=<?php echo urlencode($cat); ?>&search=<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
                    class="flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium
                    <?php echo ($currentCategory === $cat) ? 'bg-[--color-dark-blue] text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'; ?>
                    transition-colors duration-200 whitespace-nowrap">
@@ -70,9 +70,7 @@
                         <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                             Name
                         </th>
-                        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Category
-                        </th>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden md:table-cell">Category</th>
                         <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                             Price
                         </th>
@@ -97,9 +95,7 @@
                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap"><?php echo htmlspecialchars($product['name']); ?></p>
                             </td>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap capitalize"><?php echo htmlspecialchars($product['category'] ?? 'N/A'); ?></p>
-                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm hidden md:table-cell"><p class="text-gray-900 whitespace-no-wrap capitalize"><?php echo htmlspecialchars($product['category'] ?? 'N/A'); ?></p></td>
                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">$<?php echo number_format($product['price'], 2); ?></p>
                             </td>
@@ -108,7 +104,7 @@
                             </td>
                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                 <div class="flex space-x-2">
-                                    <a href="/pcbuild/admin/products/edit/<?php echo htmlspecialchars($product['id']); ?>"
+                                    <a href="/admin/products/edit/<?php echo htmlspecialchars($product['id']); ?>"
                                        class="text-[--color-primary-orange] hover:text-[#e76c3e]" title="Edit">
                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -138,16 +134,11 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Check for success message in URL query parameters
         const urlParams = new URLSearchParams(window.location.search);
         const successMsg = urlParams.get('success_msg');
 
         if (successMsg) {
-            // Display the success message using the alertMessage function from main.js
             alertMessage('success', decodeURIComponent(successMsg));
-
-            // Optional: Remove the query parameter from the URL to clean it up
-            // and prevent the message from reappearing on refresh.
             urlParams.delete('success_msg');
             const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
             window.history.replaceState({}, document.title, newUrl);

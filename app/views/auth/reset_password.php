@@ -25,8 +25,8 @@
             </div>
         <?php endif; ?>
 
-        <?php if (!isset($error_code_mismatch) || $error_code_mismatch === false): // Only show form if no initial error from previous step ?>
-            <form action="/pcbuild/reset-password" method="POST" class="space-y-6">
+        <?php if (!isset($error_code_mismatch) || $error_code_mismatch === false):?>
+            <form action="/reset-password" method="POST" class="space-y-6">
                 <div class="relative border border-gray-300 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-[--color-primary-orange] focus-within:border-[--color-primary-orange]">
                     <input type="password" name="password" id="password" required
                            class="peer w-full px-4 py-3 pt-6 text-lg bg-transparent outline-none focus:outline-none transition-all duration-200 pr-10"
@@ -74,7 +74,7 @@
 
         <div class="mt-8 text-center">
             <p class="text-md text-gray-700">Go back to
-                <a href="/pcbuild/login" class="font-bold text-[--color-dark-blue] hover:text-[#1a2d3a] hover:underline">Login</a>
+                <a href="/login" class="font-bold text-[--color-dark-blue] hover:text-[#1a2d3a] hover:underline">Login</a>
             </p>
         </div>
     </div>

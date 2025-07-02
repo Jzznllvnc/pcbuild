@@ -1,14 +1,8 @@
-<?php
-// Note: header and footer are already included by BaseController->view method.
-// No need to include them directly here.
-// include BASE_PATH . 'includes/header.php'; // REMOVE THIS LINE
-?>
-
 <div class="container mx-auto p-8 pt-20 bg-white shadow-lg rounded-lg mt-40 mb-16 max-w-4xl">
     <h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center"><?php echo htmlspecialchars($title); ?></h1>
 
     <div class="flex justify-start mb-6">
-        <a href="/pcbuild/admin/users" class="text-[--color-primary-orange] hover:text-[#e76c3e] font-medium flex items-center">
+        <a href="/admin/users" class="text-[--color-primary-orange] hover:text-[#e76c3e] font-medium flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -23,10 +17,9 @@
     <?php else: ?>
         <div id="ordersAccordion" class="space-y-6">
             <?php 
-            // Calculate the starting order number for display (latest order will be #1)
             $orderCountForDisplay = count($orders); 
 
-            foreach ($orders as $order): // $orders is already sorted by date DESC (latest first)
+            foreach ($orders as $order):
             ?>
                 <div class="bg-gray-50 border border-gray-200 rounded-lg shadow-sm overflow-hidden">
                     <h2 class="text-lg font-semibold text-gray-800 p-4 bg-gray-100 cursor-pointer flex justify-between items-center" 
@@ -112,7 +105,7 @@
                     </div>
                 </div>
             <?php 
-            $orderCountForDisplay--; // Decrement the counter for the next (older) order
+            $orderCountForDisplay--;
             endforeach; 
             ?>
         </div>
@@ -132,5 +125,3 @@
         }
     }
 </script>
-
-<?php // include BASE_PATH . 'includes/footer.php'; // REMOVE THIS LINE ?>

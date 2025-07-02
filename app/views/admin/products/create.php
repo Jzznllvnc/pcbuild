@@ -11,7 +11,7 @@
             </div>
         <?php endif; ?>
 
-    <form action="/pcbuild/admin/products/create" method="POST" class="space-y-6">
+    <form action="/admin/products/create" method="POST" class="space-y-6" enctype="multipart/form-data">
         <div>
             <label for="name" class="block text-sm font-medium text-gray-700">Product Name <span class="text-red-500">*</span></label>
             <input type="text" name="name" id="name" required
@@ -38,10 +38,15 @@
                    placeholder="e.g., 599.99">
         </div>
         <div>
-            <label for="image_url" class="block text-sm font-medium text-gray-700">Image URL</label>
-            <input type="url" name="image_url" id="image_url"
-                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[--color-primary-orange] focus:border-[--color-primary-orange] sm:text-sm"
-                   placeholder="https://example.com/product-image.jpg">
+            <label for="image_upload" class="block text-sm font-medium text-gray-700">Upload Image</label>
+            <input type="file" name="image_upload" id="image_upload" accept="image/*"
+                   class="mt-1 block w-full text-sm text-gray-500
+                   file:mr-4 file:py-2 file:px-4
+                   file:rounded-md file:border-0
+                   file:text-sm file:font-semibold
+                   file:bg-[--color-dark-blue] file:text-white
+                   hover:file:bg-[#1a2d3a]"/>
+            <p class="mt-1 text-sm text-gray-500">Only image files (jpg, png, gif, webp) are allowed. Max 2MB.</p>
         </div>
         <div>
             <label for="category" class="block text-sm font-medium text-gray-700">Category <span class="text-red-500">*</span></label>
@@ -59,7 +64,6 @@
                 <option value="Monitor">Monitor</option>
                 <option value="Keyboard">Keyboard</option>
                 <option value="Mouse">Mouse</option>
-                <option value="Webcam">Webcam</option>
                 </select>
         </div>
         <div>
@@ -70,7 +74,7 @@
         </div>
 
         <div class="flex justify-end space-x-4">
-            <a href="/pcbuild/admin/products" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md shadow-lg transition-colors">
+            <a href="/admin/products" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md shadow-lg transition-colors">
                 Cancel
             </a>
             <button type="submit"
