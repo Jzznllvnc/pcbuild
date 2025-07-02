@@ -15,10 +15,10 @@
 // For demonstration purposes, define directly.
 // IMPORTANT: In a production environment, NEVER hardcode credentials like this.
 // Use environment variables or a proper config management system.
-define('DB_HOST', 'sql208.infinityfree.com');
-define('DB_NAME', 'if0_39143136_pcbuild_db');
-define('DB_USER', 'if0_39143136');
-define('DB_PASS', 'jazzatinfinity5');
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'pcbuild_db');
+define('DB_USER', 'root');
+define('DB_PASS', '');
 
 try {
     // Create a new PDO instance
