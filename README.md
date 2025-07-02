@@ -1,8 +1,8 @@
-# PC Build E-commerce Application
+# 💻 PC Build E-commerce Application
 
 This is a web-based e-commerce application designed to help users build custom PCs, browse components, manage their orders, and interact with an AI assistant. The application includes both user-facing functionalities and an administrative panel for managing products and users.
 
-## Features
+## ✨ Features
 
 * **User Authentication**: Secure user registration, login, password recovery (forgot/reset password).
 * **Product Catalog**: Browse and view detailed information about various PC components.
@@ -12,19 +12,20 @@ This is a web-based e-commerce application designed to help users build custom P
 * **Order History**: Users can view their past orders.
 * **AI Chat Assistant**: An integrated AI chat feature to assist users with their queries (e.g., component compatibility, build advice).
 * **Admin Panel**:
-    * Dashboard for an overview of the application.
-    * User Management: View and manage registered users and their orders.
-    * Product Management: Create, edit, and delete products from the catalog.
+    * 📊 Dashboard for an overview of the application.
+    * 👥 User Management: View and manage registered users and their orders.
+    * 📦 Product Management: Create, edit, and delete products from the catalog.
 * **Image Uploads**: Functionality for handling product image uploads.
 
-## Technologies Used
+## 🛠️ Technologies Used
 
 * **Backend**: PHP
-* **Frontend**: HTML, CSS, JavaScript (specifically `assets/js/main.js` for client-side interactions)
+* **Frontend**: HTML, CSS, TailwindCSS, JavaScript (specifically `assets/js/main.js` for client-side interactions)
 * **Database**: MySQL (configured via `config/database.php`)
 * **Routing**: Custom routing implementation (`app/Router.php`)
+* **Hosting**: InfinityFree
 
-## Setup and Installation
+## 🚀 Setup and Installation
 
 To get this project up and running on your local machine, follow these steps:
 
@@ -63,19 +64,27 @@ To get this project up and running on your local machine, follow these steps:
     * Point your web server's document root to the project's public directory (e.g., if `index.php` is in the root, point to that directory).
     * Open your web browser and navigate to the application's URL (e.g., `http://localhost/`).
 
-## Usage
+## ⚠️ Important Notes
 
-* **Register a new account** or **log in** if you have existing credentials.
-* **Browse products** from the main navigation.
-* **Add products to your cart** and proceed to checkout.
-* **Use the PC Builder** to assemble a custom computer.
-* **Interact with the AI Chat** for assistance.
-* **Admin Access**: If you have administrator privileges, navigate to the `/admin` route (e.g., `http://localhost/admin`) to manage users and products.
+* **Forgot Password Functionality**: The "Forgot Password" feature (`app/views/auth/forgot_password.php`, `app/controllers/AuthController.php`) is currently a dummy implementation for demonstration purposes only. It does not include actual email sending, token generation, or secure password reset mechanisms. **This functionality is not secure and should NOT be used in a production environment.** A complete and secure implementation would require integrating with an email service and robust token validation.
 
-## Contributing
+* **Newsletter Subscription (Footer)**: The newsletter subscription form in the footer (`includes/footer.php`) is a front-end-only simulation. It does not actually save email addresses to a database or send out newsletters. **This feature is not functional for real subscriptions and should NOT be used in a production environment without proper backend implementation.**
+
+* **Payment System**: The checkout process includes a simulated payment system (`app/controllers/CheckoutController.php`). While it captures payment method details, it **does NOT integrate with any real payment gateways (e.g., GCash, PayPal) and does not handle actual financial transactions.** All payments are assumed to be successful for demonstration purposes. **This system is NOT secure for real-world transactions and must be replaced with a live payment gateway integration before any production use.**
+
+## 🎯 Usage
+
+* ➡️ **Register a new account** or **log in** if you have existing credentials.
+* 🛍️ **Browse products** from the main navigation.
+* 🛒 **Add products to your cart** and proceed to checkout.
+* 🔧 **Use the PC Builder** to assemble a custom computer.
+* 💬 **Interact with the AI Chat** for assistance.
+* ⚙️ **Admin Access**: If you have administrator privileges, navigate to the `/admin` route (e.g., `http://localhost/admin`) to manage users and products.
+
+## 🤝 Contributing
 
 Contributions are welcome! Please feel free to fork the repository, make your changes, and submit a pull request.
 
-## License
+## 📄 License
 
-This project is open-source and available under the [MIT License](LICENSE) (or specify your chosen license).
+This project is open-source and available under the [MIT License](LICENSE).
