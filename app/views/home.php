@@ -116,10 +116,16 @@
     </div>
 </div>
 
-<div class="bg-white py-16" id="crafting-process-section">
-    <div class="container mx-auto px-4 text-center">
-        <h2 class="text-sm font-bold uppercase tracking-widest text-gray-500 mb-16">THE CRAFTING PROCESS</h2>
-        <h2 class="text-5xl sm:text-6xl font-extrabold text-gray-900 mb-12 leading-tight flex flex-col items-center justify-center overflow-hidden">
+<div class="relative py-16 overflow-hidden" id="crafting-process-section">
+    <video class="absolute inset-0 w-full h-full object-cover z-0" autoplay loop muted playsinline poster="/assets/videos/homevid.png">
+        <source src="/assets/videos/homevid.webm" type="video/webm">
+        <source src="/assets/videos/homevid.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="absolute inset-0 bg-black opacity-40 z-0"></div>
+    <div class="relative z-10 container mx-auto px-4 text-center">
+        <h2 class="text-sm font-bold uppercase tracking-widest text-white mb-16">THE CRAFTING PROCESS</h2>
+        <h2 class="text-5xl sm:text-6xl font-extrabold text-white mb-12 leading-tight flex flex-col items-center justify-center overflow-hidden">
             <span class="inline-block translate-x-[-100%] opacity-0 transition-all duration-1000 ease-out animate-on-scroll-left-in" id="build-your-dream-pc">
                 BUILD YOUR <span class="text-[--color-primary-orange]">DREAM PC</span>
             </span>
@@ -135,8 +141,8 @@
                         <div class="text-4xl font-extrabold text-[--color-primary-orange]">1</div>
                     </div>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-3 uppercase tracking-wider">Select Components</h3>
-                <p class="text-gray-700 leading-relaxed text-base">Handpick your CPU, GPU, Motherboard, and RAM from our extensive catalog to form the foundation of your build.</p>
+                <h3 class="text-xl font-bold text-white mb-3 uppercase tracking-wider">Select Components</h3>
+                <p class="text-white leading-relaxed text-base">Handpick your CPU, GPU, Motherboard, and RAM from our extensive catalog to form the foundation of your build.</p>
             </div>
 
             <div class="px-8 py-16 border-b md:border-b-0 md:border-r border-gray-200 flex flex-col items-center text-center card-animate-on-scroll card-blur-initial">
@@ -145,8 +151,8 @@
                         <div class="text-4xl font-extrabold text-[--color-dark-blue]">2</div>
                     </div>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-3 uppercase tracking-wider">Check Compatibility</h3>
-                <p class="text-gray-700 leading-relaxed text-base">Our intelligent builder instantly verifies component compatibility, flagging any potential issues and guaranteeing a smooth assembly.</p>
+                <h3 class="text-xl font-bold text-white mb-3 uppercase tracking-wider">Check Compatibility</h3>
+                <p class="text-white leading-relaxed text-base">Our intelligent builder instantly verifies component compatibility, flagging any potential issues and guaranteeing a smooth assembly.</p>
             </div>
 
             <div class="px-8 py-16 flex flex-col items-center text-center card-animate-on-scroll card-blur-initial">
@@ -155,8 +161,8 @@
                         <div class="text-4xl font-extrabold text-gray-700">3</div>
                     </div>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-3 uppercase tracking-wider">Finalize & Order</h3>
-                <p class="text-gray-700 leading-relaxed text-base">Once you're satisfied with your custom PC build, confidently place your order and prepare for a superior computing experience.</p>
+                <h3 class="text-xl font-bold text-white mb-3 uppercase tracking-wider">Finalize & Order</h3>
+                <p class="text-white leading-relaxed text-base">Once you're satisfied with your custom PC build, confidently place your order and prepare for a superior computing experience.</p>
             </div>
         </div>
 
