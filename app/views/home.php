@@ -79,40 +79,40 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="p-8 border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center feature-card-hover text-white">
                 <div class="text-5xl mb-4 text-[--color-primary-orange]">🛠️</div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Build Your Dream PC</h3>
-                <p class="text-gray-700 mb-6 flex-grow">Select components, check compatibility, and get a build rating tailored to your needs. Create the ultimate machine with ease!</p>
+                <h3 class="text-2xl font-bold text-white mb-3">Build Your Dream PC</h3>
+                <p class="text-white mb-6 flex-grow">Select components, check compatibility, and get a build rating tailored to your needs. Create the ultimate machine with ease!</p>
             </div>
 
             <div class="p-8 border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center feature-card-hover text-white">
                 <div class="text-5xl mb-4 text-green-600">🛒</div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Vast Product Selection</h3>
-                <p class="text-gray-700 mb-6 flex-grow">Browse thousands of GPUs, CPUs, Motherboards, RAM, Storage, and more from top brands. Find exactly what you need!</p>
+                <h3 class="text-2xl font-bold text-white mb-3">Vast Product Selection</h3>
+                <p class="text-white mb-6 flex-grow">Browse thousands of GPUs, CPUs, Motherboards, RAM, Storage, and more from top brands. Find exactly what you need!</p>
             </div>
 
             <div class="p-8 border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center feature-card-hover text-white">
                 <div class="text-5xl mb-4 text-purple-600">🤖</div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">AI-Powered Assistance</h3>
-                <p class="text-gray-700 mb-6 flex-grow">Get instant answers and expert advice on components, compatibility, or general build advice from our very own Kraft-E AI chat assistant.</p>
+                <h3 class="text-2xl font-bold text-white mb-3">AI-Powered Assistance</h3>
+                <p class="text-white mb-6 flex-grow">Get instant answers and expert advice on components, compatibility, or general build advice from our very own Kraft-E AI chat assistant.</p>
             </div>
 
             <div class="p-8 border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center feature-card-hover text-white">
                 <div class="text-5xl mb-4 text-[--color-dark-blue]">😎</div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Ease of Use</h3>
-                <p class="text-gray-700 mb-6 flex-grow">Our system is made to be a universal experience, you will not get lost navigating your needs.</p>
+                <h3 class="text-2xl font-bold text-white mb-3">Ease of Use</h3>
+                <p class="text-white mb-6 flex-grow">Our system is made to be a universal experience, you will not get lost navigating your needs.</p>
             </div>
 
             <div class="p-8 border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center feature-card-hover text-white">
                 <div class="text-5xl mb-4 text-[--color-primary-orange]">🔒</div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Secure & Seamless Checkout</h3>
-                <p class="text-gray-700 mb-6 flex-grow">Shop with confidence using our secure payment gateways and enjoy a hassle-free checkout process.</p>
+                <h3 class="text-2xl font-bold text-white mb-3">Secure & Seamless Checkout</h3>
+                <p class="text-white mb-6 flex-grow">Shop with confidence using our secure payment gateways and enjoy a hassle-free checkout process.</p>
             </div>
 
             <div class="p-8 border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center feature-card-hover text-white">
                 <div class="text-5xl mb-4 text-gray-700">📦</div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Real-time Stock Updates</h3>
-                <p class="text-gray-700 mb-6 flex-grow">Always know what's available with up-to-the-minute stock information on all our products.</p>
+                <h3 class="text-2xl font-bold text-white mb-3">Real-time Stock Updates</h3>
+                <p class="text-white mb-6 flex-grow">Always know what's available with up-to-the-minute stock information on all our products.</p>
             </div>
-            </div>
+        </div>
     </div>
 </div>
 
@@ -174,66 +174,69 @@
     </div>
 </div>
 
-<div class="bg-gray-100 py-20"> <div class="container mx-auto px-4 text-center">
-        <h2 class="text-sm font-bold uppercase tracking-widest text-gray-500 mb-10">WHAT OUR CUSTOMERS SAY</h2>
-        <h2 class="text-5xl sm:text-6xl font-extrabold text-gray-900 mb-24 leading-tight">
-            HEAR FROM OUR <span class="text-[--color-primary-orange]">SATISFIED BUILDERS</span>
-        </h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
-            <div class="bg-white p-8 rounded-lg shadow-md flex flex-col items-center text-center">
-                <div class="flex justify-center mb-4">
-                    <svg class="h-5 w-5 text-yellow-400 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.922 1.48 8.283L12 18.896l-7.416 3.815 1.48-8.283-6.064-5.922 8.332-1.151z"/></svg>
-                    <svg class="h-5 w-5 text-yellow-400 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.922 1.48 8.283L12 18.896l-7.416 3.815 1.48-8.283-6.064-5.922 8.332-1.151z"/></svg>
-                    <svg class="h-5 w-5 text-yellow-400 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.922 1.48 8.283L12 18.896l-7.416 3.815 1.48-8.283-6.064-5.922 8.332-1.151z"/></svg>
-                    <svg class="h-5 w-5 text-yellow-400 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.922 1.48 8.283L12 18.896l-7.416 3.815 1.48-8.283-6.064-5.922 8.332-1.151z"/></svg>
-                    <svg class="h-5 w-5 text-yellow-400 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.922 1.48 8.283L12 18.896l-7.416 3.815 1.48-8.283-6.064-5.922 8.332-1.151z"/></svg>
-                </div>
-                <div class="flex-grow flex flex-col justify-between w-full">
-                    <p class="text-gray-700 italic mb-6">"CraftWise made building my first PC incredibly easy and fun! The compatibility checker saved me so much hassle. Highly recommend!"</p>
-                    <div>
-                        <p class="font-bold text-gray-900">- Alex R.</p>
-                        <p class="text-gray-600 text-sm">Gaming Enthusiast</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white p-8 rounded-lg shadow-md flex flex-col items-center text-center">
-                <div class="flex justify-center mb-4">
-                    <svg class="h-5 w-5 text-yellow-400 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.922 1.48 8.283L12 18.896l-7.416 3.815 1.48-8.283-6.064-5.922 8.332-1.151z"/></svg>
-                    <svg class="h-5 w-5 text-yellow-400 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.922 1.48 8.283L12 18.896l-7.416 3.815 1.48-8.283-6.064-5.922 8.332-1.151z"/></svg>
-                    <svg class="h-5 w-5 text-yellow-400 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.922 1.48 8.283L12 18.896l-7.416 3.815 1.48-8.283-6.064-5.922 8.332-1.151z"/></svg>
-                    <svg class="h-5 w-5 text-yellow-400 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.922 1.48 8.283L12 18.896l-7.416 3.815 1.48-8.283-6.064-5.922 8.332-1.151z"/></svg>
-                    <svg class="h-5 w-5 text-yellow-400 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.922 1.48 8.283L12 18.896l-7.416 3.815 1.48-8.283-6.064-5.922 8.332-1.151z"/></svg>
-                </div>
-                <div class="flex-grow flex flex-col justify-between w-full">
-                    <p class="text-gray-700 italic mb-6">"The product selection is massive, and their AI assistant is a game-changer. I got exactly the advice I needed for my professional workstation."</p>
-                    <div>
-                        <p class="font-bold text-gray-900">- Sarah L.</p>
-                        <p class="text-gray-600 text-sm">Graphic Designer</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white p-8 rounded-lg shadow-md flex flex-col items-center text-center">
-                <div class="flex justify-center mb-4">
-                    <svg class="h-5 w-5 text-yellow-400 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.922 1.48 8.283L12 18.896l-7.416 3.815 1.48-8.283-6.064-5.922 8.332-1.151z"/></svg>
-                    <svg class="h-5 w-5 text-yellow-400 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.922 1.48 8.283L12 18.896l-7.416 3.815 1.48-8.283-6.064-5.922 8.332-1.151z"/></svg>
-                    <svg class="h-5 w-5 text-yellow-400 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.922 1.48 8.283L12 18.896l-7.416 3.815 1.48-8.283-6.064-5.922 8.332-1.151z"/></svg>
-                    <svg class="h-5 w-5 text-yellow-400 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.922 1.48 8.283L12 18.896l-7.416 3.815 1.48-8.283-6.064-5.922 8.332-1.151z"/></svg>
-                    <svg class="h-5 w-5 text-yellow-400 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.922 1.48 8.283L12 18.896l-7.416 3.815 1.48-8.283-6.064-5.922 8.332-1.151z"/></svg>
-                </div>
-                <div class="flex-grow flex flex-col justify-between w-full">
-                    <p class="text-gray-700 italic mb-6">"Unmatched customer service and quality components. My new PC is a beast, all thanks to CraftWise!"</p>
-                    <div>
-                        <p class="font-bold text-gray-900">- Mike D.</p>
-                        <p class="text-gray-600 text-sm">Streaming Professional</p>
-                    </div>
-                </div>
-            </div>
+<!-- FAQ Section: PC Build Related -->
+<div class="bg-white py-20">
+  <div class="container mx-auto px-4 max-w-4xl">
+    <h2 class="text-5xl font-extrabold mb-10 text-gray-900"><span class="text-[--color-primary-orange]">F</span>requently <span class="text-[--color-primary-orange]">A</span>sked <span class="text-[--color-primary-orange]">Q</span>uestions</h2>
+    <div id="faq-list" class="divide-y divide-gray-200">
+      <div class="faq-item py-8">
+        <button type="button" class="faq-question flex justify-between items-center w-full text-left text-2xl font-medium text-gray-900 focus:outline-none">
+          <span>How do I start building a PC on CraftWise?</span>
+          <span class="faq-toggle-icon transition-transform duration-300 text-3xl">+</span>
+        </button>
+        <div class="faq-answer mt-6 text-gray-700 text-base max-h-0 overflow-hidden transition-all duration-500">
+          Click "Build Your PC" on the homepage or navigation. You'll be guided step-by-step to select compatible components and see your build rating in real time.
         </div>
+      </div>
+      <div class="faq-item py-8">
+        <button type="button" class="faq-question flex justify-between items-center w-full text-left text-2xl font-medium text-gray-900 focus:outline-none">
+          <span>Does CraftWise check component compatibility?</span>
+          <span class="faq-toggle-icon transition-transform duration-300 text-3xl">+</span>
+        </button>
+        <div class="faq-answer mt-6 text-gray-700 text-base max-h-0 overflow-hidden transition-all duration-500">
+          Yes! Our system automatically checks compatibility between your selected CPU, motherboard, RAM, GPU, and more, warning you of any issues before you order.
+        </div>
+      </div>
+      <div class="faq-item py-8">
+        <button type="button" class="faq-question flex justify-between items-center w-full text-left text-2xl font-medium text-gray-900 focus:outline-none">
+          <span>Can I get help choosing parts?</span>
+          <span class="faq-toggle-icon transition-transform duration-300 text-3xl">+</span>
+        </button>
+        <div class="faq-answer mt-6 text-gray-700 text-base max-h-0 overflow-hidden transition-all duration-500">
+          Absolutely! Use our Kraft-E AI chat assistant for instant advice, or browse our guides for tips on picking the best components for your needs.
+        </div>
+      </div>
+      <div class="faq-item py-8">
+        <button type="button" class="faq-question flex justify-between items-center w-full text-left text-2xl font-medium text-gray-900 focus:outline-none">
+          <span>Do you show real-time stock and prices?</span>
+          <span class="faq-toggle-icon transition-transform duration-300 text-3xl">+</span>
+        </button>
+        <div class="faq-answer mt-6 text-gray-700 text-base max-h-0 overflow-hidden transition-all duration-500">
+          Yes, all product listings display up-to-the-minute stock status and current prices, so you always know what's available.
+        </div>
+      </div>
+      <div class="faq-item py-8">
+        <button type="button" class="faq-question flex justify-between items-center w-full text-left text-2xl font-medium text-gray-900 focus:outline-none">
+          <span>Is my payment and data secure?</span>
+          <span class="faq-toggle-icon transition-transform duration-300 text-3xl">+</span>
+        </button>
+        <div class="faq-answer mt-6 text-gray-700 text-base max-h-0 overflow-hidden transition-all duration-500">
+          Definitely. We use secure payment gateways and industry-standard encryption to keep your information safe.
+        </div>
+      </div>
+      <div class="faq-item py-8">
+        <button type="button" class="faq-question flex justify-between items-center w-full text-left text-2xl font-medium text-gray-900 focus:outline-none">
+          <span>Can I save or share my PC build?</span>
+          <span class="faq-toggle-icon transition-transform duration-300 text-3xl">+</span>
+        </button>
+        <div class="faq-answer mt-6 text-gray-700 text-base max-h-0 overflow-hidden transition-all duration-500">
+          Yes! You can save your build to your account or share a link with friends or our support team for feedback.
+        </div>
+      </div>
     </div>
+  </div>
 </div>
+
 <style>
     /* Keyframe animations for hero section */
     @keyframes fadeInDown {
@@ -302,8 +305,6 @@
     }
 
     /* ANIMATIONS FOR CRAFTING PROCESS SECTION */
-
-    /* Initial states for text animation */
     .animate-on-scroll-left-in {
         transform: translateX(-100%);
         opacity: 0;
@@ -323,8 +324,6 @@
         opacity: 1;
         transition-delay: 0.5s;
     }
-
-    /* Initial states for card animation */
     .card-blur-initial {
         filter: blur(8px);
         opacity: 0;
@@ -334,8 +333,6 @@
         filter: blur(0);
         opacity: 1;
     }
-
-    /* Styles for feature cards (base look) */
     .feature-card-hover {
         background-color:rgba(55, 57, 58, 0.07);
         backdrop-filter: none;
@@ -344,18 +341,13 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s ease-out;
         color: #ffffff !important;
-        /* Spotlight effect properties */
         position: relative;
         overflow: hidden;
         --x: 50%;
         --y: 50%;
     }
-    .feature-card-hover h3 {
-        color: #ffffff !important;
-    }
-    .feature-card-hover p {
-        color: #ffffff !important;
-    }
+    .feature-card-hover h3,
+    .feature-card-hover p,
     .feature-card-hover .text-5xl {
         color: #ffffff !important;
     }
@@ -375,7 +367,6 @@
         transition: opacity 0.3s ease-out;
         pointer-events: none;
     }
-    /* Hover effect for feature cards */
     .feature-card-hover:hover {
         transform: translateY(-5px);
         box-shadow: 0 0 25px rgba(255, 126, 62, 0.8),
@@ -385,6 +376,21 @@
     }
     .feature-card-hover:hover::before {
         opacity: 1;
+    }
+    /* FAQ Accordion */
+    .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1), padding 0.5s;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    .faq-answer.faq-open {
+        padding-top: 1.5rem;  /* mt-6 */
+        padding-bottom: 1.5rem;
+    }
+    .faq-toggle-icon.rotate-45 {
+        transform: rotate(45deg);
     }
 </style>
 
@@ -458,6 +464,32 @@
                 card.style.setProperty('--x', `${x}px`);
                 card.style.setProperty('--y', `${y}px`);
             });
+        });
+    });
+
+    document.querySelectorAll('.faq-question').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const answer = this.parentElement.querySelector('.faq-answer');
+            const icon = this.querySelector('.faq-toggle-icon');
+            const isOpen = answer.classList.contains('faq-open');
+
+            // Close all
+            document.querySelectorAll('.faq-answer').forEach(a => {
+                a.classList.remove('faq-open');
+                a.style.maxHeight = null;
+            });
+            document.querySelectorAll('.faq-toggle-icon').forEach(i => {
+                i.textContent = '+';
+                i.classList.remove('rotate-45');
+            });
+
+            // Open if not already open
+            if (!isOpen) {
+                answer.classList.add('faq-open');
+                answer.style.maxHeight = answer.scrollHeight + "px";
+                icon.textContent = '×';
+                icon.classList.add('rotate-45');
+            }
         });
     });
 </script>
