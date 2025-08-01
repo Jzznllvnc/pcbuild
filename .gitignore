@@ -1,1 +1,8 @@
+# Configuration
+/config/database.php
 
+# Uploads
+/app/views/products/images/
+
+# Sensitive files
+/app/controllers/AiChatController.php
