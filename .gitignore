@@ -1,0 +1,8 @@
+# AI Chat
+app/controllers/AiChatController.php
+
+# htaccess
+.htaccess
+
+# sql file
+sql/pcbuild_db.sql
