@@ -14,7 +14,7 @@
             </span>
         </div>
         
-        <h1 class="text-6xl md:text-7xl lg:text-8xl font-black text-white mb-6 animate-fade-in-up leading-tight">
+        <h1 class="text-6xl md:text-7xl lg:text-8xl font-semibold text-white mb-6 animate-fade-in-up leading-tight">
             Build Your
             <span class="block text-transparent bg-clip-text bg-gradient-to-r from-[--color-primary-orange] via-orange-400 to-yellow-500 animate-gradient">
                 Dream PC
@@ -90,7 +90,7 @@
 <div class="bg-gradient-to-b from-gray-50 to-white py-24">
     <div class="max-w-7xl mx-auto px-6">
         <div class="text-center mb-16">
-            <h2 class="text-4xl md:text-5xl font-black text-gray-900 mb-4">
+            <h2 class="text-4xl md:text-5xl font-semibold text-gray-900 mb-4">
                 Why Choose <span class="text-[--color-primary-orange]">CraftWise</span>?
             </h2>
             <p class="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -191,7 +191,7 @@
     <div class="relative z-10 max-w-7xl mx-auto px-6">
         <div class="text-center mb-20">
             <span class="text-[--color-primary-orange] text-sm font-bold uppercase tracking-widest">The Crafting Process</span>
-            <h2 class="text-5xl md:text-6xl font-black text-white mt-4 mb-6">
+            <h2 class="text-5xl md:text-6xl font-semibold text-white mt-4 mb-6">
                 Build Your Dream PC<br/>
                 <span class="text-[--color-primary-orange]">In 3 Simple Steps</span>
             </h2>
@@ -214,7 +214,7 @@
 
             <!-- Step 2 -->
             <div class="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 hover:bg-white/15 transition-all duration-300 group">
-                <div class="absolute -top-6 left-8 w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-white text-2xl font-bold shadow-xl">
+                <div class="absolute -top-6 left-8 w-12 h-12 rounded-full bg-gradient-to-br from-[--color-primary-orange] to-orange-600 flex items-center justify-center text-white text-2xl font-bold shadow-xl">
                     2
                 </div>
                 <div class="mt-8">
@@ -223,12 +223,12 @@
                         Our intelligent system instantly verifies compatibility and flags potential issues.
                     </p>
                 </div>
-                <div class="mt-6 w-16 h-1 bg-gradient-to-r from-blue-500 to-transparent rounded-full group-hover:w-24 transition-all"></div>
+                <div class="mt-6 w-16 h-1 bg-gradient-to-r from-[--color-primary-orange] to-transparent rounded-full group-hover:w-24 transition-all"></div>
             </div>
 
             <!-- Step 3 -->
             <div class="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 hover:bg-white/15 transition-all duration-300 group">
-                <div class="absolute -top-6 left-8 w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white text-2xl font-bold shadow-xl">
+                <div class="absolute -top-6 left-8 w-12 h-12 rounded-full bg-gradient-to-br from-[--color-primary-orange] to-orange-600 flex items-center justify-center text-white text-2xl font-bold shadow-xl">
                     3
                 </div>
                 <div class="mt-8">
@@ -237,7 +237,7 @@
                         Finalize your build and order with confidence. We'll deliver everything you need.
                     </p>
                 </div>
-                <div class="mt-6 w-16 h-1 bg-gradient-to-r from-green-500 to-transparent rounded-full group-hover:w-24 transition-all"></div>
+                <div class="mt-6 w-16 h-1 bg-gradient-to-r from-[--color-primary-orange] to-transparent rounded-full group-hover:w-24 transition-all"></div>
             </div>
         </div>
 
@@ -253,7 +253,7 @@
 <div class="bg-white py-24">
     <div class="max-w-4xl mx-auto px-6">
         <div class="text-center mb-16">
-            <h2 class="text-4xl md:text-5xl font-black text-gray-900 mb-4">
+            <h2 class="text-4xl md:text-5xl font-semibold text-gray-900 mb-4">
                 <span class="text-[--color-primary-orange]">F</span>requently
                 <span class="text-[--color-primary-orange]">A</span>sked
                 <span class="text-[--color-primary-orange]">Q</span>uestions

@@ -1,5 +1,5 @@
 <!-- Full-width Hero Section -->
-<div class="relative bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 pt-32 pb-24 px-6 overflow-hidden">
+<div class="relative bg-gradient-to-br from-[--color-primary-orange] via-[#e76c3e] to-[#d65a2e] pt-32 pb-24 px-6 overflow-hidden">
     <div class="absolute inset-0 bg-black opacity-5"></div>
     <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
     
@@ -328,7 +328,7 @@
             <!-- Sidebar -->
             <div class="lg:col-span-1 space-y-6">
                 <!-- Key Points -->
-                <div class="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-lg p-6 text-white sticky top-24">
+                <div class="bg-gradient-to-br from-[--color-primary-orange] to-[#e76c3e] rounded-2xl shadow-lg p-6 text-white sticky top-24">
                     <h3 class="text-lg font-bold mb-4">Key Points</h3>
                     <ul class="space-y-3 text-sm">
                         <li class="flex items-start gap-2">
@@ -366,14 +366,9 @@
 
                 <!-- Contact -->
                 <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                    </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-2">Questions?</h3>
                     <p class="text-gray-700 text-sm mb-4">Contact us about these terms</p>
-                    <a href="mailto:support@craftwise.com" class="block bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-center font-semibold py-2 px-4 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all text-sm">
+                    <a href="mailto:support@craftwise.com" class="block bg-gradient-to-r from-[--color-primary-orange] to-[#e76c3e] text-white text-center font-semibold py-2 px-4 rounded-lg hover:shadow-lg transition-all text-sm">
                         Email Support
                     </a>
                 </div>

@@ -1,3 +1,19 @@
+<style>
+    .main-header,
+    footer {
+        display: none !important;
+    }
+    body {
+        padding-top: 0 !important;
+    }
+</style>
+
+<!-- Logo in top left -->
+<a href="<?php echo BASE_URL; ?>/" class="fixed top-6 left-6 z-50 flex items-center gap-3 group">
+    <img src="<?php echo BASE_URL; ?>/assets/images/CraftWise.png" alt="CraftWise" class="w-12 h-12 transition-transform group-hover:scale-110">
+    <span class="text-2xl font-bold text-white group-hover:text-[--color-primary-orange] transition-colors">CraftWise</span>
+</a>
+
 <!-- Modern Login Page -->
 <div class="min-h-screen flex">
     <!-- Left Side - Image/Branding -->
@@ -53,7 +69,7 @@
     <div class="flex-1 flex items-center justify-center px-6 py-12 bg-gray-50">
         <div class="w-full max-w-md">
             <div class="text-center mb-8">
-                <h2 class="text-4xl font-black text-gray-900 mb-2"><?php echo htmlspecialchars($title); ?></h2>
+                <h2 class="text-4xl font-semibold text-gray-900 mb-2"><?php echo htmlspecialchars($title); ?></h2>
                 <p class="text-gray-600">Enter your credentials to access your account</p>
             </div>
 

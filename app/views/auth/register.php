@@ -1,10 +1,26 @@
+<style>
+    .main-header,
+    footer {
+        display: none !important;
+    }
+    body {
+        padding-top: 0 !important;
+    }
+</style>
+
+<!-- Logo in top left -->
+<a href="<?php echo BASE_URL; ?>/" class="fixed top-6 left-6 z-50 flex items-center gap-3 group">
+    <img src="<?php echo BASE_URL; ?>/assets/images/CraftWise.png" alt="CraftWise" class="w-12 h-12 transition-transform group-hover:scale-110">
+    <span class="text-2xl font-bold text-gray-900 group-hover:text-[--color-primary-orange] transition-colors">CraftWise</span>
+</a>
+
 <!-- Modern Register Page -->
 <div class="min-h-screen flex">
     <!-- Left Side - Form -->
     <div class="flex-1 flex items-center justify-center px-6 py-12 bg-gray-50">
         <div class="w-full max-w-md">
             <div class="text-center mb-8">
-                <h2 class="text-4xl font-black text-gray-900 mb-2"><?php echo htmlspecialchars($title); ?></h2>
+                <h2 class="text-4xl font-semibold text-gray-900 mb-2"><?php echo htmlspecialchars($title); ?></h2>
                 <p class="text-gray-600">Create your account and start building</p>
             </div>
 
@@ -109,7 +125,7 @@
         
         <div class="relative z-10 flex flex-col justify-center px-16 text-white">
             <img src="<?php echo BASE_URL; ?>/assets/images/CraftWise.png" alt="CraftWise" class="w-24 h-24 mb-6">
-            <h1 class="text-4xl font-black mb-4">Join CraftWise Today!</h1>
+            <h1 class="text-4xl font-semibold mb-4">Join CraftWise Today!</h1>
             <p class="text-lg text-white/90 leading-relaxed mb-8">
                 Start your journey to building the perfect custom PC with our expert guidance and tools.
             </p>

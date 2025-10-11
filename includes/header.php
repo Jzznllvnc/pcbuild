@@ -10,6 +10,9 @@ if (session_status() == PHP_SESSION_NONE) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="<?php echo BASE_URL; ?>/assets/images/CraftWise.png" type="image/png">
     <title>CraftWise - Shop Now!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Lexend:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
@@ -29,6 +32,9 @@ if (session_status() == PHP_SESSION_NONE) {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+        }
+        h1, h2 {
+            font-family: 'Lexend', sans-serif;
         }
         .markdown-content p { margin-bottom: 0.5rem; }
         .markdown-content strong { font-weight: bold; }
@@ -122,7 +128,7 @@ if (session_status() == PHP_SESSION_NONE) {
             background-color: white;
         }
         .main-header {
-            background-color: rgba(16, 19, 24, 0.69);
+            background-color: rgba(16, 19, 24, 0.45);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);

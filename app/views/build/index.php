@@ -3,7 +3,7 @@
     <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.03\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
     
     <div class="relative z-10 max-w-7xl mx-auto text-center">
-        <h1 class="text-5xl md:text-6xl font-black text-white mb-6">
+        <h1 class="text-5xl md:text-6xl font-semibold text-white mb-6">
             <?php echo htmlspecialchars($title); ?>
         </h1>
         <p class="text-xl text-gray-300 max-w-3xl mx-auto">
@@ -72,7 +72,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-center gap-6">
                     <div class="text-center md:text-left">
                         <p class="text-gray-600 text-sm font-semibold mb-1">Estimated Total</p>
-                        <p class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-600">
+                        <p class="text-4xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-600">
                             $<span id="estimated-total-price">0.00</span>
                         </p>
             </div>
@@ -100,10 +100,10 @@
                 <div class="absolute inset-0 bg-white/10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
                 
                 <div class="relative z-10 text-center">
-                    <h2 class="text-3xl font-black mb-4">Your Build Rating</h2>
+                    <h2 class="text-3xl font-semibold mb-4">Your Build Rating</h2>
                     <div class="flex items-center justify-center gap-4 mb-6">
                         <div class="w-32 h-32 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border-4 border-white/30">
-                            <span id="rating-score" class="text-5xl font-black">--</span>
+                            <span id="rating-score" class="text-5xl font-semibold">--</span>
                         </div>
                         <div class="text-left">
                             <p id="qualitative-rating" class="text-2xl font-bold"></p>

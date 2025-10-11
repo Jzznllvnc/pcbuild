@@ -37,7 +37,7 @@
             </div>
         </div>
         
-        <h1 class="text-5xl md:text-6xl font-black text-white text-center">Checkout</h1>
+        <h1 class="text-5xl md:text-6xl font-semibold text-white text-center">Checkout</h1>
         <p class="text-xl text-white/80 text-center mt-4">Secure & fast checkout process</p>
     </div>
 </div>
@@ -65,7 +65,7 @@
                     
                     <!-- Shipping Section -->
                     <div id="shipping-section" class="checkout-step">
-                        <h2 class="text-3xl font-black text-gray-900 mb-8 flex items-center gap-3">
+                        <h2 class="text-3xl font-semibold text-gray-900 mb-8 flex items-center gap-3">
                             <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-white">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -177,7 +177,7 @@
 
                     <!-- Payment Section -->
                     <div id="payment-section" class="checkout-step">
-                        <h2 class="text-3xl font-black text-gray-900 mb-8 flex items-center gap-3">
+                        <h2 class="text-3xl font-semibold text-gray-900 mb-8 flex items-center gap-3">
                             <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
@@ -257,7 +257,7 @@
                             </div>
                         </div>
 
-                        <div class="flex justify-between items-center text-2xl font-black pt-6 border-t-2 border-gray-100 mt-6">
+                        <div class="flex justify-between items-center text-2xl font-semibold pt-6 border-t-2 border-gray-100 mt-6">
                             <span class="text-gray-900">Total</span>
                             <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
                                 $<span id="cart-total-amount">0.00</span>

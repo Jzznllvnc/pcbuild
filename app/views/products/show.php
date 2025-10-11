@@ -58,13 +58,13 @@
                     </div>
 
                     <!-- Product Name -->
-                    <h1 class="text-4xl lg:text-5xl font-black text-gray-900 mb-6 leading-tight">
+                    <h1 class="text-4xl lg:text-5xl font-semibold text-gray-900 mb-6 leading-tight">
                         <?php echo htmlspecialchars($product['name']); ?>
                     </h1>
 
                     <!-- Price -->
                     <div class="flex items-baseline gap-4 mb-8">
-                        <span class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[--color-primary-orange] to-orange-600">
+                        <span class="text-5xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[--color-primary-orange] to-orange-600">
                             $<?php echo number_format($product['price'], 2); ?>
                         </span>
                         <span class="text-lg text-gray-500">
@@ -125,7 +125,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
                                 </svg>
                             </button>
-                            <span id="page-quantity-display" class="text-4xl font-black text-gray-900 w-24 text-center">1</span>
+                            <span id="page-quantity-display" class="text-4xl font-semibold text-gray-900 w-24 text-center">1</span>
                             <button id="page-quantity-plus" class="w-14 h-14 rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors flex items-center justify-center group">
                                 <svg class="w-6 h-6 text-gray-700 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -202,7 +202,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </div>
-            <h2 class="text-3xl font-black text-gray-900 mb-4">Product Not Found</h2>
+            <h2 class="text-3xl font-semibold text-gray-900 mb-4">Product Not Found</h2>
             <p class="text-gray-600 mb-8">Sorry, we couldn't find the product you're looking for.</p>
             <a href="<?php echo BASE_URL; ?>/products" class="inline-block px-8 py-4 bg-gradient-to-r from-[--color-primary-orange] to-orange-600 text-white font-bold rounded-xl hover:shadow-lg transition-all">
                 Browse All Products

@@ -4,7 +4,7 @@
     
     <div class="relative z-10 max-w-7xl mx-auto text-center">
         <div class="flex items-center justify-center gap-3 mb-4">
-            <h1 class="text-5xl md:text-6xl font-black text-white">
+            <h1 class="text-5xl md:text-6xl font-semibold text-white">
                 <?php echo htmlspecialchars($title); ?>
             </h1>
         </div>
@@ -20,7 +20,7 @@
             <div class="flex items-center justify-center min-h-[600px]">
                 <div class="bg-white rounded-2xl shadow-2xl p-16 text-center border border-gray-100 w-full max-w-2xl">
                     <img src="<?php echo BASE_URL; ?>/assets/images/emptycart.png" alt="Empty Cart" class="w-80 h-80 mx-auto mb-8 object-contain">
-                    <h2 class="text-4xl font-black text-gray-900 mb-6">
+                    <h2 class="text-4xl font-semibold text-gray-900 mb-6">
                         Your Cart is <span class="text-[--color-primary-orange]">Empty!</span>
                     </h2>
                     <p class="text-gray-600 mb-10 text-xl">Add items to your cart before proceeding to checkout</p>
@@ -74,7 +74,7 @@
                         </div>
 
                         <!-- Total -->
-                        <div class="flex justify-between text-2xl font-black mb-6">
+                        <div class="flex justify-between text-2xl font-semibold mb-6">
                             <span class="text-gray-900">Total</span>
                             <span class="text-[--color-primary-orange]">$<span id="cart-total">0.00</span></span>
                         </div>

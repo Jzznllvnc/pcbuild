@@ -307,22 +307,22 @@
             <!-- Sidebar -->
             <div class="lg:col-span-1 space-y-6">
                 <!-- Quick Links -->
-                <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 sticky top-24">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">Quick Navigation</h3>
+                <div class="bg-gradient-to-br from-[--color-primary-orange] to-[#e76c3e] rounded-2xl shadow-lg p-6 text-white sticky top-24">
+                    <h3 class="text-lg font-bold mb-4">Quick Navigation</h3>
                     <nav class="space-y-2">
-                        <a href="#" class="block text-gray-700 hover:text-[--color-primary-orange] py-2 px-3 rounded-lg hover:bg-orange-50 transition-colors text-sm">Information Collection</a>
-                        <a href="#" class="block text-gray-700 hover:text-[--color-primary-orange] py-2 px-3 rounded-lg hover:bg-orange-50 transition-colors text-sm">Data Usage</a>
-                        <a href="#" class="block text-gray-700 hover:text-[--color-primary-orange] py-2 px-3 rounded-lg hover:bg-orange-50 transition-colors text-sm">Information Sharing</a>
-                        <a href="#" class="block text-gray-700 hover:text-[--color-primary-orange] py-2 px-3 rounded-lg hover:bg-orange-50 transition-colors text-sm">Data Security</a>
-                        <a href="#" class="block text-gray-700 hover:text-[--color-primary-orange] py-2 px-3 rounded-lg hover:bg-orange-50 transition-colors text-sm">Your Rights</a>
+                        <a href="#" class="block text-white hover:text-white py-2 px-3 rounded-lg hover:bg-white/20 transition-colors text-sm">Information Collection</a>
+                        <a href="#" class="block text-white hover:text-white py-2 px-3 rounded-lg hover:bg-white/20 transition-colors text-sm">Data Usage</a>
+                        <a href="#" class="block text-white hover:text-white py-2 px-3 rounded-lg hover:bg-white/20 transition-colors text-sm">Information Sharing</a>
+                        <a href="#" class="block text-white hover:text-white py-2 px-3 rounded-lg hover:bg-white/20 transition-colors text-sm">Data Security</a>
+                        <a href="#" class="block text-white hover:text-white py-2 px-3 rounded-lg hover:bg-white/20 transition-colors text-sm">Your Rights</a>
                     </nav>
                 </div>
 
                 <!-- Contact Card -->
-                <div class="bg-gradient-to-br from-[--color-primary-orange] to-[#e76c3e] rounded-2xl shadow-lg p-6 text-white">
-                    <h3 class="text-lg font-bold mb-4">Have Questions?</h3>
-                    <p class="text-white/90 text-sm mb-4">Our team is here to help you understand our privacy practices.</p>
-                    <a href="mailto:privacy@craftwise.com" class="block bg-white text-[--color-primary-orange] text-center font-semibold py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors text-sm">
+                <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Have Questions?</h3>
+                    <p class="text-gray-700 text-sm mb-4">Our team is here to help you understand our privacy practices.</p>
+                    <a href="mailto:privacy@craftwise.com" class="block bg-gradient-to-r from-[--color-primary-orange] to-[#e76c3e] text-white text-center font-semibold py-2 px-4 rounded-lg hover:shadow-lg transition-all text-sm">
                         Contact Privacy Team
                     </a>
                 </div>

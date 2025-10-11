@@ -3,7 +3,7 @@
     <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.03\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
     
     <div class="relative z-10 max-w-7xl mx-auto text-center">
-        <h1 class="text-5xl md:text-6xl font-black text-white mb-4">
+        <h1 class="text-5xl md:text-6xl font-semibold text-white mb-4">
             <?php echo htmlspecialchars($title); ?>
         </h1>
         <p class="text-xl text-gray-300">
@@ -110,7 +110,7 @@
                             </h3>
                             
                             <div class="flex items-baseline justify-between mb-4">
-                                <span class="text-3xl font-black text-[--color-primary-orange]">
+                                <span class="text-3xl font-semibold text-[--color-primary-orange]">
                                     $<?php echo number_format($product['price'], 2); ?>
                                 </span>
                                 <span class="text-sm text-gray-500">
@@ -170,7 +170,7 @@
         <div class="flex flex-col items-center mb-6">
             <img id="modal-product-image" src="" alt="Product" class="w-40 h-40 object-contain mb-4 rounded-xl bg-gray-50 p-4">
             <p id="modal-product-name" class="text-xl font-bold text-gray-800 text-center mb-2"></p>
-            <p id="modal-product-price" class="text-2xl font-black text-[--color-primary-orange] mb-2"></p>
+            <p id="modal-product-price" class="text-2xl font-semibold text-[--color-primary-orange] mb-2"></p>
             <p id="modal-product-stock" class="text-sm text-gray-600"></p>
         </div>
         
@@ -180,7 +180,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
                 </svg>
             </button>
-            <span id="modal-quantity-display" class="text-3xl font-black text-gray-900 w-20 text-center">1</span>
+            <span id="modal-quantity-display" class="text-3xl font-semibold text-gray-900 w-20 text-center">1</span>
             <button id="modal-quantity-plus" class="w-12 h-12 rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors flex items-center justify-center">
                 <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
