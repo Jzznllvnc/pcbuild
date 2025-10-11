@@ -18,23 +18,23 @@
     <form id="build-form">
         <?php
         $componentIcons = [
-                'CPU' => '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" /><rect x="9" y="9" width="6" height="6" /><path d="M15 2v2m-6 0V2m0 20v-2m6 0v2M2 9h2m20 0h-2M2 15h2m20 0h-2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>',
-                'GPU' => '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /><line x1="6" y1="16" x2="6.01" y2="16" stroke-width="2" stroke-linecap="round" /><line x1="10" y1="16" x2="10.01" y2="16" stroke-width="2" stroke-linecap="round" /></svg>',
-                'Motherboard' => '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /><polyline points="2 17 12 22 22 17" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /><polyline points="2 12 12 17 22 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>',
-                'RAM' => '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2" stroke-width="2" /><rect x="2" y="14" width="20" height="8" rx="2" stroke-width="2" /><line x1="6" y1="6" x2="6.01" y2="6" stroke-width="2" stroke-linecap="round" /><line x1="6" y1="18" x2="6.01" y2="18" stroke-width="2" stroke-linecap="round" /></svg>',
-                'Storage' => '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3" stroke-width="2" /><path d="M2 12A9 3 0 0 0 11 15V20A9 3 0 0 1 2 17Z" stroke-width="2" /><path d="M22 12A9 3 0 0 1 13 15V20A9 3 0 0 0 22 17Z" stroke-width="2" /></svg>',
-                'PSU' => '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>',
-                'Case' => '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /><line x1="12" y1="22.08" x2="12" y2="12" stroke-width="2" stroke-linecap="round" /></svg>',
+                'CPU' => '<svg class="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" /><rect x="9" y="9" width="6" height="6" /><path d="M15 2v2m-6 0V2m0 20v-2m6 0v2M2 9h2m20 0h-2M2 15h2m20 0h-2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>',
+                'GPU' => '<svg class="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /><line x1="6" y1="16" x2="6.01" y2="16" stroke-width="2" stroke-linecap="round" /><line x1="10" y1="16" x2="10.01" y2="16" stroke-width="2" stroke-linecap="round" /></svg>',
+                'Motherboard' => '<svg class="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /><polyline points="2 17 12 22 22 17" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /><polyline points="2 12 12 17 22 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>',
+                'RAM' => '<svg class="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2" stroke-width="2" /><rect x="2" y="14" width="20" height="8" rx="2" stroke-width="2" /><line x1="6" y1="6" x2="6.01" y2="6" stroke-width="2" stroke-linecap="round" /><line x1="6" y1="18" x2="6.01" y2="18" stroke-width="2" stroke-linecap="round" /></svg>',
+                'Storage' => '<svg class="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3" stroke-width="2" /><path d="M2 12A9 3 0 0 0 11 15V20A9 3 0 0 1 2 17Z" stroke-width="2" /><path d="M22 12A9 3 0 0 1 13 15V20A9 3 0 0 0 22 17Z" stroke-width="2" /></svg>',
+                'PSU' => '<svg class="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>',
+                'Case' => '<svg class="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /><line x1="12" y1="22.08" x2="12" y2="12" stroke-width="2" stroke-linecap="round" /></svg>',
             ];
             
             $colors = [
-                'CPU' => 'from-red-500 to-pink-600',
-                'GPU' => 'from-green-500 to-emerald-600',
-                'Motherboard' => 'from-blue-500 to-cyan-600',
-                'RAM' => 'from-purple-500 to-pink-600',
-                'Storage' => 'from-orange-500 to-red-600',
-                'PSU' => 'from-yellow-500 to-orange-600',
-                'Case' => 'from-indigo-500 to-purple-600',
+                'CPU' => 'from-gray-100 to-gray-300',
+                'GPU' => 'from-gray-100 to-gray-300',
+                'Motherboard' => 'from-gray-100 to-gray-300',
+                'RAM' => 'from-gray-100 to-gray-300',
+                'Storage' => 'from-gray-100 to-gray-300',
+                'PSU' => 'from-gray-100 to-gray-300',
+                'Case' => 'from-gray-100 to-gray-300',
             ];
             ?>
             

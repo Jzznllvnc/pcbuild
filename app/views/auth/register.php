@@ -123,14 +123,19 @@
     <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-r from-gray-900 via-gray-800 to-black relative overflow-hidden">
         <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.03\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
         
-        <div class="relative z-10 flex flex-col justify-center px-16 text-white">
-            <img src="<?php echo BASE_URL; ?>/assets/images/CraftWise.png" alt="CraftWise" class="w-24 h-24 mb-6">
-            <h1 class="text-4xl font-semibold mb-4">Join CraftWise Today!</h1>
-            <p class="text-lg text-white/90 leading-relaxed mb-8">
-                Start your journey to building the perfect custom PC with our expert guidance and tools.
-            </p>
+        <div class="relative z-10 flex flex-col justify-center items-center px-8 text-white w-full">
+            <div class="flex items-center justify-center mb-8 w-full max-w-xl">
+                <img src="<?php echo BASE_URL; ?>/assets/images/registerhero.png" alt="Join CraftWise" class="h-96 w-full object-contain">
+            </div>
             
-            <div class="space-y-3">
+            <div class="w-full max-w-xl text-center mb-6">
+                <h1 class="text-4xl font-semibold mb-4">Join CraftWise Today!</h1>
+                <p class="text-lg text-white/90 leading-relaxed">
+                    Start your journey to building the perfect custom PC with our expert guidance and tools.
+                </p>
+            </div>
+            
+            <div class="space-y-3 w-full max-w-xl">
                 <div class="flex items-start gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-3">
                     <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
