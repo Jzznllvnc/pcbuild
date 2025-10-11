@@ -84,13 +84,11 @@
                             <?php if ($isLoggedIn): ?>
                                 <a href="<?php echo BASE_URL; ?>/checkout"
                                    id="proceed-to-checkout-button"
-                                   class="block w-full px-6 py-4 bg-gradient-to-r from-[--color-primary-orange] to-orange-600 text-white text-lg font-bold rounded-xl shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 text-center">
-                                    <span class="flex items-center justify-center gap-2">
-                                        Proceed to Checkout
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                        </svg>
-                                    </span>
+                                   class="flex items-center justify-center gap-2 w-full px-6 py-4 bg-gradient-to-r from-[--color-primary-orange] to-orange-600 text-white text-lg font-bold rounded-xl shadow-lg hover:shadow-2xl transition-all transform hover:scale-105">
+                                    <span>Proceed to Checkout</span>
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                    </svg>
                                 </a>
                             <?php else: ?>
                                 <button type="button" disabled

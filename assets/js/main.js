@@ -257,11 +257,11 @@ const cancelQuantityBtn = document.getElementById('cancel-quantity');
  * @param {number} maxStock
  */
 function setupQuantityControls(container, displayId, hiddenInputId, minusBtnId, plusBtnId, errorId, maxStock) {
-    const quantityDisplay = container.querySelector(`#${displayId}`);
-    const quantityHiddenInput = container.querySelector(`#${hiddenInputId}`);
-    const minusBtn = container.querySelector(`#${minusBtnId}`);
-    const plusBtn = container.querySelector(`#${plusBtnId}`);
-    const errorElement = container.querySelector(`#${errorId}`);
+    const quantityDisplay = document.getElementById(displayId);
+    const quantityHiddenInput = document.getElementById(hiddenInputId);
+    const minusBtn = document.getElementById(minusBtnId);
+    const plusBtn = document.getElementById(plusBtnId);
+    const errorElement = document.getElementById(errorId);
 
     if (!quantityDisplay || !quantityHiddenInput || !minusBtn || !plusBtn || !errorElement) {
         return;
@@ -391,9 +391,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const productPrice = addToCartPageBtn.dataset.productPrice;
         const productImage = addToCartPageBtn.dataset.productImage;
         const productStock = parseInt(addToCartPageBtn.dataset.productStock);
-        const showPageQuantityContainer = document.querySelector('.flex.items-center.justify-start.space-x-3.mb-6');
-        if (showPageQuantityContainer) {
-            setupQuantityControls(showPageQuantityContainer, 'page-quantity-display', 'page-quantity-value', 'page-quantity-minus', 'page-quantity-plus', 'page-quantity-error', productStock);
+        // Use document as container since IDs are unique
+        const pageQuantityDisplay = document.getElementById('page-quantity-display');
+        if (pageQuantityDisplay) {
+            setupQuantityControls(document, 'page-quantity-display', 'page-quantity-value', 'page-quantity-minus', 'page-quantity-plus', 'page-quantity-error', productStock);
         }
 
         const stockDisplay = document.getElementById('product-stock-display');

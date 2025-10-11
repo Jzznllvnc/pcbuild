@@ -50,8 +50,8 @@
         </div>
 
         <!-- Category Pills -->
-        <div class="mb-8 overflow-x-auto scrollbar-hide">
-            <div class="flex gap-3 min-w-max pb-2">
+        <div class="mb-8 overflow-x-auto pb-2" style="scrollbar-width: thin; scrollbar-color:rgba(33, 45, 73, 0.26) #f3f4f6;">
+            <div class="flex gap-3 min-w-max">
                 <a href="<?php echo BASE_URL; ?>/products?search=<?php echo htmlspecialchars($currentSearch ?? ''); ?>"
                    class="px-6 py-3 rounded-full font-medium transition-all <?php echo empty($currentCategory) ? 'bg-gradient-to-r from-[--color-primary-orange] to-orange-600 text-white shadow-md' : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'; ?>">
                     All Products
@@ -203,13 +203,6 @@
 </div>
 
 <style>
-.scrollbar-hide::-webkit-scrollbar {
-    display: none;
-}
-.scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
 .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;

@@ -189,6 +189,12 @@ class Router
         $this->get('/profile', 'UserController@profile'); // Display user profile page
         $this->post('/profile/update-general', 'UserController@updateGeneralInformation'); // Handle profile general info update
         $this->post('/profile/update-phone', 'UserController@updatePhoneNumber'); // Handle phone number update (NEW)
+        
+        // Address Management Routes
+        $this->get('/user/addresses', 'UserController@getAddressesApi'); // Get user addresses
+        $this->post('/user/addresses/create', 'UserController@createAddress'); // Create new address
+        $this->post('/user/addresses/update', 'UserController@updateAddress'); // Update address
+        $this->post('/user/addresses/delete', 'UserController@deleteAddress'); // Delete address
 
         // Static Pages Routes
         $this->get('/privacy-policy', 'PageController@privacyPolicy'); // Privacy Policy page

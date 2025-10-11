@@ -3,17 +3,20 @@
 require_once BASE_PATH . 'app/controllers/BaseController.php';
 require_once BASE_PATH . 'app/models/User.php';
 require_once BASE_PATH . 'app/models/Order.php';
+require_once BASE_PATH . 'app/models/Address.php';
 
 class UserController extends BaseController
 {
     protected $userModel;
     protected $orderModel;
+    protected $addressModel;
 
     public function __construct(PDO $pdo)
     {
         parent::__construct($pdo);
         $this->userModel = new User($pdo);
         $this->orderModel = new Order($pdo);
+        $this->addressModel = new Address($pdo);
     }
 
     public function orderhistory()
@@ -65,12 +68,16 @@ class UserController extends BaseController
             exit();
         }
 
+        // Get saved addresses
+        $addresses = $this->addressModel->getUserAddresses($userId);
+
         unset($_SESSION['success']);
         unset($_SESSION['error']);
 
         $data = [
             'title' => 'My Profile',
             'user' => $user,
+            'addresses' => $addresses,
             'success' => null,
             'error' => null,
         ];
@@ -180,6 +187,145 @@ class UserController extends BaseController
             $this->jsonResponse(['success' => true, 'message' => 'Notification cleared.']);
         } else {
             $this->jsonResponse(['success' => false, 'error' => 'Not logged in.'], 401);
+        }
+    }
+
+    // Address Management Methods
+
+    public function getAddressesApi()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['user_id'])) {
+            $this->jsonResponse(['success' => false, 'error' => 'Not logged in'], 401);
+            return;
+        }
+
+        $addresses = $this->addressModel->getUserAddresses($_SESSION['user_id']);
+        $this->jsonResponse(['success' => true, 'addresses' => $addresses]);
+    }
+
+    public function createAddress()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['user_id'])) {
+            $this->jsonResponse(['success' => false, 'error' => 'Not logged in'], 401);
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->jsonResponse(['success' => false, 'error' => 'Invalid request method'], 405);
+            return;
+        }
+
+        $addressData = [
+            'label' => trim($_POST['label'] ?? ''),
+            'first_name' => trim($_POST['first_name'] ?? ''),
+            'last_name' => trim($_POST['last_name'] ?? ''),
+            'email' => trim($_POST['email'] ?? ''),
+            'country_code' => trim($_POST['country_code'] ?? '+63'),
+            'mobile_number' => trim($_POST['mobile_number'] ?? ''),
+            'address' => trim($_POST['address'] ?? ''),
+            'city' => trim($_POST['city'] ?? ''),
+            'state' => trim($_POST['state'] ?? ''),
+            'zip_code' => trim($_POST['zip_code'] ?? ''),
+            'is_default' => isset($_POST['is_default']) ? 1 : 0
+        ];
+
+        // Validate required fields
+        if (empty($addressData['label']) || empty($addressData['first_name']) || empty($addressData['last_name']) || 
+            empty($addressData['address']) || empty($addressData['city']) || empty($addressData['state']) || empty($addressData['zip_code'])) {
+            $this->jsonResponse(['success' => false, 'error' => 'All required fields must be filled'], 400);
+            return;
+        }
+
+        $created = $this->addressModel->createAddress($_SESSION['user_id'], $addressData);
+
+        if ($created) {
+            $this->jsonResponse(['success' => true, 'message' => 'Address saved successfully']);
+        } else {
+            $this->jsonResponse(['success' => false, 'error' => 'Failed to save address'], 500);
+        }
+    }
+
+    public function updateAddress()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['user_id'])) {
+            $this->jsonResponse(['success' => false, 'error' => 'Not logged in'], 401);
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->jsonResponse(['success' => false, 'error' => 'Invalid request method'], 405);
+            return;
+        }
+
+        $addressId = filter_input(INPUT_POST, 'address_id', FILTER_VALIDATE_INT);
+        if (!$addressId) {
+            $this->jsonResponse(['success' => false, 'error' => 'Invalid address ID'], 400);
+            return;
+        }
+
+        $addressData = [
+            'label' => trim($_POST['label'] ?? ''),
+            'first_name' => trim($_POST['first_name'] ?? ''),
+            'last_name' => trim($_POST['last_name'] ?? ''),
+            'email' => trim($_POST['email'] ?? ''),
+            'country_code' => trim($_POST['country_code'] ?? '+63'),
+            'mobile_number' => trim($_POST['mobile_number'] ?? ''),
+            'address' => trim($_POST['address'] ?? ''),
+            'city' => trim($_POST['city'] ?? ''),
+            'state' => trim($_POST['state'] ?? ''),
+            'zip_code' => trim($_POST['zip_code'] ?? ''),
+            'is_default' => isset($_POST['is_default']) ? 1 : 0
+        ];
+
+        $updated = $this->addressModel->updateAddress($addressId, $_SESSION['user_id'], $addressData);
+
+        if ($updated) {
+            $this->jsonResponse(['success' => true, 'message' => 'Address updated successfully']);
+        } else {
+            $this->jsonResponse(['success' => false, 'error' => 'Failed to update address'], 500);
+        }
+    }
+
+    public function deleteAddress()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['user_id'])) {
+            $this->jsonResponse(['success' => false, 'error' => 'Not logged in'], 401);
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->jsonResponse(['success' => false, 'error' => 'Invalid request method'], 405);
+            return;
+        }
+
+        $addressId = filter_input(INPUT_POST, 'address_id', FILTER_VALIDATE_INT);
+        if (!$addressId) {
+            $this->jsonResponse(['success' => false, 'error' => 'Invalid address ID'], 400);
+            return;
+        }
+
+        $deleted = $this->addressModel->deleteAddress($addressId, $_SESSION['user_id']);
+
+        if ($deleted) {
+            $this->jsonResponse(['success' => true, 'message' => 'Address deleted successfully']);
+        } else {
+            $this->jsonResponse(['success' => false, 'error' => 'Failed to delete address'], 500);
         }
     }
 }
