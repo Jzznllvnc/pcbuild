@@ -825,7 +825,7 @@ async function sendMessage() {
     userInput.value = '';
 
     sendButton.disabled = true;
-    sendButton.textContent = 'Thinking...';
+    sendButton.innerHTML = `<svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>`;
     sendButton.classList.add('opacity-50', 'cursor-not-allowed');
 
     try {
@@ -850,7 +850,7 @@ async function sendMessage() {
         alertMessage('error', 'Could not connect to the AI assistant.');
     } finally {
         sendButton.disabled = false;
-        sendButton.textContent = 'Send';
+        sendButton.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>`;
         sendButton.classList.remove('opacity-50', 'cursor-not-allowed');
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }

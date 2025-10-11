@@ -21,8 +21,8 @@
 
                 <div class="hidden lg:block flex-grow lg:w-1/6 lg:w-auto"> <h4 class="text-lg font-semibold text-white mb-3">Company Policies</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="hover:text-[--footer-link-hover] transition-colors">Privacy Policy</a></li>
-                        <li><a href="#" class="hover:text-[--footer-link-hover] transition-colors">Terms of Service</a></li>
+                        <li><a href="<?php echo BASE_URL; ?>/privacy-policy" class="hover:text-[--footer-link-hover] transition-colors">Privacy Policy</a></li>
+                        <li><a href="<?php echo BASE_URL; ?>/terms-of-service" class="hover:text-[--footer-link-hover] transition-colors">Terms of Service</a></li>
                     </ul>
                 </div>
 

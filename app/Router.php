@@ -190,6 +190,10 @@ class Router
         $this->post('/profile/update-general', 'UserController@updateGeneralInformation'); // Handle profile general info update
         $this->post('/profile/update-phone', 'UserController@updatePhoneNumber'); // Handle phone number update (NEW)
 
+        // Static Pages Routes
+        $this->get('/privacy-policy', 'PageController@privacyPolicy'); // Privacy Policy page
+        $this->get('/terms-of-service', 'PageController@termsOfService'); // Terms of Service page
+
         // Admin Routes
         $this->get('/admin', 'AdminController@dashboard'); // Admin dashboard for /admin
         $this->get('/admin/dashboard', 'AdminController@dashboard'); // Admin dashboard

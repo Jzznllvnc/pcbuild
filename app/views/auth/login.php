@@ -1,74 +1,152 @@
-<div class="relative w-full h-full flex items-center min-h-screen justify-center px-4 sm:px-6 lg:px-8 pt-60 pb-72" style="background-image: url('<?php echo BASE_URL; ?>/assets/images/CraftWisebg.png'); background-size: cover; background-position: center;">
-    <div class="relative z-10 p-8 sm:p-10 bg-white shadow-2xl rounded-xl w-full max-w-md mx-auto">
-        <h1 class="text-4xl font-extrabold text-gray-900 mb-6 text-center leading-tight">
-            <?php echo htmlspecialchars($title); ?>
-        </h1>
+<!-- Modern Login Page -->
+<div class="min-h-screen flex">
+    <!-- Left Side - Image/Branding -->
+    <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-r from-gray-900 via-gray-800 to-black relative overflow-hidden">
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.03\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+        
+        <div class="relative z-10 flex flex-col justify-center items-center px-8 text-white w-full">
+            <div class="flex items-center justify-center mb-8 w-full max-w-xl">
+                <img src="<?php echo BASE_URL; ?>/assets/images/loginhero.png" alt="Welcome Back" class="h-96 w-full object-contain">
+            </div>
+            
+            <div class="space-y-3 w-full max-w-xl">
+                <div class="flex items-start gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-3">
+                    <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base mb-0.5">Track your orders</h3>
+                        <p class="text-white/80 text-xs">Monitor your purchase history and delivery status</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-3">
+                    <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base mb-0.5">Save your builds</h3>
+                        <p class="text-white/80 text-xs">Store and manage your custom PC configurations</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-3">
+                    <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base mb-0.5">AI-powered assistance</h3>
+                        <p class="text-white/80 text-xs">Get intelligent recommendations and support</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <?php if (isset($error) && $error): ?>
-            <div class="js-dismissible-alert bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-4 transition-all duration-300 ease-in-out" role="alert">
-                <strong class="font-bold">Error!</strong>
-                <span class="block sm:inline"><?php echo htmlspecialchars($error); ?></span>
-                <button type="button" class="js-dismiss-btn absolute top-2 right-2 text-red-700 hover:text-red-900 focus:outline-none">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
+    <!-- Right Side - Form -->
+    <div class="flex-1 flex items-center justify-center px-6 py-12 bg-gray-50">
+        <div class="w-full max-w-md">
+            <div class="text-center mb-8">
+                <h2 class="text-4xl font-black text-gray-900 mb-2"><?php echo htmlspecialchars($title); ?></h2>
+                <p class="text-gray-600">Enter your credentials to access your account</p>
+            </div>
+
+            <?php if (isset($error) && $error): ?>
+                <div class="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6 flex items-start gap-3">
+                    <svg class="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-red-900">Error!</h3>
+                        <p class="text-red-700 text-sm"><?php echo htmlspecialchars($error); ?></p>
+                    </div>
             </div>
         <?php endif; ?>
 
         <?php if (isset($success) && $success): ?>
-            <div class="js-dismissible-alert bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative mb-4 transition-all duration-300 ease-in-out" role="alert">
-                <strong class="font-bold">Success!</strong>
-                <span class="block sm:inline"><?php echo htmlspecialchars($success); ?></span>
-                <button type="button" class="js-dismiss-btn absolute top-2 right-2 text-green-700 hover:text-green-900 focus:outline-none">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
+                <div class="bg-green-50 border-2 border-green-200 rounded-xl p-4 mb-6 flex items-start gap-3">
+                    <svg class="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-green-900">Success!</h3>
+                        <p class="text-green-700 text-sm"><?php echo htmlspecialchars($success); ?></p>
+                    </div>
             </div>
         <?php endif; ?>
 
         <form action="<?php echo BASE_URL; ?>/login" method="POST" class="space-y-6">
-            <div class="relative border border-gray-300 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-[--color-primary-orange] focus-within:border-[--color-primary-orange]">
-                <input type="text" name="identifier" id="identifier" required
-                       class="peer w-full px-4 py-3 pt-6 text-lg bg-transparent outline-none focus:outline-none transition-all duration-200"
-                       placeholder=" ">
-                <label for="identifier" class="absolute left-4 top-1 text-sm text-gray-500 transition-all duration-200 pointer-events-none
-                                          peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-lg
-                                          peer-focus:top-1 peer-focus:text-sm peer-focus:text-[--color-primary-orange]">
-                    Username or Email
-                </label>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Username or Email</label>
+                    <input type="text" name="identifier" required
+                           class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[--color-primary-orange] transition-colors">
             </div>
-            <div class="relative border border-gray-300 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-[--color-primary-orange] focus-within:border-[--color-primary-orange]">
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Password</label>
+                    <div class="relative">
                 <input type="password" name="password" id="password" required autocomplete="off"
-                    class="peer w-full px-4 py-3 pt-6 text-lg bg-transparent outline-none focus:outline-none transition-all duration-200 pr-10"
-                    placeholder=" ">
-                <label for="password" class="absolute left-4 top-1 text-sm text-gray-500 transition-all duration-200 pointer-events-none
-                                         peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-lg
-                                         peer-focus:top-1 peer-focus:text-sm peer-focus:text-[--color-primary-orange]">
-                    Password
-                </label>
-                <span class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer toggle-password-visibility" data-target="password">
-                    <svg class="h-6 w-6 text-gray-500 eye-show-password" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                    <svg class="h-6 w-6 text-gray-500 hidden eye-hide-password" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <circle cx="12" cy="12" r="7" stroke-width="2"></circle>
-                      <line x1="7" y1="17" x2="17" y2="7" stroke-width="2"></line>
+                               class="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[--color-primary-orange] transition-colors">
+                        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700" onclick="togglePassword('password')">
+                            <svg id="eye-show-password" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            <svg id="eye-hide-password" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
                     </svg>
-                </span>
+                        </button>
+                    </div>
             </div>
-            <div class="text-sm text-right">
-                <a href="<?php echo BASE_URL; ?>/forgot-password" class="font-medium text-[--color-primary-orange] hover:text-[#e76c3e] hover:underline">Forgot password?</a>
+
+                <div class="flex items-center justify-between text-sm">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" class="w-4 h-4 text-[--color-primary-orange] border-gray-300 rounded focus:ring-[--color-primary-orange]">
+                        <span class="text-gray-700">Remember me</span>
+                    </label>
+                    <a href="<?php echo BASE_URL; ?>/forgot-password" class="font-semibold text-[--color-primary-orange] hover:underline">
+                        Forgot password?
+                    </a>
             </div>
-            <div>
+
                 <button type="submit"
-                        class="w-full flex justify-center py-3 px-6 border border-transparent rounded-lg shadow-lg text-lg font-bold text-white
-                               bg-[--color-primary-orange] hover:bg-[#e76c3e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[--color-primary-orange]
-                               transition-colors">
-                    Login
+                        class="w-full py-4 bg-gradient-to-r from-[--color-primary-orange] to-orange-600 text-white font-bold text-lg rounded-xl hover:shadow-lg transition-all transform hover:scale-105">
+                    Log In
                 </button>
-            </div>
         </form>
 
         <div class="mt-8 text-center">
-            <p class="text-md text-gray-700">Don't have an account?
-                <a href="<?php echo BASE_URL; ?>/register" class="font-bold text-[--color-dark-blue] hover:text-[#1a2d3a] hover:underline">Register here</a>
-            </p>
+                <p class="text-gray-600">
+                    Don't have an account?
+                    <a href="<?php echo BASE_URL; ?>/register" class="font-bold text-[--color-primary-orange] hover:underline ml-1">
+                        Create account
+                    </a>
+                </p>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+function togglePassword(id) {
+    const input = document.getElementById(id);
+    const showIcon = document.getElementById('eye-show-' + id);
+    const hideIcon = document.getElementById('eye-hide-' + id);
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        showIcon.classList.add('hidden');
+        hideIcon.classList.remove('hidden');
+    } else {
+        input.type = 'password';
+        showIcon.classList.remove('hidden');
+        hideIcon.classList.add('hidden');
+    }
+}
+</script>
