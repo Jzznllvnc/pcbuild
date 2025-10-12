@@ -288,4 +288,5 @@ class User
             return 0;
         }
     }
+
 }

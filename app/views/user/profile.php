@@ -94,18 +94,6 @@
                             <p class="mt-2 text-xs text-gray-500">Email cannot be changed</p>
                         </div>
 
-                        <!-- Password -->
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Password</label>
-                            <div class="px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 mb-3">
-                                ••••••••
-                            </div>
-                            <a href="<?php echo BASE_URL; ?>/forgot-password"
-                               class="inline-block px-6 py-2 bg-gray-800 hover:bg-gray-900 text-white font-bold rounded-xl transition-all text-sm">
-                                Change Password
-                            </a>
-                        </div>
-
                         <!-- Phone Number -->
                         <div>
                             <label for="phone_number" class="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>

@@ -23,10 +23,14 @@ class AuthController extends BaseController
             session_start();
         }
 
+        // Get remembered username from cookie if it exists
+        $rememberedUsername = $_COOKIE['remembered_username'] ?? '';
+
         $data = [
             'title' => 'Login to Your Account',
             'error' => $_SESSION['error'] ?? null,
             'success' => $_SESSION['success'] ?? null,
+            'remembered_username' => $rememberedUsername,
         ];
 
         unset($_SESSION['error']);
@@ -44,6 +48,7 @@ class AuthController extends BaseController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $identifier = trim($_POST['identifier'] ?? '');
             $password = $_POST['password'] ?? '';
+            $rememberMe = isset($_POST['remember_me']) && $_POST['remember_me'] === 'on';
 
             error_log("Auth Controller: Login attempt for identifier: '{$identifier}'");
 
@@ -69,6 +74,16 @@ class AuthController extends BaseController
                 $_SESSION['is_admin'] = (bool)$user['is_admin'];
                 $_SESSION['success'] = 'Welcome back, ' . htmlspecialchars($user['username']) . '!';
                 $_SESSION['sync_cart_on_load'] = true;
+
+                // Handle "Remember Me" functionality
+                if ($rememberMe) {
+                    // Save username in cookie for 30 days
+                    setcookie('remembered_username', $user['username'], time() + (30 * 24 * 60 * 60), '/', '', false, true); // 30 days, httponly
+                    error_log("Auth Controller: Remember Me cookie set for user: " . $user['username']);
+                } else {
+                    // Clear any existing remember me cookie
+                    setcookie('remembered_username', '', time() - 3600, '/', '', false, true);
+                }
 
                 // Update last login timestamp
                 $this->userModel->updateLastLogin($user['id']);
@@ -208,6 +223,10 @@ class AuthController extends BaseController
                 $params["secure"], $params["httponly"]
             );
         }
+        
+        // Note: We keep the remembered_username cookie so it persists after logout
+        // This allows the username to be pre-filled on next login
+        
         session_destroy();
 
         error_log("Auth Controller: Session destroyed, redirecting to home.");
@@ -215,161 +234,4 @@ class AuthController extends BaseController
         exit();
     }
 
-    public function showForgotPassword()
-    {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-        $captcha_code = '';
-        for ($i = 0; $i < 6; $i++) {
-            $captcha_code .= $characters[rand(0, strlen($characters) - 1)];
-        }
-        $_SESSION['captcha_code'] = $captcha_code;
-
-        $data = [
-            'title' => 'Reset Your Password',
-            'captcha_code' => $captcha_code,
-            'error' => $_SESSION['error'] ?? null,
-            'success' => $_SESSION['success'] ?? null,
-        ];
-        unset($_SESSION['error']);
-        unset($_SESSION['success']);
-
-        $this->view('auth/forgot_password', $data);
-    }
-
-    public function processForgotPasswordRequest()
-    {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $identifier = trim($_POST['identifier'] ?? '');
-            $captcha_input = trim($_POST['captcha_input'] ?? '');
-            $stored_captcha_code = $_SESSION['captcha_code'] ?? null;
-
-            if (empty($identifier) || empty($captcha_input)) {
-                $_SESSION['error'] = 'All fields are required.';
-                header('Location: ' . BASE_URL . '/forgot-password');
-                exit();
-            }
-
-            // Case-insensitive comparison for captcha
-            if (strtoupper($captcha_input) !== strtoupper($stored_captcha_code)) {
-                $_SESSION['error'] = 'Incorrect code. Please try again.';
-                unset($_SESSION['captcha_code']);
-                header('Location: ' . BASE_URL . '/forgot-password');
-                exit();
-            }
-
-            $user = $this->userModel->findByUsernameOrEmail($identifier);
-
-            if ($user) {
-                $_SESSION['password_reset_user_id'] = $user['id'];
-                unset($_SESSION['captcha_code']);
-
-                $_SESSION['success'] = 'Code verified. Please set your new password.';
-                header('Location: ' . BASE_URL . '/reset-password');
-                exit();
-            } else {
-                $_SESSION['error'] = 'Invalid username/email or incorrect code. Please try again.';
-                unset($_SESSION['captcha_code']);
-                header('Location: ' . BASE_URL . '/forgot-password');
-                exit();
-            }
-        } else {
-            header('Location: ' . BASE_URL . '/forgot-password');
-            exit();
-        }
-    }
-
-    public function showResetPassword()
-    {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if (!isset($_SESSION['password_reset_user_id'])) {
-            $_SESSION['error'] = 'Access denied. Please start the password reset process from the "Forgot Password" page.';
-            header('Location: ' . BASE_URL . '/forgot-password');
-            exit();
-        }
-
-        $data = [
-            'title' => 'Set New Password',
-            'error' => $_SESSION['error'] ?? null,
-            'success' => $_SESSION['success'] ?? null,
-            'error_code_mismatch' => false
-        ];
-        
-        // If accessed directly without session variable, set an error
-        if (empty($_SESSION['password_reset_user_id'])) {
-            $data['error'] = 'Invalid access to password reset. Please go back to the forgot password page.';
-            $data['error_code_mismatch'] = true;
-        }
-
-        unset($_SESSION['error']);
-        unset($_SESSION['success']);
-
-        $this->view('auth/reset_password', $data);
-    }
-
-    public function resetPassword()
-    {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if (!isset($_SESSION['password_reset_user_id'])) {
-            $_SESSION['error'] = 'Access denied. Please start the password reset process from the "Forgot Password" page.';
-            header('Location: ' . BASE_URL . '/forgot-password');
-            exit();
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $userId = $_SESSION['password_reset_user_id'];
-            $newPassword = $_POST['password'] ?? '';
-            $confirmNewPassword = $_POST['confirm_password'] ?? '';
-
-            // 1. Validate input
-            if (empty($newPassword) || empty($confirmNewPassword)) {
-                $_SESSION['error'] = 'All fields are required.';
-                header('Location: ' . BASE_URL . '/reset-password');
-                exit();
-            }
-
-            if ($newPassword !== $confirmNewPassword) {
-                $_SESSION['error'] = 'New passwords do not match.';
-                header('Location: ' . BASE_URL . '/reset-password');
-                exit();
-            }
-
-            if (strlen($newPassword) < 6) {
-                $_SESSION['error'] = 'Password must be at least 6 characters long.';
-                header('Location: ' . BASE_URL . '/reset-password');
-                exit();
-            }
-
-            // 2. Update password
-            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-            $updated = $this->userModel->updatePassword($userId, $hashedPassword);
-
-            if ($updated) {
-                unset($_SESSION['password_reset_user_id']);
-                $_SESSION['success'] = 'Your password has been reset successfully. You can now log in with your new password.';
-                header('Location: ' . BASE_URL . '/login');
-                exit();
-            } else {
-                $_SESSION['error'] = 'Failed to reset password. Please try again.';
-                header('Location: ' . BASE_URL . '/reset-password');
-                exit();
-            }
-        } else {
-            header('Location: ' . BASE_URL . '/reset-password');
-            exit();
-        }
-    }
 }

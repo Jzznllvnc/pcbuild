@@ -74,7 +74,7 @@
             </div>
 
             <?php if (isset($error) && $error): ?>
-                <div class="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6 flex items-start gap-3">
+                <div class="alert-dismissible bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6 flex items-start gap-3 relative transition-all duration-300">
                     <svg class="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -82,11 +82,16 @@
                         <h3 class="font-bold text-red-900">Error!</h3>
                         <p class="text-red-700 text-sm"><?php echo htmlspecialchars($error); ?></p>
                     </div>
-            </div>
-        <?php endif; ?>
+                    <button type="button" onclick="dismissAlert(this)" class="text-red-400 hover:text-red-600 transition-colors ml-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            <?php endif; ?>
 
-        <?php if (isset($success) && $success): ?>
-                <div class="bg-green-50 border-2 border-green-200 rounded-xl p-4 mb-6 flex items-start gap-3">
+            <?php if (isset($success) && $success): ?>
+                <div class="alert-dismissible bg-green-50 border-2 border-green-200 rounded-xl p-4 mb-6 flex items-start gap-3 relative transition-all duration-300">
                     <svg class="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -94,13 +99,19 @@
                         <h3 class="font-bold text-green-900">Success!</h3>
                         <p class="text-green-700 text-sm"><?php echo htmlspecialchars($success); ?></p>
                     </div>
-            </div>
-        <?php endif; ?>
+                    <button type="button" onclick="dismissAlert(this)" class="text-green-400 hover:text-green-600 transition-colors ml-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            <?php endif; ?>
 
         <form action="<?php echo BASE_URL; ?>/login" method="POST" class="space-y-6">
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">Username or Email</label>
                     <input type="text" name="identifier" required
+                           value="<?php echo htmlspecialchars($remembered_username ?? ''); ?>"
                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[--color-primary-orange] transition-colors">
             </div>
 
@@ -123,12 +134,11 @@
 
                 <div class="flex items-center justify-between text-sm">
                     <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" class="w-4 h-4 text-[--color-primary-orange] border-gray-300 rounded focus:ring-[--color-primary-orange]">
+                        <input type="checkbox" name="remember_me" 
+                               <?php echo !empty($remembered_username) ? 'checked' : ''; ?>
+                               class="w-4 h-4 text-[--color-primary-orange] border-gray-300 rounded focus:ring-[--color-primary-orange]">
                         <span class="text-gray-700">Remember me</span>
                     </label>
-                    <a href="<?php echo BASE_URL; ?>/forgot-password" class="font-semibold text-[--color-primary-orange] hover:underline">
-                        Forgot password?
-                    </a>
             </div>
 
                 <button type="submit"
@@ -165,4 +175,27 @@ function togglePassword(id) {
         hideIcon.classList.add('hidden');
     }
 }
+
+function dismissAlert(button) {
+    const alert = button.closest('.alert-dismissible');
+    alert.style.opacity = '0';
+    alert.style.transform = 'translateY(-10px)';
+    setTimeout(() => {
+        alert.style.display = 'none';
+    }, 300);
+}
+
+// Auto-dismiss alerts after 5 seconds
+document.addEventListener('DOMContentLoaded', function() {
+    const alerts = document.querySelectorAll('.alert-dismissible');
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            alert.style.opacity = '0';
+            alert.style.transform = 'translateY(-10px)';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 300);
+        }, 5000); // 5 seconds
+    });
+});
 </script>

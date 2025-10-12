@@ -149,12 +149,6 @@ class Router
         $this->post('/register', 'AuthController@register');   // Process registration form submission
         $this->get('/logout', 'AuthController@logout');       // Handle logout (CHANGED TO GET)
 
-        // Password Reset Routes (UPDATED FOR CODE-BASED RESET)
-        $this->get('/forgot-password', 'AuthController@showForgotPassword');       // Display forgot password form with code
-        $this->post('/forgot-password', 'AuthController@processForgotPasswordRequest'); // Process username/email and code
-        $this->get('/reset-password', 'AuthController@showResetPassword');         // Display set new password form
-        $this->post('/reset-password', 'AuthController@resetPassword');            // Process new password submission
-
         // Cart Routes
         $this->get('/cart', 'CartController@index'); // Display the shopping cart
 
