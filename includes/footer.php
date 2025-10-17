@@ -131,6 +131,9 @@
         </div>
     </div>
 
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
     <script src="<?php echo BASE_URL; ?>/assets/js/main.js"></script>
 </body>
 </html>

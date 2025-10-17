@@ -435,31 +435,89 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Custom alert message function (replaces alert())
-function alertMessage(type, message) {
-    const alertBox = document.createElement('div');
-    alertBox.className = `fixed top-4 left-1/2 -translate-x-1/2 p-4 rounded-md shadow-lg text-white z-50 transition-all duration-300 transform -translate-y-full opacity-0`;
+// Custom toast notification system
+function alertMessage(type, message, title = null) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
 
-    if (type === 'success') {
-        alertBox.classList.add('bg-green-500');
-    } else if (type === 'error') {
-        alertBox.classList.add('bg-red-500');
-    } else {
-        alertBox.classList.add('bg-gray-700');
-    }
+    // Set default titles if not provided
+    const titles = {
+        success: title || 'Success!',
+        error: title || 'Error!',
+        warning: title || 'Warning!',
+        info: title || 'Did you know?'
+    };
 
-    alertBox.textContent = message;
-    document.body.appendChild(alertBox);
+    // SVG icons for each type
+    const icons = {
+        success: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>`,
+        error: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>`,
+        warning: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+        </svg>`,
+        info: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+        </svg>`
+    };
+
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+        <div class="toast-icon">
+            ${icons[type] || icons.info}
+        </div>
+        <div class="toast-content">
+            <div class="toast-title">${titles[type] || titles.info}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+        <div class="toast-close">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </div>
+    `;
+
+    // Add to container
+    container.appendChild(toast);
+
+    // Trigger show animation
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 10);
+
+    // Close button functionality
+    const closeBtn = toast.querySelector('.toast-close');
+    closeBtn.addEventListener('click', () => {
+        removeToast(toast);
+    });
+
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        removeToast(toast);
+    }, 5000);
+}
+
+function removeToast(toast) {
+    if (!toast || !toast.parentElement) return;
+    
+    toast.classList.remove('show');
+    toast.classList.add('hide');
     
     setTimeout(() => {
-        alertBox.classList.remove('-translate-y-full', 'opacity-0');
-        alertBox.classList.add('translate-y-0', 'opacity-100');
-    }, 100);
-    setTimeout(() => {
-        alertBox.classList.remove('translate-y-0', 'opacity-100');
-        alertBox.classList.add('-translate-y-full', 'opacity-0');
-        alertBox.addEventListener('transitionend', () => alertBox.remove());
-    }, 3000);
+        if (toast.parentElement) {
+            toast.remove();
+        }
+    }, 300);
+}
+
+// Additional helper function to show toasts with custom titles
+function showToast(type, message, title = null) {
+    alertMessage(type, message, title);
 }
 
 function initializePasswordToggle() {
